@@ -381,7 +381,7 @@ data class SearchResult(
 
 ```kotlin
 @Tool(name = "search_content", description = "Search ZDF Mediathek content")
-fun searchContent(query: String, limit: Int = 10): List<SearchResult> {
+fun searchContent(query: String, limit: Int = 5): List<SearchResult> {
     // Validate required parameters
     require(query.isNotBlank()) {
         "Parameter 'query' is required and must not be empty"
@@ -389,7 +389,7 @@ fun searchContent(query: String, limit: Int = 10): List<SearchResult> {
     require(limit in 1..50) {
         "Parameter 'limit' must be between 1 and 50"
     }
-    
+
     // ... implementation
 }
 ```
@@ -401,7 +401,7 @@ try {
     val response = apiClient.searchContent(query)
         .timeout(Duration.ofSeconds(10))
         .block()
-    
+
     return transformer.transform(response)
 } catch (e: TimeoutException) {
     logger.error("ZDF API timeout", e)

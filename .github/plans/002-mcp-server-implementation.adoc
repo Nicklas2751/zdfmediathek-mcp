@@ -31,10 +31,7 @@ This plan serves as a **guided learning experience** for:
 **Read and Research:**
 1. Read MCP documentation: https://modelcontextprotocol.io/
 2. Understand the concepts:
-- Tools (functions that AI can call)
-- Resources (data that AI can read)
-- Prompts (templates for AI interactions)
-- Transport (stdio vs HTTP)
+- Tools (functions that AI can call) - Resources (data that AI can read) - Prompts (templates for AI interactions) - Transport (stdio vs HTTP)
 
 3. Review Kotlin MCP SDK repository
 4. Understand the server lifecycle
@@ -53,9 +50,7 @@ This plan serves as a **guided learning experience** for:
 **Learning Goal:** Learn Gradle dependency management with Kotlin DSL
 
 **Task:**
-1. Research the latest version of Kotlin MCP SDK
-- Check JetBrains repositories or GitHub
-- Find the Maven coordinates
+1. Research the latest version of Kotlin MCP SDK - Check JetBrains repositories or GitHub - Find the Maven coordinates
 
 2. Add the dependency to `app/build.gradle.kts`
 - Find the correct `dependencies` block
@@ -119,10 +114,7 @@ Create: `app/src/main/kotlin/eu/wiegandt/zdfmediathekmcp/mcp/McpServer.kt`
 
 **Task:**
 1. Research Ktor Client documentation 2. Identify required dependencies:
-- Core client
-- Engine (CIO recommended for JVM)
-- Content negotiation (for JSON)
-- Logging
+- Core client - Engine (CIO recommended for JVM) - Content negotiation (for JSON) - Logging
 
 3. Add dependencies to `build.gradle.kts`
 
@@ -217,7 +209,7 @@ Models needed:
       },
       "limit": {
         "type": "integer",
-        "description": "Maximum number of results (default: 10)"
+        "description": "Maximum number of results (default: 5)"
       }
     },
     "required": ["query"]
@@ -335,10 +327,7 @@ Create: `app/src/main/kotlin/eu/wiegandt/zdfmediathekmcp/mcp/tools/SearchContent
 
 **Task:**
 1. Update `App.kt` to:
-- Initialize MCP server
-- Configure ZDF API client
-- Start server with stdio transport
-- Handle graceful shutdown
+- Initialize MCP server - Configure ZDF API client - Start server with stdio transport - Handle graceful shutdown
 
 2. Write integration test
 
@@ -375,10 +364,7 @@ Required configuration:
 
 **Task:**
 1. Configure logback.xml with:
-- Console appender
-- JSON format (for production)
-- Appropriate log levels
-- Context information
+- Console appender - JSON format (for production) - Appropriate log levels - Context information
 
 2. Add logging to:
 - Server startup/shutdown
@@ -480,11 +466,7 @@ Required configuration:
 **Task:**
 1. Update `.github/workflows/build.yml`
 2. Add:
-- Build job
-- Test job
-- Coverage job
-- Docker build job
-3. Test workflow
+- Build job - Test job - Coverage job - Docker build job 3. Test workflow
 
 **Questions:**
 - What is CI/CD?

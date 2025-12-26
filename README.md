@@ -7,9 +7,12 @@
 
 ## Overview
 
-The ZDF Mediathek MCP Server is a standalone [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that provides AI assistants with access to the ZDF Mediathek API. It enables natural language search and retrieval of German public broadcasting content from ZDF (Zweites Deutsches Fernsehen).
+The ZDF Mediathek MCP Server is a standalone [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server
+that provides AI assistants with access to the ZDF Mediathek API. It enables natural language search and retrieval of
+German public broadcasting content from ZDF (Zweites Deutsches Fernsehen).
 
-This server can be used independently with any MCP-compatible AI client, including Claude Desktop, GitHub Copilot, VS Code, IntelliJ IDEA, and others.
+This server can be used independently with any MCP-compatible AI client, including Claude Desktop, GitHub Copilot, VS
+Code, IntelliJ IDEA, and others.
 
 ### Key Features
 
@@ -26,29 +29,30 @@ The server provides the following MCP tools:
 
 ### Phase 1 (MVP) - Available
 
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `search_content` | Search for content in ZDF Mediathek | `query` (string, required)<br/>`limit` (number, optional, default: 10) |
+| Tool                     | Description                                     | Key Parameters                                                              |
+|--------------------------|-------------------------------------------------|-----------------------------------------------------------------------------|
+| `search_content`         | Search for content in ZDF Mediathek             | `query` (string, required)<br/>`limit` (number, optional, default: 5)       |
 | `get_broadcast_schedule` | Get TV schedule for a specific channel and date | `channel` (string, required)<br/>`date` (string, ISO 8601 format, optional) |
-| `get_current_broadcast` | Get currently airing program on a channel | `channel` (string, required) |
+| `get_current_broadcast`  | Get currently airing program on a channel       | `channel` (string, required)                                                |
 
 ### Phase 2 - Planned
 
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `search_brands` | Search for TV brands/series | `query` (string, required) |
+| Tool                  | Description                                     | Key Parameters                 |
+|-----------------------|-------------------------------------------------|--------------------------------|
+| `search_brands`       | Search for TV brands/series                     | `query` (string, required)     |
 | `get_content_details` | Get detailed information about specific content | `contentId` (string, required) |
 
 ### Phase 3 - Future
 
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `get_brand_details` | Get detailed information about a TV brand/series | `brandId` (string, required) |
-| `suggest_completions` | Get search suggestions | `query` (string, required) |
+| Tool                  | Description                                      | Key Parameters               |
+|-----------------------|--------------------------------------------------|------------------------------|
+| `get_brand_details`   | Get detailed information about a TV brand/series | `brandId` (string, required) |
+| `suggest_completions` | Get search suggestions                           | `query` (string, required)   |
 
 ### Example Tool Usage
 
 **Search Content:**
+
 ```json
 {
   "tool": "search_content",
@@ -60,6 +64,7 @@ The server provides the following MCP tools:
 ```
 
 **Get Broadcast Schedule:**
+
 ```json
 {
   "tool": "get_broadcast_schedule",
@@ -71,6 +76,7 @@ The server provides the following MCP tools:
 ```
 
 **Get Current Broadcast:**
+
 ```json
 {
   "tool": "get_current_broadcast",
@@ -108,11 +114,13 @@ docker run -p 8080:8080 \
 ### Anthropic Claude Desktop
 
 **Configuration File Location:**
+
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 - Linux: `~/.config/Claude/claude_desktop_config.json`
 
 **Configuration Example:**
+
 ```json
 {
   "mcpServers": {
@@ -130,6 +138,7 @@ docker run -p 8080:8080 \
 ```
 
 **Usage:**
+
 1. Add the configuration to your `claude_desktop_config.json`
 2. Restart Claude Desktop
 3. Ask Claude: "Search for Tatort in ZDF Mediathek"
@@ -137,6 +146,7 @@ docker run -p 8080:8080 \
 ### GitHub Copilot CLI
 
 **Setup:**
+
 ```bash
 # Install GitHub Copilot CLI (if not already installed)
 gh extension install github/gh-copilot
@@ -146,6 +156,7 @@ gh extension install github/gh-copilot
 ```
 
 **Usage:**
+
 ```bash
 gh copilot suggest "What's on ZDF tonight?"
 ```
@@ -153,10 +164,12 @@ gh copilot suggest "What's on ZDF tonight?"
 ### VS Code with GitHub Copilot
 
 **Extension Requirements:**
+
 - GitHub Copilot extension
 - MCP support (TODO: Check if additional extension needed)
 
 **Configuration (settings.json):**
+
 ```json
 {
   "github.copilot.advanced": {
@@ -182,6 +195,7 @@ gh copilot suggest "What's on ZDF tonight?"
 IntelliJ IDEA has native MCP support (TODO: Verify version requirement).
 
 **Configuration:**
+
 1. Open Settings → Tools → MCP Servers
 2. Add new MCP server
 3. Configure Docker command or direct connection
@@ -190,15 +204,18 @@ IntelliJ IDEA has native MCP support (TODO: Verify version requirement).
 ### IntelliJ with GitHub Copilot
 
 **Plugin Requirements:**
+
 - GitHub Copilot plugin
 
 **Configuration:**
+
 1. Install GitHub Copilot plugin from JetBrains Marketplace
 2. Configure MCP server in plugin settings (TODO: Add specific steps)
 
 ### Kilocode
 
 **Configuration:**
+
 ```yaml
 # TODO: Add Kilocode specific configuration format
 ```
@@ -246,11 +263,11 @@ ZDF_CLIENT_ID=your-id ZDF_CLIENT_SECRET=your-secret ./gradlew bootRun
 
 **Environment Variables:**
 
-| Variable | Required | Description | Example |
-|----------|----------|-------------|---------|
-| `ZDF_CLIENT_ID` | Yes | OAuth2 Client ID from ZDF API | `abc123...` |
-| `ZDF_CLIENT_SECRET` | Yes | OAuth2 Client Secret | `xyz789...` |
-| `SERVER_PORT` | No | Server port | `8080` (default) |
+| Variable            | Required | Description                   | Example          |
+|---------------------|----------|-------------------------------|------------------|
+| `ZDF_CLIENT_ID`     | Yes      | OAuth2 Client ID from ZDF API | `abc123...`      |
+| `ZDF_CLIENT_SECRET` | Yes      | OAuth2 Client Secret          | `xyz789...`      |
+| `SERVER_PORT`       | No       | Server port                   | `8080` (default) |
 
 **Application Properties** (`src/main/resources/application.properties`):
 
@@ -323,10 +340,12 @@ Ask your AI assistant questions like:
 ### Expected Tool Call Sequences
 
 **User asks: "What's on ZDF tonight?"**
+
 1. AI calls `get_broadcast_schedule` with channel="ZDF" and today's date
 2. AI presents the schedule in a readable format
 
 **User asks: "Find crime shows"**
+
 1. AI calls `search_content` with query="crime" or "Krimi"
 2. AI presents search results with titles and descriptions
 

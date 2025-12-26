@@ -459,7 +459,7 @@ class ZdfApiClient(
         .baseUrl("https://prod-api.zdf.de")
         .build()
 
-    fun searchContent(query: String, limit: Int = 10): Mono<ZdfApiSearchResponse> {
+    fun searchContent(query: String, limit: Int = 5): Mono<ZdfApiSearchResponse> {
         return webClient.get()
             .uri { builder ->
                 builder.path("/search")
@@ -649,7 +649,7 @@ class SearchContentTool(
     )
     fun searchContent(
         query: String,
-        limit: Int = 10
+        limit: Int = 5
     ): List<SearchResult> {
         // Validate parameters
         require(query.isNotBlank()) {
@@ -700,7 +700,7 @@ class SearchContentTool(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Tool(name = "search_content", description = "...")
-    fun searchContent(query: String, limit: Int = 10): List<SearchResult> {
+    fun searchContent(query: String, limit: Int = 5): List<SearchResult> {
         logger.info("Searching content with query='{}', limit={}", query, limit)
 
         try {
@@ -743,7 +743,7 @@ Create/update: `src/main/resources/logback-spring.xml`
 
 [source,kotlin]
 ----
-fun searchContent(query: String, limit: Int = 10): List<SearchResult> {
+fun searchContent(query: String, limit: Int = 5): List<SearchResult> {
     require(query.isNotBlank()) {
         "Parameter 'query' is required and must not be empty"
     }
