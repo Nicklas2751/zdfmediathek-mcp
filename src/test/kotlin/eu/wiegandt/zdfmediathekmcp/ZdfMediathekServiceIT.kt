@@ -1,14 +1,12 @@
 package eu.wiegandt.zdfmediathekmcp
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import eu.wiegandt.zdfmediathekmcp.config.HttpServicesConfiguration
 import eu.wiegandt.zdfmediathekmcp.model.ZdfDocument
 import eu.wiegandt.zdfmediathekmcp.model.ZdfSearchResponse
 import eu.wiegandt.zdfmediathekmcp.model.ZdfSearchResult
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.wiremock.spring.ConfigureWireMock
 import org.wiremock.spring.EnableWireMock
@@ -16,10 +14,6 @@ import java.time.OffsetDateTime
 
 
 @SpringBootTest(
-    classes = [
-        HttpServicesConfiguration::class,
-        WebClientAutoConfiguration::class,
-    ],
     properties = [
         "zdf.clientId=test-client",
         "zdf.clientSecret=test-secret"
@@ -81,6 +75,17 @@ class ZdfMediathekServiceIT {
             )
         )
 
+        // Mock OAuth token endpoint
+        stubFor(
+            post(urlPathEqualTo("/oauth/token"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("""{"access_token":"test-token","token_type":"Bearer","expires_in":3600}""")
+                )
+        )
+
         stubFor(
             get(urlPathEqualTo("/search/documents"))
                 .withQueryParam("q", equalTo("Tagesschau"))
@@ -106,8 +111,7 @@ class ZdfMediathekServiceIT {
         // given
         stubFor(
             post(urlPathEqualTo("/oauth/token"))
-                .withBasicAuth("test-client", "test-secret")
-                .withRequestBody(containing("grant_type=client_credentials"))
+                .withRequestBody(containing("grant_type=client_credentials&client_id=test-client&client_secret=test-secret"))
                 .willReturn(
                     aResponse()
                         .withStatus(200)
