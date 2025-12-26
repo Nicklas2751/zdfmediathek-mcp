@@ -1,0 +1,782 @@
+= ZDF Mediathek MCP Server - Project Initialization Plan
+:toc: left
+:toclevels: 3
+:sectnums:
+
+== Plan Overview
+
+**Plan ID:** 001 +
+**Status:** Awaiting Approval +
+**Created:** 2025-12-19 +
+**Author:** GitHub Copilot
+
+=== Purpose
+
+Initialize the ZDF Mediathek MCP server as a standalone Kotlin project with Gradle (Kotlin DSL), proper documentation, and development tooling configuration.
+
+=== Scope
+
+This plan covers:
+
+1. Creation of project documentation files (README.md, AGENTS.md, LICENSE)
+2. Project structure initialization with Gradle and Kotlin
+3. Docker configuration for usage with various MCP-compatible tools
+4. Git repository initialization
+
+=== Out of Scope
+
+* Actual API endpoint implementation
+* MCP protocol implementation
+* Testing framework setup (covered in separate plan)
+
+== Goals
+
+1. **Standalone Repository:** Prepare project to become independent GitHub repository
+2. **Developer Documentation:** Comprehensive README for MCP users and contributors
+3. **Tool Integration:** Docker setup for Claude Desktop, Copilot CLI, VS Code, IntelliJ, etc.
+4. **Agent Knowledge Base:** Dedicated AGENTS.md with MCP-specific rules and context
+5. **Legal Compliance:** MIT License properly attributed
+6. **Build System:** Modern Gradle with Kotlin DSL setup
+
+== Implementation Steps
+
+=== Step 1: Create README.md
+
+**Location:** `zdfmediathek-mcp/README.md`
+
+**Content Sections:**
+
+1. **Project Title & Badges**
+- Project name: "ZDF Mediathek MCP Server"
+- Status badge (Development)
+- License badge (MIT)
+- Kotlin version badge
+- MCP protocol version badge
+
+2. **Overview**
+- Brief description: Standalone MCP server for ZDF Mediathek API
+- Purpose: Enable AI assistants to search German public broadcasting content
+- Can be used independently with any MCP-compatible client
+
+3. **Features**
+- List of MCP tools provided (see endpoint analysis document)
+- OAuth2 authentication support
+- Docker deployment ready
+- Works with multiple AI clients
+
+4. **MCP Tools Reference**
+- Table of available tools with descriptions
+- Phase 1 (MVP): `search_content`, `get_broadcast_schedule`, `get_current_broadcast`
+- Phase 2: `search_brands`, `get_content_details`
+- Phase 3: `get_brand_details`, `suggest_completions`
+- Parameter documentation for each tool
+- Example responses
+
+5. **Usage with AI Clients**
+
+   **Docker Setup (General):**
+   ```bash
+   docker pull <registry>/zdf-mediathek-mcp:<version>
+   docker run -p <port>:<port> \
+     -e ZDF_API_CLIENT_ID=<your-client-id> \
+     -e ZDF_API_CLIENT_SECRET=<your-secret> \
+     <registry>/zdf-mediathek-mcp:<version>
+   ```
+
+   **Anthropic Claude Desktop:**
+   - Configuration file location: `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
+   - Configuration example:
+   ```json
+   {
+     "mcpServers": {
+       "zdf-mediathek": {
+         "command": "docker",
+         "args": ["run", "-i", "--rm",
+                  "-e", "ZDF_API_CLIENT_ID=...",
+                  "-e", "ZDF_API_CLIENT_SECRET=...",
+                  "<container-name>"]
+       }
+     }
+   }
+   ```
+
+   **GitHub Copilot CLI:**
+   - Setup instructions
+   - Configuration file example
+   - Usage commands
+
+   **VS Code with GitHub Copilot:**
+   - Extension configuration
+   - MCP server connection settings
+   - Workspace configuration
+
+   **IntelliJ IDEA:**
+   - Native MCP support configuration
+   - Plugin requirements (if any)
+   - Connection setup
+
+   **IntelliJ with GitHub Copilot:**
+   - GitHub Copilot plugin setup
+   - MCP server integration
+   - Configuration example
+
+   **Kilocode:**
+   - Setup instructions
+   - Configuration example
+
+   **Generic MCP Client:**
+   - Standard MCP protocol connection
+   - Stdio transport
+   - HTTP transport (if supported)
+
+6. **Development Setup**
+```bash
+# Clone repository
+git clone <repo-url>
+cd zdfmediathek-mcp
+
+   # Build project
+   ./gradlew build
+
+   # Run tests
+   ./gradlew test
+
+   # Run locally
+   ./gradlew run
+   ```
+
+7. **Configuration**
+- Environment variables reference
+- OAuth2 setup requirements
+- API quota information
+- Optional configuration parameters
+
+8. **API Coverage**
+- Brief overview of ZDF API endpoints covered
+- Link to detailed endpoint analysis document
+- Limitations and known issues
+
+9. **Examples**
+- Example queries users can ask
+- Expected responses
+- Tool call sequences
+
+10. **Contributing**
+- Reference to main project CONTRIBUTING.md (if exists)
+- Code quality requirements
+- Testing requirements
+- Pull request process
+
+11. **License**
+- MIT License
+- Link to LICENSE file
+
+12. **Acknowledgments**
+- ZDF API
+- MCP Protocol (Anthropic)
+- Kotlin MCP SDK (JetBrains)
+
+**Placeholders to Add Later:**
+- Docker registry URL - Container name - Specific port numbers - Actual OAuth2 registration URL - Version numbers - Repository URL
+
+=== Step 2: Create AGENTS.md
+
+**Location:** `zdfmediathek-mcp/AGENTS.md`
+
+**Content Sections:**
+
+1. **Project Overview**
+- Project name: zdfmediathek-mcp
+- Type: Standalone MCP server for ZDF Mediathek API
+- Language: Kotlin
+- Build system: Gradle with Kotlin DSL
+- Purpose: Provide MCP tools for searching ZDF content
+
+2. **Architecture Overview**
+- MCP server using official Kotlin SDK
+- OAuth2 client for ZDF API
+- Tool handlers for each MCP tool
+- Response transformers for API data
+
+3. **Core Principles**
+- **Standalone:** Can run independently of parent project
+- **Privacy First:** No user data storage, no tracking
+- **Clean Code:** SonarQube standards, maintainable, testable
+- **TDD:** Test-driven development mandatory
+- **KISS:** Simple solutions over complex abstractions
+
+4. **Communication and Documentation Rules**
+- User communication: German
+- Code & documentation: English
+- AGENTS.md: English
+- Other docs: AsciiDoc in `.github/plans/`
+
+5. **Diagram Guidelines**
+- Preferred: Mermaid
+- Fallback: PlantUML
+
+6. **Project Rules**
+- **Rule #1:** Always create plan first (in `.github/plans/`)
+- **Rule #2:** Ask when uncertain
+- **Rule #3:** Be brutally honest
+
+7. **Code Quality Standards**
+- No SonarQube issues
+- Code must be testable, maintainable, readable
+- Security considerations paramount
+
+8. **Test-Driven Development**
+- Write tests FIRST
+- Run tests (should fail)
+- Implement code
+- Refactor if needed
+
+9. **Code Changes**
+- Minimal changes only
+- Surgical edits
+- No unnecessary refactoring
+- Update docs only if related
+
+10. **Technology Stack**
+- Language: Kotlin 1.9+
+- Build: Gradle 8+ with Kotlin DSL
+- MCP SDK: Official Kotlin MCP SDK (JetBrains)
+- HTTP Client: Ktor Client
+- JSON: kotlinx.serialization
+- Testing: Kotest, MockK
+- Docker: JVM optimized images
+
+11. **Build and Test Commands**
+```bash
+# Build project
+./gradlew build
+
+    # Run tests
+    ./gradlew test
+
+    # Run with coverage
+    ./gradlew test jacocoTestReport
+
+    # Check code quality
+    ./gradlew detekt
+
+    # Run application
+    ./gradlew run
+
+    # Build Docker image
+    ./gradlew dockerBuild
+    ```
+
+12. **Project Structure**
+``` zdfmediathek-mcp/ ├── .github/ │ └── plans/ # Planning documents ├── src/ │ ├── main/ │ │ └── kotlin/ │ │ └── de/wiegandt/zdfmcp/ │ │ ├── api/ # ZDF API client │ │ ├── mcp/ # MCP tool handlers │ │ ├── model/ # Data models │ │ └── Application.kt │ └── test/ │ └── kotlin/ │ └── de/wiegandt/zdfmcp/ ├── build.gradle.kts ├── settings.gradle.kts ├── gradle.properties ├── Dockerfile ├── README.md ├── AGENTS.md └── LICENSE ```
+
+13. **MCP Tools Implementation Guide**
+- Tool naming convention
+- Parameter validation
+- Error handling patterns
+- Response formatting
+- Date/time handling (ISO 8601, CET/CEST)
+- Channel name normalization
+
+14. **ZDF API Integration**
+- OAuth2 flow
+- API base URL: `https://prod-api.zdf.de`
+- Rate limiting handling
+- Error response handling
+- Retry strategy
+
+15. **Testing Strategy**
+- Unit tests for all tool handlers
+- Integration tests for API client
+- Mock ZDF API responses
+- Test coverage minimum: 80%
+- Test naming convention
+
+16. **Security Considerations**
+- OAuth2 credentials via environment variables
+- No credentials in code or config files
+- API quota monitoring
+- Input validation and sanitization
+- No PII logging
+
+17. **Known Limitations**
+- API quota restrictions
+- OAuth2 token expiration handling
+- Content availability windows (aired ≠ in Mediathek)
+- Geographic restrictions (geolocation fields)
+
+18. **Future Enhancements**
+- Caching layer for common queries
+- Metrics and monitoring
+- Advanced search with semantic tags
+- Content recommendations
+
+19. **Links to Documentation**
+- Link to endpoint analysis: `../.github/plans/zdf-mcp-endpoints-analysis.adoc`
+- Link to quick reference: `../.github/plans/zdf-mcp-quick-reference.adoc`
+- Link to parent project: `../README.md`
+
+=== Step 3: Create LICENSE File
+
+**Location:** `zdfmediathek-mcp/LICENSE`
+
+**Content:**
+- Standard MIT License text - Copyright year: 2025 - Copyright holder: Nicklas Wiegandt
+
+**Full Text:**
+
+```
+MIT License
+
+Copyright (c) 2025 Nicklas Wiegandt
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+=== Step 4: Initialize Gradle Project with Kotlin DSL
+
+**Method:** Use Gradle init task (recommended approach)
+
+**Command:**
+
+```bash
+cd zdfmediathek-mcp
+gradle init \
+  --type kotlin-application \
+  --dsl kotlin \
+  --test-framework kotest \
+  --package de.wiegandt.zdfmcp \
+  --project-name zdf-mediathek-mcp
+```
+
+**Alternative:** Manual setup if gradle init is not suitable
+
+**Generated Files:**
+- `build.gradle.kts` - Build configuration - `settings.gradle.kts` - Project settings - `gradle.properties` - Gradle properties - `gradlew` / `gradlew.bat` - Gradle wrapper scripts - `gradle/wrapper/` - Wrapper JAR and properties - `src/main/kotlin/` - Source directory - `src/test/kotlin/` - Test directory
+
+**Expected Initial Dependencies:**
+
+```kotlin
+dependencies {
+    // Kotlin stdlib
+    implementation(kotlin("stdlib"))
+
+    // Placeholder for MCP SDK (will be added later)
+    // implementation("com.jetbrains:mcp-kotlin-sdk:VERSION")
+
+    // HTTP client for ZDF API
+    implementation("io.ktor:ktor-client-core:VERSION")
+    implementation("io.ktor:ktor-client-cio:VERSION")
+    implementation("io.ktor:ktor-client-content-negotiation:VERSION")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:VERSION")
+
+    // OAuth2 client
+    implementation("io.ktor:ktor-client-auth:VERSION")
+
+    // JSON serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:VERSION")
+
+    // Logging
+    implementation("io.github.microutils:kotlin-logging-jvm:VERSION")
+    implementation("ch.qos.logback:logback-classic:VERSION")
+
+    // Testing
+    testImplementation("io.kotest:kotest-runner-junit5:VERSION")
+    testImplementation("io.kotest:kotest-assertions-core:VERSION")
+    testImplementation("io.mockk:mockk:VERSION")
+}
+```
+
+**Kotlin Compiler Configuration:**
+
+```kotlin
+kotlin {
+    jvmToolchain(17) // Or latest LTS
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "17"
+        freeCompilerArgs = listOf(
+            "-Xjsr305=strict",
+            "-opt-in=kotlin.RequiresOptIn"
+        )
+    }
+}
+```
+
+**Application Plugin Configuration:**
+
+```kotlin
+application {
+    mainClass.set("de.wiegandt.zdfmcp.ApplicationKt")
+}
+```
+
+=== Step 5: Create Basic Project Structure
+
+**Directories to Create:**
+
+```
+src/main/kotlin/de/wiegandt/zdfmcp/
+├── api/              # ZDF API client implementations
+├── mcp/              # MCP tool handlers
+├── model/            # Data models and DTOs
+└── Application.kt    # Main entry point
+
+src/test/kotlin/de/wiegandt/zdfmcp/
+├── api/              # API client tests
+├── mcp/              # Tool handler tests
+└── model/            # Model tests
+
+src/main/resources/
+└── logback.xml       # Logging configuration
+
+src/test/resources/
+└── (test fixtures)
+```
+
+**Create Placeholder Application.kt:**
+
+```kotlin
+package de.wiegandt.zdfmcp
+
+fun main() {
+    println("ZDF Mediathek MCP Server")
+    println("Version: 0.1.0-SNAPSHOT")
+    println("Status: Initializing...")
+    // MCP server initialization will be added here
+}
+```
+
+=== Step 6: Initialize Git Repository
+
+**Commands:**
+
+```bash
+cd zdfmediathek-mcp
+git init
+```
+
+**Create .gitignore:**
+
+```
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*~
+```
+
+**Initial Commit Structure:**
+
+```bash
+git add .
+git commit -m "Initial project setup
+
+- Add README.md with MCP tool documentation
+- Add AGENTS.md with project rules and guidelines
+- Add MIT LICENSE for Nicklas Wiegandt
+- Initialize Gradle project with Kotlin DSL
+- Add basic project structure
+- Configure build system and dependencies"
+```
+
+=== Step 7: Create Docker Configuration
+
+**Location:** `zdfmediathek-mcp/Dockerfile`
+
+**Content (Multi-stage build):**
+
+```dockerfile
+# Build stage
+FROM gradle:8-jdk17 AS build
+WORKDIR /app
+
+# Copy Gradle files
+COPY build.gradle.kts settings.gradle.kts gradle.properties ./
+COPY gradle ./gradle
+
+# Download dependencies (cached layer)
+RUN gradle dependencies --no-daemon
+
+# Copy source code
+COPY src ./src
+
+# Build application
+RUN gradle build --no-daemon
+
+# Runtime stage
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+
+# Add non-root user
+RUN addgroup -S mcp && adduser -S mcp -G mcp
+USER mcp
+
+# Copy built application
+COPY --from=build /app/build/libs/*.jar app.jar
+
+# Expose port (placeholder, will be determined later)
+EXPOSE 8080
+
+# Health check (placeholder, will be implemented later)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+
+# Run application
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+**Location:** `zdfmediathek-mcp/.dockerignore`
+
+**Content:**
+
+```
+.git
+.github
+.gradle
+build
+*.md
+.gitignore
+.env*
+.idea
+.vscode
+```
+
+=== Step 8: Create GitHub Actions Workflow (Optional)
+
+**Location:** `zdfmediathek-mcp/.github/workflows/build.yml`
+
+**Purpose:** CI/CD pipeline for automated builds and tests
+
+**Content (Placeholder):**
+
+```yaml
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    - name: Run tests
+      run: ./gradlew test
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: build/reports/tests/
+```
+
+== Validation Checklist
+
+After implementation, verify:
+
+- [ ] README.md exists with complete MCP tool documentation
+- [ ] README.md includes Docker usage for all listed AI clients
+- [ ] AGENTS.md exists with project-specific rules and context
+- [ ] LICENSE file exists with correct copyright (2025 Nicklas Wiegandt)
+- [ ] Gradle project initializes successfully (`./gradlew build`)
+- [ ] Project structure matches planned layout
+- [ ] `.gitignore` covers all necessary patterns
+- [ ] Git repository initialized with initial commit
+- [ ] Dockerfile builds successfully
+- [ ] All placeholders are marked with TODO or comments
+- [ ] No hardcoded secrets or credentials
+
+== Placeholders for Later
+
+The following information will be added after implementation:
+
+1. **Docker Registry & Container Name**
+- Registry URL: TBD
+- Container name: TBD
+- Tags: TBD
+
+2. **Port Numbers**
+- MCP server port: TBD (likely 8080 or dynamic)
+- Health check port: TBD
+
+3. **Version Numbers**
+- Initial version: 0.1.0-SNAPSHOT
+- Kotlin version: TBD (use latest stable)
+- Gradle version: TBD (use wrapper version)
+- MCP SDK version: TBD (check JetBrains releases)
+- Ktor version: TBD (use latest stable 2.x)
+
+4. **OAuth2 Configuration**
+- ZDF API registration URL: TBD
+- Client ID format: TBD
+- Token endpoint: TBD
+- Scopes required: TBD
+
+5. **Repository URLs**
+- GitHub repository URL: TBD
+- Docker registry URL: TBD
+
+6. **API Quotas**
+- Hourly quota limit: TBD
+- Rate limit specifics: TBD
+
+== Dependencies Between Files
+
+```mermaid
+graph TD
+    A[README.md] --> B[AGENTS.md]
+    A --> C[LICENSE]
+    A --> D[Dockerfile]
+    B --> E[build.gradle.kts]
+    B --> F[.gitignore]
+    E --> G[Application.kt]
+    E --> H[Project Structure]
+    D --> E
+
+    style A fill:#90EE90
+    style B fill:#90EE90
+    style C fill:#90EE90
+    style E fill:#87CEEB
+    style G fill:#FFB6C1
+```
+
+== Implementation Order
+
+1. **Documentation First** (Can be done in parallel)
+- README.md
+- AGENTS.md
+- LICENSE
+
+2. **Project Initialization**
+- Run `gradle init`
+- Verify generated files
+- Create project structure
+
+3. **Docker & Git**
+- Dockerfile
+- .dockerignore
+- .gitignore
+- Git init and initial commit
+
+4. **Validation**
+- Build project
+- Verify Docker build
+- Check all files present
+
+== Risks and Mitigation
+
+[cols="1,2,2"]
+|===
+|Risk |Impact |Mitigation
+
+|Gradle init generates different structure than expected
+|Medium
+|Document actual structure, adjust plan accordingly
+
+|MCP SDK version not compatible with Kotlin version
+|High
+|Check SDK compatibility before version selection
+
+|Docker image too large
+|Low
+|Use alpine base image, multi-stage build
+
+|Placeholder information incomplete
+|Low
+|Mark all placeholders with TODO comments
+|===
+
+== Success Criteria
+
+✅ Project can be built with `./gradlew build` +
+✅ Docker image can be built successfully +
+✅ All documentation files are complete and professional +
+✅ Git repository is initialized properly +
+✅ Project is ready for MCP implementation phase +
+✅ All AI client setup instructions are documented +
+✅ License is properly attributed
+
+== Next Steps (Out of Scope)
+
+After this plan is approved and implemented:
+
+1. **Plan 002:** MCP SDK Integration and Tool Framework
+2. **Plan 003:** ZDF API Client Implementation
+3. **Plan 004:** Tool Handlers Implementation (Phase 1: MVP)
+4. **Plan 005:** Testing Strategy and Test Implementation
+5. **Plan 006:** Docker Deployment and Distribution
+
+== Approval Required
+
+**Awaiting approval from:** Nicklas Wiegandt
+
+**Questions for clarification:**
+
+1. ✅ Preferred Kotlin package naming: `de.wiegandt.zdfmcp` - correct?
+2. ✅ JVM version preference: 17 (LTS) or 21 (latest LTS)?
+3. ✅ Should GitHub Actions workflow be included in initial setup?
+4. ✅ Any specific Gradle plugins needed beyond standard Kotlin application?
+5. ✅ Preferred logging framework: Logback (suggested) or alternative?
+
+**Please approve, reject, or request modifications before proceeding.**
+

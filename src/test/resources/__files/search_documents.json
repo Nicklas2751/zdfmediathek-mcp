@@ -1,0 +1,1502 @@
+{
+  "totalResultsCount": 3104,
+  "next": "\/search\/documents?q=Tagesschau&limit=2&page=2",
+  "http:\/\/zdf.de\/rels\/search\/suggestions": [],
+  "http:\/\/zdf.de\/rels\/search\/results": [
+    {
+      "score": 38.0424,
+      "http:\/\/zdf.de\/rels\/target": {
+        "externalId": "SCMS_index-page-ard-collection_ard_dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-",
+        "id": "collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042",
+        "editorialDate": "2025-12-26T14:37:23.220+01:00",
+        "teasertext": "Die Tagesschau ist die älteste und meistgesehene Nachrichtensendung im deutschen Fernsehen. Bis heute der Inbegriff für aktuelle Nachrichten. Seriös und auf den Punkt.",
+        "teaserImageRef": {
+          "title": "tagesschau",
+          "altText": "tagesschau",
+          "copyrightNotice": "ard",
+          "source": "ard",
+          "profile": "http:\/\/zdf.de\/rels\/image",
+          "self": "\/content\/documents\/zdf\/daserste\/tagesschau\/collection-teaser-image-ard-tagesschau-100.json",
+          "canonical": "\/content\/documents\/collection-teaser-image-ard-tagesschau-100.json",
+          "layouts": {
+            "1140x120": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1140x120?cb=1746623974272",
+            "1140x240": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1140x240?cb=1746623974272",
+            "1200x480": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1200x480?cb=1746623974272",
+            "1280x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1280x720?cb=1746623974272",
+            "1280xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1280xauto?cb=1746623974272",
+            "1300x650": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1300x650?cb=1746623974272",
+            "1500x300": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1500x300?cb=1746623974272",
+            "1500x600": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1500x600?cb=1746623974272",
+            "1500x800": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1500x800?cb=1746623974272",
+            "1800x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1800x720?cb=1746623974272",
+            "1900x200": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1900x200?cb=1746623974272",
+            "1900x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1900x400?cb=1746623974272",
+            "1900x570": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1900x570?cb=1746623974272",
+            "1920x1080": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~1920x1080?cb=1746623974272",
+            "225x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~225x400?cb=1746623974272",
+            "240x270": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~240x270?cb=1746623974272",
+            "276x155": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~276x155?cb=1746623974272",
+            "276x311": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~276x311?cb=1746623974272",
+            "314x314": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~314x314?cb=1746623974272",
+            "380x170": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~380x170?cb=1746623974272",
+            "384x216": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~384x216?cb=1746623974272",
+            "384xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~384xauto?cb=1746623974272",
+            "405x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~405x720?cb=1746623974272",
+            "640x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~640x720?cb=1746623974272",
+            "760x340": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~760x340?cb=1746623974272",
+            "768x432": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~768x432?cb=1746623974272",
+            "768xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~768xauto?cb=1746623974272",
+            "840x140": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~840x140?cb=1746623974272",
+            "840x280": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~840x280?cb=1746623974272",
+            "840x360": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~840x360?cb=1746623974272",
+            "860x344": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~860x344?cb=1746623974272",
+            "936x520": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~936x520?cb=1746623974272",
+            "original": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-tagesschau-100~original?cb=1746623974272"
+          }
+        },
+        "teaserHeadline": "tagesschau",
+        "trackingTitle": "tagesschau",
+        "excludeFromLastViewed": false,
+        "contentType": "brand",
+        "profile": "http:\/\/zdf.de\/rels\/content\/page-index-teaser",
+        "self": "\/content\/documents\/zdf\/daserste\/tagesschau?profile=teaser",
+        "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042.json",
+        "webCanonical": "https:\/\/www.zdf.de\/magazine\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042",
+        "http:\/\/zdf.de\/rels\/search\/page-video-counter-with-video": {
+          "totalResultsCount": 2965,
+          "next": "\/search\/documents\/zdf\/daserste\/tagesschau?q=*&limit=0&types=page-video&hasVideo=true&profile=teaser&page=2",
+          "http:\/\/zdf.de\/rels\/search\/suggestions": [],
+          "http:\/\/zdf.de\/rels\/search\/results": [],
+          "profile": "http:\/\/zdf.de\/rels\/search\/result-page",
+          "self": "\/search\/documents\/zdf\/daserste\/tagesschau?q=*&limit=0&types=page-video&hasVideo=true&profile=teaser",
+          "first": "\/search\/documents\/zdf\/daserste\/tagesschau?q=*&limit=0&types=page-video&hasVideo=true&profile=teaser",
+          "facets": {
+            "attrs": [
+              {
+                "docCount": 2872,
+                "key": "UT"
+              }
+            ],
+            "broadcasters": [
+              {
+                "docCount": 2965,
+                "key": "daserste"
+              }
+            ],
+            "episodes": {
+              "docCount": 2965
+            },
+            "teilbereich": [
+              {
+                "docCount": 2965,
+                "key": "ard"
+              }
+            ],
+            "videoquality": []
+          }
+        },
+        "http:\/\/zdf.de\/rels\/category": {
+          "profile": "http:\/\/zdf.de\/rels\/content\/structureNodeDocument-breadcrumb",
+          "self": "\/content\/structure\/zdf\/daserste?profile=breadcrumb",
+          "canonical": "\/content\/structure\/zdf\/daserste",
+          "title": "ARD",
+          "http:\/\/zdf.de\/rels\/target": {
+            "id": "ard-kanalseite-100",
+            "externalId": "SCMS_f34e9be3-7714-4eb4-a8ad-5a3be43547d4",
+            "title": "ARD",
+            "hasVideo": false,
+            "contentType": "category",
+            "profile": "http:\/\/zdf.de\/rels\/content\/page-index-navigation",
+            "self": "\/content\/documents\/zdf\/ard?profile=navigation",
+            "canonical": "\/content\/documents\/ard-kanalseite-100.json",
+            "structureNodePath": "\/zdf\/ard",
+            "stage": [
+              {
+                "profile": "http:\/\/zdf.de\/rels\/content\/group-stage-page-index-navigation",
+                "stage-xs": {
+                  "title": "ARD",
+                  "profile": "http:\/\/zdf.de\/rels\/content\/stage-xs"
+                },
+                "teaser": [
+                  {
+                    "http:\/\/zdf.de\/rels\/target": {
+                      "profile": "http:\/\/zdf.de\/rels\/content\/page-index-minimal",
+                      "self": "\/content\/documents\/zdf\/ard\/feuer-flamme-?profile=minimal",
+                      "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93omu5mwi2ymq0ndu5m2vhntq-164.json",
+                      "structureNodePath": "\/zdf\/ard\/feuer-flamme-"
+                    },
+                    "teaserHeadline": "Feuer & Flamme ",
+                    "trackingTitle": "Feuer_ampersand_Flamme_",
+                    "teasertext": "Die Dokutainment Reihe begleitet hautnah Feuerwehrleute in ihrem spannenden Berufsalltag auf verschiedenen Feuerwachen u.a. im Ruhrgebiet und in Heidelberg.",
+                    "teaserImageRef": {
+                      "title": "Feuer & Flamme",
+                      "altText": "Feuer & Flamme",
+                      "copyrightNotice": "ard",
+                      "source": "ard",
+                      "profile": "http:\/\/zdf.de\/rels\/image",
+                      "self": "\/content\/documents\/zdf\/ard\/feuer-flamme-\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100.json",
+                      "canonical": "\/content\/documents\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100.json",
+                      "layouts": {
+                        "1140x120": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1140x120?cb=1704899213081",
+                        "1140x240": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1140x240?cb=1704899213081",
+                        "1152x1296": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1152x1296?cb=1704899213081",
+                        "1200x1200": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1200x1200?cb=1704899213081",
+                        "1200x480": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1200x480?cb=1704899213081",
+                        "1280x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1280x720?cb=1704899213081",
+                        "1280xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1280xauto?cb=1704899213081",
+                        "1300x650": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1300x650?cb=1704899213081",
+                        "1500x300": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1500x300?cb=1704899213081",
+                        "1500x600": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1500x600?cb=1704899213081",
+                        "1500x800": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1500x800?cb=1704899213081",
+                        "1600x1200": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1600x1200?cb=1704899213081",
+                        "1800x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1800x720?cb=1704899213081",
+                        "1900x200": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1900x200?cb=1704899213081",
+                        "1900x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1900x400?cb=1704899213081",
+                        "1900x570": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1900x570?cb=1704899213081",
+                        "1920x1080": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1920x1080?cb=1704899213081",
+                        "225x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~225x400?cb=1704899213081",
+                        "2400x1350": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~2400x1350?cb=1704899213081",
+                        "240x270": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~240x270?cb=1704899213081",
+                        "2600x1300": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~2600x1300?cb=1704899213081",
+                        "276x155": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~276x155?cb=1704899213081",
+                        "276x311": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~276x311?cb=1704899213081",
+                        "2850x300": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~2850x300?cb=1704899213081",
+                        "2850x600": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~2850x600?cb=1704899213081",
+                        "314x314": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~314x314?cb=1704899213081",
+                        "380x170": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~380x170?cb=1704899213081",
+                        "3840x2160": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~3840x2160?cb=1704899213081",
+                        "384x216": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~384x216?cb=1704899213081",
+                        "384xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~384xauto?cb=1704899213081",
+                        "405x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~405x720?cb=1704899213081",
+                        "640x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~640x720?cb=1704899213081",
+                        "760x340": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~760x340?cb=1704899213081",
+                        "768x432": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~768x432?cb=1704899213081",
+                        "768xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~768xauto?cb=1704899213081",
+                        "840x140": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~840x140?cb=1704899213081",
+                        "840x280": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~840x280?cb=1704899213081",
+                        "840x360": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~840x360?cb=1704899213081",
+                        "860x344": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~860x344?cb=1704899213081",
+                        "936x520": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~936x520?cb=1704899213081",
+                        "original": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~original?cb=1704899213081"
+                      }
+                    },
+                    "profile": "http:\/\/zdf.de\/rels\/content-reference\/teaser-stage-page-index"
+                  },
+                  {
+                    "http:\/\/zdf.de\/rels\/target": {
+                      "profile": "http:\/\/zdf.de\/rels\/content\/page-index-minimal",
+                      "self": "\/content\/documents\/zdf\/ard\/babylon-berlin?profile=minimal",
+                      "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93omvmzje3nteymtu3oda5y2e-128.json",
+                      "structureNodePath": "\/zdf\/ard\/babylon-berlin"
+                    },
+                    "teaserHeadline": "Babylon Berlin | Alle vier Staffeln",
+                    "trackingTitle": "Babylon_Berlin___Alle_vier_Staffeln",
+                    "teasertext": "Berlin, im Frühjahr 1929: Eine Metropole in Aufruhr. Alles befindet sich in radikalem Wandel. ",
+                    "teaserImageRef": {
+                      "title": "Babylon Berlin",
+                      "altText": "Babylon Berlin",
+                      "copyrightNotice": "ard",
+                      "source": "ard",
+                      "profile": "http:\/\/zdf.de\/rels\/image",
+                      "self": "\/content\/documents\/zdf\/ard\/babylon-berlin\/collection-landscape-image-ard-babylon-berlin-100.json",
+                      "canonical": "\/content\/documents\/collection-landscape-image-ard-babylon-berlin-100.json",
+                      "layouts": {
+                        "1140x120": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1140x120?cb=1736244867496",
+                        "1140x240": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1140x240?cb=1736244867496",
+                        "1200x480": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1200x480?cb=1736244867496",
+                        "1280x720": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1280x720?cb=1736244867496",
+                        "1280xauto": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1280xauto?cb=1736244867496",
+                        "1300x650": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1300x650?cb=1736244867496",
+                        "1500x300": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1500x300?cb=1736244867496",
+                        "1500x600": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1500x600?cb=1736244867496",
+                        "1500x800": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1500x800?cb=1736244867496",
+                        "1800x720": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1800x720?cb=1736244867496",
+                        "1900x200": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1900x200?cb=1736244867496",
+                        "1900x400": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1900x400?cb=1736244867496",
+                        "1900x570": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1900x570?cb=1736244867496",
+                        "225x400": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~225x400?cb=1736244867496",
+                        "240x270": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~240x270?cb=1736244867496",
+                        "276x155": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~276x155?cb=1736244867496",
+                        "276x311": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~276x311?cb=1736244867496",
+                        "314x314": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~314x314?cb=1736244867496",
+                        "380x170": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~380x170?cb=1736244867496",
+                        "384x216": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~384x216?cb=1736244867496",
+                        "384xauto": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~384xauto?cb=1736244867496",
+                        "405x720": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~405x720?cb=1736244867496",
+                        "640x720": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~640x720?cb=1736244867496",
+                        "760x340": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~760x340?cb=1736244867496",
+                        "768x432": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~768x432?cb=1736244867496",
+                        "768xauto": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~768xauto?cb=1736244867496",
+                        "840x140": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~840x140?cb=1736244867496",
+                        "840x280": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~840x280?cb=1736244867496",
+                        "840x360": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~840x360?cb=1736244867496",
+                        "860x344": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~860x344?cb=1736244867496",
+                        "936x520": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~936x520?cb=1736244867496",
+                        "original": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~original?cb=1736244867496"
+                      }
+                    },
+                    "profile": "http:\/\/zdf.de\/rels\/content-reference\/teaser-stage-page-index"
+                  },
+                  {
+                    "http:\/\/zdf.de\/rels\/target": {
+                      "profile": "http:\/\/zdf.de\/rels\/content\/page-index-minimal",
+                      "self": "\/content\/documents\/zdf\/ard\/harry-schicksalsjahre-eines-prinzen?profile=minimal",
+                      "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojc1yzlinjvjzguyotu2zmi-120.json",
+                      "structureNodePath": "\/zdf\/ard\/harry-schicksalsjahre-eines-prinzen"
+                    },
+                    "teaserHeadline": "Harry – Schicksalsjahre eines Prinzen",
+                    "trackingTitle": "Harry__Schicksalsjahre_eines_Prinzen",
+                    "teasertext": "Die dreiteilige Dokuserie rückt Prinz Harry und sein Leben als „Reserve“ in den Fokus.",
+                    "teaserImageRef": {
+                      "title": "Harry - Schicksalsjahre eines Prinzen",
+                      "altText": "Harry - Schicksalsjahre eines Prinzen",
+                      "caption": "ARD\/SWR Harry - Schicksalsjahre eines Prinzen, dreiteilige Dokuserie über Prinz Harry gibt anlässlich seines 40. Geburtstags Einblicke in das Leben des Duke of Sussex. Ab 9. September 2024 in der ARD Mediathek und am 16. September 2024 um 20.15 Uhr in einer einstündigen Fassung im Ersten. © ARD\/SWR\/IMAGO\/Cover-Images, honorarfrei - Verwendung gemäß der AGB im engen inhaltlichen, redaktionellen Zusammenhang mit genannter ARD-Sendung und bei Nennung \"Bild: ARD\/SWR\/IMAGO\/Cover-Images\" (S2). ARD-Programmdirektion\/Bildredaktion, pressefoto.daserste@ard.de \/ Weiterer Text über ots und www.presseportal.de\/nr\/153003 \/ Die Verwendung dieses Bildes für redaktionelle Zwecke ist unter Beachtung aller mitgeteilten Nutzungsbedingungen zulässig und dann auch honorarfrei. Veröffentlichung ausschließlich mit Bildrechte-Hinweis. Foto: ARD Mediathek\/ARD\/SWR\/IMAGO\/Cover-Images\/obs",
+                      "copyrightNotice": "ARD Mediathek",
+                      "source": "obs",
+                      "profile": "http:\/\/zdf.de\/rels\/image",
+                      "self": "\/content\/documents\/zdf\/aid\/aid-image-59865888-hires-100.json",
+                      "canonical": "\/content\/documents\/aid-image-59865888-hires-100.json",
+                      "layouts": {
+                        "1140x120": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1140x120?cb=1726219848243",
+                        "1140x240": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1140x240?cb=1726219848243",
+                        "1152x1296": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1152x1296?cb=1726219848243",
+                        "1200x1200": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1200x1200?cb=1726219848243",
+                        "1200x480": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1200x480?cb=1726219848243",
+                        "1280x720": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1280x720?cb=1726219848243",
+                        "1280xauto": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1280xauto?cb=1726219848243",
+                        "1300x650": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1300x650?cb=1726219848243",
+                        "1500x300": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1500x300?cb=1726219848243",
+                        "1500x600": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1500x600?cb=1726219848243",
+                        "1500x800": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1500x800?cb=1726219848243",
+                        "1600x1200": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1600x1200?cb=1726219848243",
+                        "1800x720": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1800x720?cb=1726219848243",
+                        "1900x200": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1900x200?cb=1726219848243",
+                        "1900x400": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1900x400?cb=1726219848243",
+                        "1900x570": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1900x570?cb=1726219848243",
+                        "1920x1080": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1920x1080?cb=1726219848243",
+                        "225x400": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~225x400?cb=1726219848243",
+                        "2400x1350": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~2400x1350?cb=1726219848243",
+                        "240x270": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~240x270?cb=1726219848243",
+                        "2600x1300": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~2600x1300?cb=1726219848243",
+                        "276x155": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~276x155?cb=1726219848243",
+                        "276x311": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~276x311?cb=1726219848243",
+                        "2850x300": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~2850x300?cb=1726219848243",
+                        "2850x600": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~2850x600?cb=1726219848243",
+                        "314x314": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~314x314?cb=1726219848243",
+                        "380x170": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~380x170?cb=1726219848243",
+                        "3840x2160": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~3840x2160?cb=1726219848243",
+                        "384x216": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~384x216?cb=1726219848243",
+                        "384xauto": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~384xauto?cb=1726219848243",
+                        "405x720": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~405x720?cb=1726219848243",
+                        "640x720": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~640x720?cb=1726219848243",
+                        "760x340": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~760x340?cb=1726219848243",
+                        "768x432": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~768x432?cb=1726219848243",
+                        "768xauto": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~768xauto?cb=1726219848243",
+                        "840x140": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~840x140?cb=1726219848243",
+                        "840x280": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~840x280?cb=1726219848243",
+                        "840x360": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~840x360?cb=1726219848243",
+                        "860x344": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~860x344?cb=1726219848243",
+                        "936x520": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~936x520?cb=1726219848243",
+                        "original": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~original?cb=1726219848243"
+                      }
+                    },
+                    "profile": "http:\/\/zdf.de\/rels\/content-reference\/teaser-stage-page-index"
+                  },
+                  {
+                    "http:\/\/zdf.de\/rels\/target": {
+                      "profile": "http:\/\/zdf.de\/rels\/content\/page-index-minimal",
+                      "self": "\/content\/documents\/zdf\/ard\/davos-1917?profile=minimal",
+                      "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93oju0odq5n2ewywjhymnjmza-130.json",
+                      "structureNodePath": "\/zdf\/ard\/davos-1917"
+                    },
+                    "teaserHeadline": "Davos 1917",
+                    "trackingTitle": "Davos_1917",
+                    "teasertext": "Eine außergewöhnliche Frau entwickelt sich zu einer bedeutenden Akteurin im Spionage-Geflecht.",
+                    "teaserImageRef": {
+                      "title": "Davos 1917",
+                      "altText": "Davos 1917",
+                      "copyrightNotice": "ard",
+                      "source": "ard",
+                      "profile": "http:\/\/zdf.de\/rels\/image",
+                      "self": "\/content\/documents\/zdf\/ard\/davos-1917\/collection-teaser-image-ard-davos-1917-no-logo-100.json",
+                      "canonical": "\/content\/documents\/collection-teaser-image-ard-davos-1917-no-logo-100.json",
+                      "layouts": {
+                        "1140x120": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1140x120?cb=1704898722740",
+                        "1140x240": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1140x240?cb=1704898722740",
+                        "1200x480": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1200x480?cb=1704898722740",
+                        "1280x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1280x720?cb=1704898722740",
+                        "1280xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1280xauto?cb=1704898722740",
+                        "1300x650": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1300x650?cb=1704898722740",
+                        "1500x300": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1500x300?cb=1704898722740",
+                        "1500x600": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1500x600?cb=1704898722740",
+                        "1500x800": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1500x800?cb=1704898722740",
+                        "1800x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1800x720?cb=1704898722740",
+                        "1900x200": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1900x200?cb=1704898722740",
+                        "1900x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1900x400?cb=1704898722740",
+                        "1900x570": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1900x570?cb=1704898722740",
+                        "1920x1080": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1920x1080?cb=1704898722740",
+                        "225x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~225x400?cb=1704898722740",
+                        "240x270": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~240x270?cb=1704898722740",
+                        "276x155": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~276x155?cb=1704898722740",
+                        "276x311": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~276x311?cb=1704898722740",
+                        "314x314": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~314x314?cb=1704898722740",
+                        "380x170": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~380x170?cb=1704898722740",
+                        "384x216": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~384x216?cb=1704898722740",
+                        "384xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~384xauto?cb=1704898722740",
+                        "405x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~405x720?cb=1704898722740",
+                        "640x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~640x720?cb=1704898722740",
+                        "760x340": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~760x340?cb=1704898722740",
+                        "768x432": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~768x432?cb=1704898722740",
+                        "768xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~768xauto?cb=1704898722740",
+                        "840x140": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~840x140?cb=1704898722740",
+                        "840x280": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~840x280?cb=1704898722740",
+                        "840x360": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~840x360?cb=1704898722740",
+                        "860x344": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~860x344?cb=1704898722740",
+                        "936x520": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~936x520?cb=1704898722740",
+                        "original": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~original?cb=1704898722740"
+                      }
+                    },
+                    "profile": "http:\/\/zdf.de\/rels\/content-reference\/teaser-stage-page-index"
+                  },
+                  {
+                    "http:\/\/zdf.de\/rels\/target": {
+                      "profile": "http:\/\/zdf.de\/rels\/content\/page-index-minimal",
+                      "self": "\/content\/documents\/zdf\/br\/dirty-little-secrets-geheimnisse-der-musikindustrie?profile=minimal",
+                      "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93oji5mtg0yzrmztiynwu2mdc-146.json",
+                      "structureNodePath": "\/zdf\/br\/dirty-little-secrets-geheimnisse-der-musikindustrie"
+                    },
+                    "teaserHeadline": "Dirty Little Secrets · Geheimnisse der Musikindustrie",
+                    "trackingTitle": "Dirty_Little_Secrets__Geheimnisse_der_Musikindustrie",
+                    "teasertext": "Hinter den Kulissen der glitzernden Musikwelt: Deals und schmutzige Tricks der Mächtigen.",
+                    "teaserImageRef": {
+                      "title": "Dirty Little Secrets",
+                      "altText": "Dirty Little Secrets",
+                      "copyrightNotice": "ard",
+                      "source": "ard",
+                      "profile": "http:\/\/zdf.de\/rels\/image",
+                      "self": "\/content\/documents\/zdf\/br\/dirty-little-secrets-geheimnisse-der-musikindustrie\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100.json",
+                      "canonical": "\/content\/documents\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100.json",
+                      "layouts": {
+                        "1140x120": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1140x120?cb=1733232250116",
+                        "1140x240": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1140x240?cb=1733232250116",
+                        "1200x480": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1200x480?cb=1733232250116",
+                        "1280x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1280x720?cb=1733232250116",
+                        "1280xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1280xauto?cb=1733232250116",
+                        "1300x650": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1300x650?cb=1733232250116",
+                        "1500x300": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1500x300?cb=1733232250116",
+                        "1500x600": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1500x600?cb=1733232250116",
+                        "1500x800": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1500x800?cb=1733232250116",
+                        "1800x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1800x720?cb=1733232250116",
+                        "1900x200": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1900x200?cb=1733232250116",
+                        "1900x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1900x400?cb=1733232250116",
+                        "1900x570": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1900x570?cb=1733232250116",
+                        "225x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~225x400?cb=1733232250116",
+                        "240x270": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~240x270?cb=1733232250116",
+                        "276x155": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~276x155?cb=1733232250116",
+                        "276x311": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~276x311?cb=1733232250116",
+                        "314x314": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~314x314?cb=1733232250116",
+                        "380x170": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~380x170?cb=1733232250116",
+                        "384x216": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~384x216?cb=1733232250116",
+                        "384xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~384xauto?cb=1733232250116",
+                        "405x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~405x720?cb=1733232250116",
+                        "640x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~640x720?cb=1733232250116",
+                        "760x340": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~760x340?cb=1733232250116",
+                        "768x432": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~768x432?cb=1733232250116",
+                        "768xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~768xauto?cb=1733232250116",
+                        "840x140": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~840x140?cb=1733232250116",
+                        "840x280": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~840x280?cb=1733232250116",
+                        "840x360": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~840x360?cb=1733232250116",
+                        "860x344": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~860x344?cb=1733232250116",
+                        "936x520": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~936x520?cb=1733232250116",
+                        "original": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~original?cb=1733232250116"
+                      }
+                    },
+                    "profile": "http:\/\/zdf.de\/rels\/content-reference\/teaser-stage-page-index"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "structureNodePath": "\/zdf\/daserste\/tagesschau",
+        "http:\/\/zdf.de\/rels\/uri": "https:\/\/www.zdf.de\/uri\/index-page-ard-collection_ard_dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-",
+        "http:\/\/zdf.de\/rels\/sharing-url": "https:\/\/www.zdf.de\/magazine\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042",
+        "http:\/\/zdf.de\/rels\/content\/conf-section": {
+          "homeTvService": {
+            "tvServiceTitle": "Das Erste",
+            "tvServiceId": "daserste",
+            "tvServiceLogoRef": {
+              "profile": "http:\/\/zdf.de\/rels\/image",
+              "self": "\/content\/documents\/zdf\/sender\/ard\/ard-senderlogo-102.json?profile=tv-service",
+              "canonical": "\/content\/documents\/ard-senderlogo-102.json",
+              "altText": "ARD Senderlogo farbig",
+              "caption": "ARD Senderlogo farbig",
+              "title": "ARD Senderlogo farbig",
+              "copyrightNotice": "ARD",
+              "source": "ARD",
+              "layouts": {
+                "1140x120": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1140x120?cb=1658176630774",
+                "1140x240": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1140x240?cb=1658176630774",
+                "1200x480": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1200x480?cb=1658176630774",
+                "1280x720": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1280x720?cb=1658176630774",
+                "1280xauto": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1280xauto?cb=1658176630774",
+                "1300x650": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1300x650?cb=1658176630774",
+                "1500x300": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1500x300?cb=1658176630774",
+                "1500x600": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1500x600?cb=1658176630774",
+                "1500x800": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1500x800?cb=1658176630774",
+                "1800x720": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1800x720?cb=1658176630774",
+                "1900x200": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1900x200?cb=1658176630774",
+                "1900x400": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1900x400?cb=1658176630774",
+                "1900x570": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1900x570?cb=1658176630774",
+                "1920x1080": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1920x1080?cb=1658176630774",
+                "225x400": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~225x400?cb=1658176630774",
+                "240x270": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~240x270?cb=1658176630774",
+                "276x155": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~276x155?cb=1658176630774",
+                "276x311": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~276x311?cb=1658176630774",
+                "314x314": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~314x314?cb=1658176630774",
+                "380x170": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~380x170?cb=1658176630774",
+                "384x216": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~384x216?cb=1658176630774",
+                "384xauto": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~384xauto?cb=1658176630774",
+                "405x720": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~405x720?cb=1658176630774",
+                "640x720": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~640x720?cb=1658176630774",
+                "760x340": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~760x340?cb=1658176630774",
+                "768x432": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~768x432?cb=1658176630774",
+                "768xauto": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~768xauto?cb=1658176630774",
+                "840x140": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~840x140?cb=1658176630774",
+                "840x280": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~840x280?cb=1658176630774",
+                "840x360": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~840x360?cb=1658176630774",
+                "860x344": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~860x344?cb=1658176630774",
+                "936x520": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~936x520?cb=1658176630774",
+                "original": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~original?cb=1658176630774"
+              }
+            },
+            "profile": "http:\/\/zdf.de\/rels\/content\/conf-tv-service",
+            "self": "\/content\/documents\/zdf\/sender\/ard\/sender-daserste-100.json",
+            "canonical": "\/content\/documents\/sender-daserste-100.json"
+          },
+          "http:\/\/zdf.de\/rels\/content-owner": {
+            "profile": "http:\/\/zdf.de\/rels\/content\/conf-content-owner",
+            "externalId": "SCMS_35e46845-b337-4b89-af41-5d606b28ea10",
+            "self": "\/content\/documents\/content-owner-ard-100.json",
+            "logo": {
+              "altText": "ARD Logo",
+              "profile": "http:\/\/zdf.de\/rels\/image",
+              "self": "\/content\/documents\/logo-ard-content-owner-104.json",
+              "canonical": "\/content\/documents\/logo-ard-content-owner-104.json",
+              "title": "ARD Logo content owner",
+              "layouts": {
+                "240x270": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~240x270?cb=1678727394104",
+                "276x155": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~276x155?cb=1678727394104",
+                "276x311": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~276x311?cb=1678727394104",
+                "314x314": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~314x314?cb=1678727394104",
+                "380x170": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~380x170?cb=1678727394104",
+                "384x216": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~384x216?cb=1678727394104",
+                "384xauto": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~384xauto?cb=1678727394104",
+                "760x340": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~760x340?cb=1678727394104",
+                "original": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~original?cb=1678727394104"
+              }
+            },
+            "id": "content-owner-ard-100",
+            "canonical": "\/content\/documents\/content-owner-ard-100.json",
+            "label": "Ein Angebot von",
+            "http:\/\/zdf.de\/rels\/content-owner-link": {
+              "htmlAnchor": {
+                "profile": "http:\/\/zdf.de\/rels\/teaser-target-web",
+                "href": "https:\/\/www.zdf.de\/ard",
+                "title": "ARD"
+              },
+              "profile": "http:\/\/zdf.de\/rels\/content\/index-link-page-index",
+              "id": "ard-kanalseite-100",
+              "title": "ARD",
+              "contentType": "category",
+              "structureNodePath": "\/zdf\/ard"
+            },
+            "title": "ARD"
+          },
+          "profile": "http:\/\/zdf.de\/rels\/content\/conf-section-teaser",
+          "self": "\/content\/documents\/zdf\/daserste\/tagesschau\/conf-section-ard-tagesschau-100.json?profile=teaser",
+          "canonical": "\/content\/documents\/conf-section-ard-tagesschau-100.json"
+        },
+        "http:\/\/zdf.de\/rels\/brand": {
+          "profile": "http:\/\/zdf.de\/rels\/content\/structureNodeDocument-breadcrumb",
+          "self": "\/content\/structure\/zdf\/daserste\/tagesschau?profile=breadcrumb",
+          "canonical": "\/content\/structure\/zdf\/daserste\/tagesschau",
+          "title": "tagesschau",
+          "http:\/\/zdf.de\/rels\/target": {
+            "id": "collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042",
+            "externalId": "SCMS_index-page-ard-collection_ard_dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-",
+            "title": "tagesschau",
+            "hasVideo": true,
+            "contentType": "brand",
+            "profile": "http:\/\/zdf.de\/rels\/content\/page-index-navigation",
+            "self": "\/content\/documents\/zdf\/daserste\/tagesschau?profile=navigation",
+            "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042.json",
+            "structureNodePath": "\/zdf\/daserste\/tagesschau",
+            "stage": [
+              {
+                "profile": "http:\/\/zdf.de\/rels\/content\/group-header-m-navigation",
+                "teaser": [
+                  {
+                    "http:\/\/zdf.de\/rels\/target": {
+                      "title": "ARD Default-Bühne M",
+                      "altText": "Abstraktes Hintergrundbild in ARD-Blautönen",
+                      "copyrightNotice": "ARD",
+                      "source": "ARD",
+                      "profile": "http:\/\/zdf.de\/rels\/image",
+                      "self": "\/content\/documents\/zdf\/ard\/bilder\/ard-keyvisual-default-buehne-m-100.json",
+                      "canonical": "\/content\/documents\/ard-keyvisual-default-buehne-m-100.json",
+                      "layouts": {
+                        "1140x120": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1140x120?cb=1689014546491",
+                        "1140x240": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1140x240?cb=1689014546491",
+                        "1152x1296": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1152x1296?cb=1689014546491",
+                        "1200x480": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1200x480?cb=1689014546491",
+                        "1280xauto": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1280xauto?cb=1689014546491",
+                        "1500x300": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1500x300?cb=1689014546491",
+                        "1500x600": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1500x600?cb=1689014546491",
+                        "1900x200": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1900x200?cb=1689014546491",
+                        "1900x400": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1900x400?cb=1689014546491",
+                        "1900x570": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1900x570?cb=1689014546491",
+                        "225x400": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~225x400?cb=1689014546491",
+                        "240x270": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~240x270?cb=1689014546491",
+                        "276x155": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~276x155?cb=1689014546491",
+                        "276x311": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~276x311?cb=1689014546491",
+                        "2850x300": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~2850x300?cb=1689014546491",
+                        "2850x600": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~2850x600?cb=1689014546491",
+                        "314x314": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~314x314?cb=1689014546491",
+                        "380x170": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~380x170?cb=1689014546491",
+                        "384x216": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~384x216?cb=1689014546491",
+                        "384xauto": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~384xauto?cb=1689014546491",
+                        "640x720": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~640x720?cb=1689014546491",
+                        "760x340": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~760x340?cb=1689014546491",
+                        "768x432": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~768x432?cb=1689014546491",
+                        "768xauto": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~768xauto?cb=1689014546491",
+                        "840x140": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~840x140?cb=1689014546491",
+                        "840x280": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~840x280?cb=1689014546491",
+                        "840x360": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~840x360?cb=1689014546491",
+                        "860x344": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~860x344?cb=1689014546491",
+                        "936x520": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~936x520?cb=1689014546491",
+                        "original": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~original?cb=1689014546491"
+                      }
+                    },
+                    "headerDecorationText": "",
+                    "profile": "http:\/\/zdf.de\/rels\/content-reference\/teaser-header-m",
+                    "http:\/\/zdf.de\/rels\/content-owner": {
+                      "id": "content-owner-ard-100",
+                      "externalId": "SCMS_35e46845-b337-4b89-af41-5d606b28ea10",
+                      "profile": "http:\/\/zdf.de\/rels\/content\/conf-content-owner",
+                      "self": "\/content\/documents\/zdf\/ard\/content-owner-ard-100.json",
+                      "canonical": "\/content\/documents\/content-owner-ard-100.json",
+                      "title": "ARD",
+                      "logo": {
+                        "title": "ARD Logo content owner",
+                        "altText": "ARD Logo",
+                        "caption": "ARD Logo",
+                        "copyrightNotice": "ARD",
+                        "source": "ARD",
+                        "profile": "http:\/\/zdf.de\/rels\/image",
+                        "self": "\/content\/documents\/zdf\/ard\/bilder\/logo-ard-content-owner-104.json",
+                        "canonical": "\/content\/documents\/logo-ard-content-owner-104.json",
+                        "layouts": {
+                          "240x270": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~240x270?cb=1678727394104",
+                          "276x155": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~276x155?cb=1678727394104",
+                          "276x311": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~276x311?cb=1678727394104",
+                          "314x314": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~314x314?cb=1678727394104",
+                          "380x170": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~380x170?cb=1678727394104",
+                          "384x216": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~384x216?cb=1678727394104",
+                          "384xauto": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~384xauto?cb=1678727394104",
+                          "760x340": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~760x340?cb=1678727394104",
+                          "original": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~original?cb=1678727394104"
+                        }
+                      },
+                      "http:\/\/zdf.de\/rels\/content-owner-link": {
+                        "htmlAnchor": {
+                          "profile": "http:\/\/zdf.de\/rels\/teaser-target-web",
+                          "href": "https:\/\/www.zdf.de\/ard",
+                          "title": "ARD"
+                        },
+                        "profile": "http:\/\/zdf.de\/rels\/content\/index-link-page-index",
+                        "id": "ard-kanalseite-100",
+                        "title": "ARD",
+                        "contentType": "category",
+                        "structureNodePath": "\/zdf\/ard"
+                      },
+                      "label": "Ein Angebot von"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "http:\/\/zdf.de\/rels\/docstats": {
+          "profile": "http:\/\/zdf.de\/rels\/index\/fallbackContent",
+          "self": "\/disabledSSI",
+          "viewCount": 0,
+          "ratingCount": 0,
+          "http:\/zdf.de\/rels\/target": "\/content\/documents"
+        },
+        "tracking": {
+          "szmng": {
+            "st": "zdf",
+            "cp": "ARD\/tagesschau",
+            "sv": "ke",
+            "co": "brand\/tagesschau\/index-page-ard-collection_ard_dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-"
+          },
+          "zdf": {
+            "config-v2": {
+              "playerTrackingRateInSeconds": 60
+            },
+            "templates-v2": {
+              "view": "\/\/tracksrv.zdf.de\/event?eventType=view&trackingId={trackingId}&appId={appId}{&searchResultsCount,abGroup,abName,searchParams,userAge,userGender,loggedIn,subprofile,channelId}&assetId=SCMS_index-page-ard-collection_ard_dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-&pagePath=https%3A%2F%2Fwww.zdf.de%2Fdaserste%2Ftagesschau%2Fcollection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042.html&pageTitle=tagesschau",
+              "click": "\/\/tracksrv.zdf.de\/event?eventType=click&trackingId={trackingId}&appId={appId}&clickedClusterPosition={clickedClusterPosition}&clickedTeaserPosition={clickedTeaserPosition}{&searchParams,abGroup,abName,recoEngine,element,recoId,userAge,userGender,loggedIn,subprofile,channelId,targetChannelId,nodeId,configuration}&assetId={assetId}&targetAssetId={targetAssetId}&pagePath=https%3A%2F%2Fwww.zdf.de%2Fdaserste%2Ftagesschau%2Fcollection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042.html",
+              "pause": "\/\/tracksrv.zdf.de\/event?eventType=pause&trackingId={trackingId}&appId={appId}&currentPosition={currentPosition}&duration={duration}{&abGroup,abName,playbackProgress,videoAssetId,userAge,userGender,loggedIn,subprofile,channelId}&assetId=SCMS_index-page-ard-collection_ard_dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-&pagePath=https%3A%2F%2Fwww.zdf.de%2Fdaserste%2Ftagesschau%2Fcollection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042.html",
+              "play": "\/\/tracksrv.zdf.de\/event?eventType=play&trackingId={trackingId}&appId={appId}&currentPosition={currentPosition}&duration={duration}{&abGroup,abName,playbackProgress,videoAssetId,userAge,userGender,loggedIn,subprofile,channelId}&assetId=SCMS_index-page-ard-collection_ard_dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-&pagePath=https%3A%2F%2Fwww.zdf.de%2Fdaserste%2Ftagesschau%2Fcollection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042.html"
+            }
+          },
+          "atInternet": {
+            "page": {
+              "level1": "zdf",
+              "level2": "ARD",
+              "chapter1": "\/tagesschau",
+              "chapter2": "brand",
+              "chapter3": "index-page-ard-collection_ard_dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-",
+              "name": "tagesschau",
+              "customObject": {
+                "domain": "zdf",
+                "level1": "zdf",
+                "level2": "ARD",
+                "chapter1": "\/tagesschau",
+                "broadcast": "daserste",
+                "id": "collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042",
+                "inhaltsTyp": "brand",
+                "chapter4": ""
+              }
+            },
+            "event": {
+              "level1": "zdf",
+              "level2": "ARD",
+              "chapter1": "\/tagesschau",
+              "customObject": {
+                "domain": "zdf",
+                "level1": "zdf",
+                "level2": "ARD",
+                "chapter1": "\/tagesschau",
+                "broadcast": "daserste",
+                "id": "collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042",
+                "inhaltsTyp": "brand"
+              }
+            },
+            "customVars": {
+              "site": {
+                "id": "collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042",
+                "chapter2": "brand",
+                "chapter3": "index-page-ard-collection_ard_dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-"
+              }
+            }
+          }
+        }
+      },
+      "resultMode": null,
+      "profile": "http:\/\/zdf.de\/rels\/search\/result",
+      "id": "SCMS_index-page-ard-collection_ard_dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-",
+      "viewCount": 76,
+      "title": "tagesschau",
+      "ratingCount": 0,
+      "type": "page-index",
+      "resultType": "default"
+    },
+    {
+      "score": 32.49361,
+      "http:\/\/zdf.de\/rels\/target": {
+        "externalId": "SCMS_page-video-ard_video_ard_dXJuOmFyZDpwdWJsaWNhdGlvbjplM2Y3MmZkYzhjZWM5MDM5",
+        "id": "page-video-ard-tagesschau-104",
+        "editorialDate": "2023-07-31T20:42:32.054+02:00",
+        "teaserImageRef": {
+          "title": "tagesschau",
+          "altText": "tagesschau",
+          "copyrightNotice": "ard",
+          "source": "ard",
+          "profile": "http:\/\/zdf.de\/rels\/image",
+          "self": "\/content\/documents\/zdf\/daserste\/tagesschau\/image-ard-tagesschau-100.json",
+          "canonical": "\/content\/documents\/image-ard-tagesschau-100.json",
+          "layouts": {
+            "1140x120": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1140x120?cb=1744201307591",
+            "1140x240": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1140x240?cb=1744201307591",
+            "1200x480": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1200x480?cb=1744201307591",
+            "1280x720": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1280x720?cb=1744201307591",
+            "1280xauto": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1280xauto?cb=1744201307591",
+            "1300x650": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1300x650?cb=1744201307591",
+            "1500x300": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1500x300?cb=1744201307591",
+            "1500x600": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1500x600?cb=1744201307591",
+            "1500x800": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1500x800?cb=1744201307591",
+            "1800x720": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1800x720?cb=1744201307591",
+            "1900x200": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1900x200?cb=1744201307591",
+            "1900x400": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1900x400?cb=1744201307591",
+            "1900x570": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1900x570?cb=1744201307591",
+            "1920x1080": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~1920x1080?cb=1744201307591",
+            "225x400": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~225x400?cb=1744201307591",
+            "240x270": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~240x270?cb=1744201307591",
+            "276x155": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~276x155?cb=1744201307591",
+            "276x311": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~276x311?cb=1744201307591",
+            "314x314": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~314x314?cb=1744201307591",
+            "380x170": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~380x170?cb=1744201307591",
+            "384x216": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~384x216?cb=1744201307591",
+            "384xauto": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~384xauto?cb=1744201307591",
+            "405x720": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~405x720?cb=1744201307591",
+            "640x720": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~640x720?cb=1744201307591",
+            "760x340": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~760x340?cb=1744201307591",
+            "768x432": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~768x432?cb=1744201307591",
+            "768xauto": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~768xauto?cb=1744201307591",
+            "840x140": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~840x140?cb=1744201307591",
+            "840x280": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~840x280?cb=1744201307591",
+            "840x360": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~840x360?cb=1744201307591",
+            "860x344": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~860x344?cb=1744201307591",
+            "936x520": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~936x520?cb=1744201307591",
+            "original": "https:\/\/www.zdf.de\/assets\/image-ard-tagesschau-100~original?cb=1744201307591"
+          }
+        },
+        "embeddingPossible": false,
+        "endDate": "2099-01-01T01:00:00.092+01:00",
+        "teaserHeadline": "tagesschau",
+        "trackingTitle": "tagesschau",
+        "teasertext": "Verfassungsschutz sieht wachsenden Einfluss verfassungsfeindlicher Strömungen in AfD, Brennender Frachter \"Fremantle Highway\" liegt windgeschützt vor Anker, Mit der Aktion \"Wahre Kosten\" will der Discounter Penny beispielhaft auf die negative Umweltbilanz einiger Lebensmittel hinweisen, Immer mehr Menschen in Deutschland müssen beim Essen sparen, Solarpark mit Speicherkapazität in Baden-Württemberg eröffnet, Verkehrsminister Wissing beauftragt Rechtsgutachten zu Mautverträgen des Ex-Verkehrsministers Scheuer, Schweden und Dänemark planen Koranverbrennungen auf juristischem Weg zu verhindern, Ergebnisse Fußball-WM der Frauen, Para-Schwimm-WM, Das Wetter Hinweis: Der Beitrag zur \"Fußball-WM der Frauen: Australien gewinnt gegen Kanada\" darf aus rechtlichen Gründen nicht auf tagesschau.de gezeigt werden. Korrektur: Diese Sendung wurde nachträglich bearbeitet. Der Beitrag „Wahre Kosten“ wurde nachträglich bearbeitet. In der ursprünglichen Version gab es eine O-Ton-Geberin, die für den WDR arbeitet. Die mit ihr gezeigte Sequenz hätte so nicht gesendet werden dürfen. Kolleginnen oder Kollegen zu interviewen entspricht nicht unseren journalistischen Standards. Ergänzung: Die O-Ton-Geberin war zufällig als Kundin in diesem Discounter.\"",
+        "excludeFromLastViewed": false,
+        "hideEpisodeInformation": false,
+        "contentType": "episode",
+        "hasVideo": true,
+        "currentVideoType": "episode",
+        "profile": "http:\/\/zdf.de\/rels\/content\/page-video-teaser",
+        "self": "\/content\/documents\/zdf\/daserste\/tagesschau\/page-video-ard-tagesschau-104.json?profile=teaser",
+        "canonical": "\/content\/documents\/page-video-ard-tagesschau-104.json",
+        "webCanonical": "https:\/\/www.ardmediathek.de\/video\/Y3JpZDovL3RhZ2Vzc2NoYXUuZGUvMjc2OGEwODgtM2E0ZC00MWIwLWJjMDItMTVhZjM3NTgwZDY1X2dhbnplU2VuZHVuZw",
+        "http:\/\/zdf.de\/rels\/category": {
+          "profile": "http:\/\/zdf.de\/rels\/content\/structureNodeDocument-breadcrumb",
+          "self": "\/content\/structure\/zdf\/daserste?profile=breadcrumb",
+          "canonical": "\/content\/structure\/zdf\/daserste",
+          "title": "ARD",
+          "http:\/\/zdf.de\/rels\/target": {
+            "id": "ard-kanalseite-100",
+            "externalId": "SCMS_f34e9be3-7714-4eb4-a8ad-5a3be43547d4",
+            "title": "ARD",
+            "hasVideo": false,
+            "contentType": "category",
+            "profile": "http:\/\/zdf.de\/rels\/content\/page-index-navigation",
+            "self": "\/content\/documents\/zdf\/ard?profile=navigation",
+            "canonical": "\/content\/documents\/ard-kanalseite-100.json",
+            "structureNodePath": "\/zdf\/ard",
+            "stage": [
+              {
+                "profile": "http:\/\/zdf.de\/rels\/content\/group-stage-page-index-navigation",
+                "stage-xs": {
+                  "title": "ARD",
+                  "profile": "http:\/\/zdf.de\/rels\/content\/stage-xs"
+                },
+                "teaser": [
+                  {
+                    "http:\/\/zdf.de\/rels\/target": {
+                      "profile": "http:\/\/zdf.de\/rels\/content\/page-index-minimal",
+                      "self": "\/content\/documents\/zdf\/ard\/feuer-flamme-?profile=minimal",
+                      "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93omu5mwi2ymq0ndu5m2vhntq-164.json",
+                      "structureNodePath": "\/zdf\/ard\/feuer-flamme-"
+                    },
+                    "teaserHeadline": "Feuer & Flamme ",
+                    "trackingTitle": "Feuer_ampersand_Flamme_",
+                    "teasertext": "Die Dokutainment Reihe begleitet hautnah Feuerwehrleute in ihrem spannenden Berufsalltag auf verschiedenen Feuerwachen u.a. im Ruhrgebiet und in Heidelberg.",
+                    "teaserImageRef": {
+                      "title": "Feuer & Flamme",
+                      "altText": "Feuer & Flamme",
+                      "copyrightNotice": "ard",
+                      "source": "ard",
+                      "profile": "http:\/\/zdf.de\/rels\/image",
+                      "self": "\/content\/documents\/zdf\/ard\/feuer-flamme-\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100.json",
+                      "canonical": "\/content\/documents\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100.json",
+                      "layouts": {
+                        "1140x120": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1140x120?cb=1704899213081",
+                        "1140x240": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1140x240?cb=1704899213081",
+                        "1152x1296": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1152x1296?cb=1704899213081",
+                        "1200x1200": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1200x1200?cb=1704899213081",
+                        "1200x480": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1200x480?cb=1704899213081",
+                        "1280x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1280x720?cb=1704899213081",
+                        "1280xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1280xauto?cb=1704899213081",
+                        "1300x650": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1300x650?cb=1704899213081",
+                        "1500x300": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1500x300?cb=1704899213081",
+                        "1500x600": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1500x600?cb=1704899213081",
+                        "1500x800": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1500x800?cb=1704899213081",
+                        "1600x1200": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1600x1200?cb=1704899213081",
+                        "1800x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1800x720?cb=1704899213081",
+                        "1900x200": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1900x200?cb=1704899213081",
+                        "1900x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1900x400?cb=1704899213081",
+                        "1900x570": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1900x570?cb=1704899213081",
+                        "1920x1080": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~1920x1080?cb=1704899213081",
+                        "225x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~225x400?cb=1704899213081",
+                        "2400x1350": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~2400x1350?cb=1704899213081",
+                        "240x270": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~240x270?cb=1704899213081",
+                        "2600x1300": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~2600x1300?cb=1704899213081",
+                        "276x155": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~276x155?cb=1704899213081",
+                        "276x311": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~276x311?cb=1704899213081",
+                        "2850x300": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~2850x300?cb=1704899213081",
+                        "2850x600": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~2850x600?cb=1704899213081",
+                        "314x314": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~314x314?cb=1704899213081",
+                        "380x170": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~380x170?cb=1704899213081",
+                        "3840x2160": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~3840x2160?cb=1704899213081",
+                        "384x216": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~384x216?cb=1704899213081",
+                        "384xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~384xauto?cb=1704899213081",
+                        "405x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~405x720?cb=1704899213081",
+                        "640x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~640x720?cb=1704899213081",
+                        "760x340": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~760x340?cb=1704899213081",
+                        "768x432": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~768x432?cb=1704899213081",
+                        "768xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~768xauto?cb=1704899213081",
+                        "840x140": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~840x140?cb=1704899213081",
+                        "840x280": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~840x280?cb=1704899213081",
+                        "840x360": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~840x360?cb=1704899213081",
+                        "860x344": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~860x344?cb=1704899213081",
+                        "936x520": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~936x520?cb=1704899213081",
+                        "original": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-feuer--flamme-v2-100~original?cb=1704899213081"
+                      }
+                    },
+                    "profile": "http:\/\/zdf.de\/rels\/content-reference\/teaser-stage-page-index"
+                  },
+                  {
+                    "http:\/\/zdf.de\/rels\/target": {
+                      "profile": "http:\/\/zdf.de\/rels\/content\/page-index-minimal",
+                      "self": "\/content\/documents\/zdf\/ard\/babylon-berlin?profile=minimal",
+                      "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93omvmzje3nteymtu3oda5y2e-128.json",
+                      "structureNodePath": "\/zdf\/ard\/babylon-berlin"
+                    },
+                    "teaserHeadline": "Babylon Berlin | Alle vier Staffeln",
+                    "trackingTitle": "Babylon_Berlin___Alle_vier_Staffeln",
+                    "teasertext": "Berlin, im Frühjahr 1929: Eine Metropole in Aufruhr. Alles befindet sich in radikalem Wandel. ",
+                    "teaserImageRef": {
+                      "title": "Babylon Berlin",
+                      "altText": "Babylon Berlin",
+                      "copyrightNotice": "ard",
+                      "source": "ard",
+                      "profile": "http:\/\/zdf.de\/rels\/image",
+                      "self": "\/content\/documents\/zdf\/ard\/babylon-berlin\/collection-landscape-image-ard-babylon-berlin-100.json",
+                      "canonical": "\/content\/documents\/collection-landscape-image-ard-babylon-berlin-100.json",
+                      "layouts": {
+                        "1140x120": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1140x120?cb=1736244867496",
+                        "1140x240": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1140x240?cb=1736244867496",
+                        "1200x480": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1200x480?cb=1736244867496",
+                        "1280x720": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1280x720?cb=1736244867496",
+                        "1280xauto": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1280xauto?cb=1736244867496",
+                        "1300x650": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1300x650?cb=1736244867496",
+                        "1500x300": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1500x300?cb=1736244867496",
+                        "1500x600": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1500x600?cb=1736244867496",
+                        "1500x800": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1500x800?cb=1736244867496",
+                        "1800x720": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1800x720?cb=1736244867496",
+                        "1900x200": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1900x200?cb=1736244867496",
+                        "1900x400": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1900x400?cb=1736244867496",
+                        "1900x570": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~1900x570?cb=1736244867496",
+                        "225x400": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~225x400?cb=1736244867496",
+                        "240x270": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~240x270?cb=1736244867496",
+                        "276x155": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~276x155?cb=1736244867496",
+                        "276x311": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~276x311?cb=1736244867496",
+                        "314x314": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~314x314?cb=1736244867496",
+                        "380x170": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~380x170?cb=1736244867496",
+                        "384x216": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~384x216?cb=1736244867496",
+                        "384xauto": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~384xauto?cb=1736244867496",
+                        "405x720": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~405x720?cb=1736244867496",
+                        "640x720": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~640x720?cb=1736244867496",
+                        "760x340": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~760x340?cb=1736244867496",
+                        "768x432": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~768x432?cb=1736244867496",
+                        "768xauto": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~768xauto?cb=1736244867496",
+                        "840x140": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~840x140?cb=1736244867496",
+                        "840x280": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~840x280?cb=1736244867496",
+                        "840x360": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~840x360?cb=1736244867496",
+                        "860x344": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~860x344?cb=1736244867496",
+                        "936x520": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~936x520?cb=1736244867496",
+                        "original": "https:\/\/www.zdf.de\/assets\/collection-landscape-image-ard-babylon-berlin-100~original?cb=1736244867496"
+                      }
+                    },
+                    "profile": "http:\/\/zdf.de\/rels\/content-reference\/teaser-stage-page-index"
+                  },
+                  {
+                    "http:\/\/zdf.de\/rels\/target": {
+                      "profile": "http:\/\/zdf.de\/rels\/content\/page-index-minimal",
+                      "self": "\/content\/documents\/zdf\/ard\/harry-schicksalsjahre-eines-prinzen?profile=minimal",
+                      "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojc1yzlinjvjzguyotu2zmi-120.json",
+                      "structureNodePath": "\/zdf\/ard\/harry-schicksalsjahre-eines-prinzen"
+                    },
+                    "teaserHeadline": "Harry – Schicksalsjahre eines Prinzen",
+                    "trackingTitle": "Harry__Schicksalsjahre_eines_Prinzen",
+                    "teasertext": "Die dreiteilige Dokuserie rückt Prinz Harry und sein Leben als „Reserve“ in den Fokus.",
+                    "teaserImageRef": {
+                      "title": "Harry - Schicksalsjahre eines Prinzen",
+                      "altText": "Harry - Schicksalsjahre eines Prinzen",
+                      "caption": "ARD\/SWR Harry - Schicksalsjahre eines Prinzen, dreiteilige Dokuserie über Prinz Harry gibt anlässlich seines 40. Geburtstags Einblicke in das Leben des Duke of Sussex. Ab 9. September 2024 in der ARD Mediathek und am 16. September 2024 um 20.15 Uhr in einer einstündigen Fassung im Ersten. © ARD\/SWR\/IMAGO\/Cover-Images, honorarfrei - Verwendung gemäß der AGB im engen inhaltlichen, redaktionellen Zusammenhang mit genannter ARD-Sendung und bei Nennung \"Bild: ARD\/SWR\/IMAGO\/Cover-Images\" (S2). ARD-Programmdirektion\/Bildredaktion, pressefoto.daserste@ard.de \/ Weiterer Text über ots und www.presseportal.de\/nr\/153003 \/ Die Verwendung dieses Bildes für redaktionelle Zwecke ist unter Beachtung aller mitgeteilten Nutzungsbedingungen zulässig und dann auch honorarfrei. Veröffentlichung ausschließlich mit Bildrechte-Hinweis. Foto: ARD Mediathek\/ARD\/SWR\/IMAGO\/Cover-Images\/obs",
+                      "copyrightNotice": "ARD Mediathek",
+                      "source": "obs",
+                      "profile": "http:\/\/zdf.de\/rels\/image",
+                      "self": "\/content\/documents\/zdf\/aid\/aid-image-59865888-hires-100.json",
+                      "canonical": "\/content\/documents\/aid-image-59865888-hires-100.json",
+                      "layouts": {
+                        "1140x120": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1140x120?cb=1726219848243",
+                        "1140x240": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1140x240?cb=1726219848243",
+                        "1152x1296": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1152x1296?cb=1726219848243",
+                        "1200x1200": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1200x1200?cb=1726219848243",
+                        "1200x480": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1200x480?cb=1726219848243",
+                        "1280x720": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1280x720?cb=1726219848243",
+                        "1280xauto": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1280xauto?cb=1726219848243",
+                        "1300x650": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1300x650?cb=1726219848243",
+                        "1500x300": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1500x300?cb=1726219848243",
+                        "1500x600": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1500x600?cb=1726219848243",
+                        "1500x800": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1500x800?cb=1726219848243",
+                        "1600x1200": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1600x1200?cb=1726219848243",
+                        "1800x720": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1800x720?cb=1726219848243",
+                        "1900x200": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1900x200?cb=1726219848243",
+                        "1900x400": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1900x400?cb=1726219848243",
+                        "1900x570": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1900x570?cb=1726219848243",
+                        "1920x1080": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~1920x1080?cb=1726219848243",
+                        "225x400": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~225x400?cb=1726219848243",
+                        "2400x1350": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~2400x1350?cb=1726219848243",
+                        "240x270": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~240x270?cb=1726219848243",
+                        "2600x1300": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~2600x1300?cb=1726219848243",
+                        "276x155": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~276x155?cb=1726219848243",
+                        "276x311": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~276x311?cb=1726219848243",
+                        "2850x300": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~2850x300?cb=1726219848243",
+                        "2850x600": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~2850x600?cb=1726219848243",
+                        "314x314": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~314x314?cb=1726219848243",
+                        "380x170": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~380x170?cb=1726219848243",
+                        "3840x2160": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~3840x2160?cb=1726219848243",
+                        "384x216": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~384x216?cb=1726219848243",
+                        "384xauto": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~384xauto?cb=1726219848243",
+                        "405x720": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~405x720?cb=1726219848243",
+                        "640x720": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~640x720?cb=1726219848243",
+                        "760x340": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~760x340?cb=1726219848243",
+                        "768x432": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~768x432?cb=1726219848243",
+                        "768xauto": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~768xauto?cb=1726219848243",
+                        "840x140": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~840x140?cb=1726219848243",
+                        "840x280": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~840x280?cb=1726219848243",
+                        "840x360": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~840x360?cb=1726219848243",
+                        "860x344": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~860x344?cb=1726219848243",
+                        "936x520": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~936x520?cb=1726219848243",
+                        "original": "https:\/\/www.zdf.de\/assets\/aid-image-59865888-hires-100~original?cb=1726219848243"
+                      }
+                    },
+                    "profile": "http:\/\/zdf.de\/rels\/content-reference\/teaser-stage-page-index"
+                  },
+                  {
+                    "http:\/\/zdf.de\/rels\/target": {
+                      "profile": "http:\/\/zdf.de\/rels\/content\/page-index-minimal",
+                      "self": "\/content\/documents\/zdf\/ard\/davos-1917?profile=minimal",
+                      "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93oju0odq5n2ewywjhymnjmza-130.json",
+                      "structureNodePath": "\/zdf\/ard\/davos-1917"
+                    },
+                    "teaserHeadline": "Davos 1917",
+                    "trackingTitle": "Davos_1917",
+                    "teasertext": "Eine außergewöhnliche Frau entwickelt sich zu einer bedeutenden Akteurin im Spionage-Geflecht.",
+                    "teaserImageRef": {
+                      "title": "Davos 1917",
+                      "altText": "Davos 1917",
+                      "copyrightNotice": "ard",
+                      "source": "ard",
+                      "profile": "http:\/\/zdf.de\/rels\/image",
+                      "self": "\/content\/documents\/zdf\/ard\/davos-1917\/collection-teaser-image-ard-davos-1917-no-logo-100.json",
+                      "canonical": "\/content\/documents\/collection-teaser-image-ard-davos-1917-no-logo-100.json",
+                      "layouts": {
+                        "1140x120": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1140x120?cb=1704898722740",
+                        "1140x240": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1140x240?cb=1704898722740",
+                        "1200x480": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1200x480?cb=1704898722740",
+                        "1280x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1280x720?cb=1704898722740",
+                        "1280xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1280xauto?cb=1704898722740",
+                        "1300x650": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1300x650?cb=1704898722740",
+                        "1500x300": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1500x300?cb=1704898722740",
+                        "1500x600": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1500x600?cb=1704898722740",
+                        "1500x800": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1500x800?cb=1704898722740",
+                        "1800x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1800x720?cb=1704898722740",
+                        "1900x200": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1900x200?cb=1704898722740",
+                        "1900x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1900x400?cb=1704898722740",
+                        "1900x570": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1900x570?cb=1704898722740",
+                        "1920x1080": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~1920x1080?cb=1704898722740",
+                        "225x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~225x400?cb=1704898722740",
+                        "240x270": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~240x270?cb=1704898722740",
+                        "276x155": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~276x155?cb=1704898722740",
+                        "276x311": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~276x311?cb=1704898722740",
+                        "314x314": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~314x314?cb=1704898722740",
+                        "380x170": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~380x170?cb=1704898722740",
+                        "384x216": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~384x216?cb=1704898722740",
+                        "384xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~384xauto?cb=1704898722740",
+                        "405x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~405x720?cb=1704898722740",
+                        "640x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~640x720?cb=1704898722740",
+                        "760x340": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~760x340?cb=1704898722740",
+                        "768x432": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~768x432?cb=1704898722740",
+                        "768xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~768xauto?cb=1704898722740",
+                        "840x140": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~840x140?cb=1704898722740",
+                        "840x280": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~840x280?cb=1704898722740",
+                        "840x360": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~840x360?cb=1704898722740",
+                        "860x344": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~860x344?cb=1704898722740",
+                        "936x520": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~936x520?cb=1704898722740",
+                        "original": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-ard-davos-1917-no-logo-100~original?cb=1704898722740"
+                      }
+                    },
+                    "profile": "http:\/\/zdf.de\/rels\/content-reference\/teaser-stage-page-index"
+                  },
+                  {
+                    "http:\/\/zdf.de\/rels\/target": {
+                      "profile": "http:\/\/zdf.de\/rels\/content\/page-index-minimal",
+                      "self": "\/content\/documents\/zdf\/br\/dirty-little-secrets-geheimnisse-der-musikindustrie?profile=minimal",
+                      "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93oji5mtg0yzrmztiynwu2mdc-146.json",
+                      "structureNodePath": "\/zdf\/br\/dirty-little-secrets-geheimnisse-der-musikindustrie"
+                    },
+                    "teaserHeadline": "Dirty Little Secrets · Geheimnisse der Musikindustrie",
+                    "trackingTitle": "Dirty_Little_Secrets__Geheimnisse_der_Musikindustrie",
+                    "teasertext": "Hinter den Kulissen der glitzernden Musikwelt: Deals und schmutzige Tricks der Mächtigen.",
+                    "teaserImageRef": {
+                      "title": "Dirty Little Secrets",
+                      "altText": "Dirty Little Secrets",
+                      "copyrightNotice": "ard",
+                      "source": "ard",
+                      "profile": "http:\/\/zdf.de\/rels\/image",
+                      "self": "\/content\/documents\/zdf\/br\/dirty-little-secrets-geheimnisse-der-musikindustrie\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100.json",
+                      "canonical": "\/content\/documents\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100.json",
+                      "layouts": {
+                        "1140x120": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1140x120?cb=1733232250116",
+                        "1140x240": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1140x240?cb=1733232250116",
+                        "1200x480": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1200x480?cb=1733232250116",
+                        "1280x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1280x720?cb=1733232250116",
+                        "1280xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1280xauto?cb=1733232250116",
+                        "1300x650": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1300x650?cb=1733232250116",
+                        "1500x300": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1500x300?cb=1733232250116",
+                        "1500x600": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1500x600?cb=1733232250116",
+                        "1500x800": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1500x800?cb=1733232250116",
+                        "1800x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1800x720?cb=1733232250116",
+                        "1900x200": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1900x200?cb=1733232250116",
+                        "1900x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1900x400?cb=1733232250116",
+                        "1900x570": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~1900x570?cb=1733232250116",
+                        "225x400": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~225x400?cb=1733232250116",
+                        "240x270": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~240x270?cb=1733232250116",
+                        "276x155": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~276x155?cb=1733232250116",
+                        "276x311": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~276x311?cb=1733232250116",
+                        "314x314": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~314x314?cb=1733232250116",
+                        "380x170": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~380x170?cb=1733232250116",
+                        "384x216": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~384x216?cb=1733232250116",
+                        "384xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~384xauto?cb=1733232250116",
+                        "405x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~405x720?cb=1733232250116",
+                        "640x720": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~640x720?cb=1733232250116",
+                        "760x340": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~760x340?cb=1733232250116",
+                        "768x432": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~768x432?cb=1733232250116",
+                        "768xauto": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~768xauto?cb=1733232250116",
+                        "840x140": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~840x140?cb=1733232250116",
+                        "840x280": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~840x280?cb=1733232250116",
+                        "840x360": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~840x360?cb=1733232250116",
+                        "860x344": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~860x344?cb=1733232250116",
+                        "936x520": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~936x520?cb=1733232250116",
+                        "original": "https:\/\/www.zdf.de\/assets\/collection-teaser-image-no-logo-ard-dirty-little-secrets-100~original?cb=1733232250116"
+                      }
+                    },
+                    "profile": "http:\/\/zdf.de\/rels\/content-reference\/teaser-stage-page-index"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "structureNodePath": "\/zdf\/daserste\/tagesschau",
+        "http:\/\/zdf.de\/rels\/uri": "https:\/\/www.zdf.de\/uri\/page-video-ard_video_ard_dXJuOmFyZDpwdWJsaWNhdGlvbjplM2Y3MmZkYzhjZWM5MDM5",
+        "http:\/\/zdf.de\/rels\/sharing-url": "https:\/\/www.zdf.de\/video\/magazine\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042\/page-video-ard-tagesschau-104",
+        "http:\/\/zdf.de\/rels\/content\/conf-section": {
+          "homeTvService": {
+            "tvServiceTitle": "Das Erste",
+            "tvServiceId": "daserste",
+            "tvServiceLogoRef": {
+              "profile": "http:\/\/zdf.de\/rels\/image",
+              "self": "\/content\/documents\/zdf\/sender\/ard\/ard-senderlogo-102.json?profile=tv-service",
+              "canonical": "\/content\/documents\/ard-senderlogo-102.json",
+              "altText": "ARD Senderlogo farbig",
+              "caption": "ARD Senderlogo farbig",
+              "title": "ARD Senderlogo farbig",
+              "copyrightNotice": "ARD",
+              "source": "ARD",
+              "layouts": {
+                "1140x120": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1140x120?cb=1658176630774",
+                "1140x240": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1140x240?cb=1658176630774",
+                "1200x480": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1200x480?cb=1658176630774",
+                "1280x720": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1280x720?cb=1658176630774",
+                "1280xauto": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1280xauto?cb=1658176630774",
+                "1300x650": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1300x650?cb=1658176630774",
+                "1500x300": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1500x300?cb=1658176630774",
+                "1500x600": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1500x600?cb=1658176630774",
+                "1500x800": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1500x800?cb=1658176630774",
+                "1800x720": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1800x720?cb=1658176630774",
+                "1900x200": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1900x200?cb=1658176630774",
+                "1900x400": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1900x400?cb=1658176630774",
+                "1900x570": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1900x570?cb=1658176630774",
+                "1920x1080": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~1920x1080?cb=1658176630774",
+                "225x400": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~225x400?cb=1658176630774",
+                "240x270": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~240x270?cb=1658176630774",
+                "276x155": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~276x155?cb=1658176630774",
+                "276x311": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~276x311?cb=1658176630774",
+                "314x314": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~314x314?cb=1658176630774",
+                "380x170": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~380x170?cb=1658176630774",
+                "384x216": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~384x216?cb=1658176630774",
+                "384xauto": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~384xauto?cb=1658176630774",
+                "405x720": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~405x720?cb=1658176630774",
+                "640x720": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~640x720?cb=1658176630774",
+                "760x340": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~760x340?cb=1658176630774",
+                "768x432": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~768x432?cb=1658176630774",
+                "768xauto": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~768xauto?cb=1658176630774",
+                "840x140": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~840x140?cb=1658176630774",
+                "840x280": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~840x280?cb=1658176630774",
+                "840x360": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~840x360?cb=1658176630774",
+                "860x344": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~860x344?cb=1658176630774",
+                "936x520": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~936x520?cb=1658176630774",
+                "original": "https:\/\/www.zdf.de\/assets\/ard-senderlogo-102~original?cb=1658176630774"
+              }
+            },
+            "profile": "http:\/\/zdf.de\/rels\/content\/conf-tv-service",
+            "self": "\/content\/documents\/zdf\/sender\/ard\/sender-daserste-100.json",
+            "canonical": "\/content\/documents\/sender-daserste-100.json"
+          },
+          "http:\/\/zdf.de\/rels\/content-owner": {
+            "profile": "http:\/\/zdf.de\/rels\/content\/conf-content-owner",
+            "externalId": "SCMS_35e46845-b337-4b89-af41-5d606b28ea10",
+            "self": "\/content\/documents\/content-owner-ard-100.json",
+            "logo": {
+              "altText": "ARD Logo",
+              "profile": "http:\/\/zdf.de\/rels\/image",
+              "self": "\/content\/documents\/logo-ard-content-owner-104.json",
+              "canonical": "\/content\/documents\/logo-ard-content-owner-104.json",
+              "title": "ARD Logo content owner",
+              "layouts": {
+                "240x270": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~240x270?cb=1678727394104",
+                "276x155": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~276x155?cb=1678727394104",
+                "276x311": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~276x311?cb=1678727394104",
+                "314x314": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~314x314?cb=1678727394104",
+                "380x170": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~380x170?cb=1678727394104",
+                "384x216": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~384x216?cb=1678727394104",
+                "384xauto": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~384xauto?cb=1678727394104",
+                "760x340": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~760x340?cb=1678727394104",
+                "original": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~original?cb=1678727394104"
+              }
+            },
+            "id": "content-owner-ard-100",
+            "canonical": "\/content\/documents\/content-owner-ard-100.json",
+            "label": "Ein Angebot von",
+            "http:\/\/zdf.de\/rels\/content-owner-link": {
+              "htmlAnchor": {
+                "profile": "http:\/\/zdf.de\/rels\/teaser-target-web",
+                "href": "https:\/\/www.zdf.de\/ard",
+                "title": "ARD"
+              },
+              "profile": "http:\/\/zdf.de\/rels\/content\/index-link-page-index",
+              "id": "ard-kanalseite-100",
+              "title": "ARD",
+              "contentType": "category",
+              "structureNodePath": "\/zdf\/ard"
+            },
+            "title": "ARD"
+          },
+          "profile": "http:\/\/zdf.de\/rels\/content\/conf-section-teaser",
+          "self": "\/content\/documents\/zdf\/daserste\/tagesschau\/conf-section-ard-tagesschau-100.json?profile=teaser",
+          "canonical": "\/content\/documents\/conf-section-ard-tagesschau-100.json"
+        },
+        "http:\/\/zdf.de\/rels\/brand": {
+          "profile": "http:\/\/zdf.de\/rels\/content\/structureNodeDocument-breadcrumb",
+          "self": "\/content\/structure\/zdf\/daserste\/tagesschau?profile=breadcrumb",
+          "canonical": "\/content\/structure\/zdf\/daserste\/tagesschau",
+          "title": "tagesschau",
+          "http:\/\/zdf.de\/rels\/target": {
+            "id": "collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042",
+            "externalId": "SCMS_index-page-ard-collection_ard_dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-",
+            "title": "tagesschau",
+            "hasVideo": true,
+            "contentType": "brand",
+            "profile": "http:\/\/zdf.de\/rels\/content\/page-index-navigation",
+            "self": "\/content\/documents\/zdf\/daserste\/tagesschau?profile=navigation",
+            "canonical": "\/content\/documents\/collection-index-page-ard-collection-ard-dxjuomfyzdpzag93ojvindnjy2njm2q5oddinde-1042.json",
+            "structureNodePath": "\/zdf\/daserste\/tagesschau",
+            "stage": [
+              {
+                "profile": "http:\/\/zdf.de\/rels\/content\/group-header-m-navigation",
+                "teaser": [
+                  {
+                    "http:\/\/zdf.de\/rels\/target": {
+                      "title": "ARD Default-Bühne M",
+                      "altText": "Abstraktes Hintergrundbild in ARD-Blautönen",
+                      "copyrightNotice": "ARD",
+                      "source": "ARD",
+                      "profile": "http:\/\/zdf.de\/rels\/image",
+                      "self": "\/content\/documents\/zdf\/ard\/bilder\/ard-keyvisual-default-buehne-m-100.json",
+                      "canonical": "\/content\/documents\/ard-keyvisual-default-buehne-m-100.json",
+                      "layouts": {
+                        "1140x120": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1140x120?cb=1689014546491",
+                        "1140x240": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1140x240?cb=1689014546491",
+                        "1152x1296": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1152x1296?cb=1689014546491",
+                        "1200x480": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1200x480?cb=1689014546491",
+                        "1280xauto": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1280xauto?cb=1689014546491",
+                        "1500x300": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1500x300?cb=1689014546491",
+                        "1500x600": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1500x600?cb=1689014546491",
+                        "1900x200": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1900x200?cb=1689014546491",
+                        "1900x400": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1900x400?cb=1689014546491",
+                        "1900x570": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~1900x570?cb=1689014546491",
+                        "225x400": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~225x400?cb=1689014546491",
+                        "240x270": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~240x270?cb=1689014546491",
+                        "276x155": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~276x155?cb=1689014546491",
+                        "276x311": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~276x311?cb=1689014546491",
+                        "2850x300": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~2850x300?cb=1689014546491",
+                        "2850x600": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~2850x600?cb=1689014546491",
+                        "314x314": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~314x314?cb=1689014546491",
+                        "380x170": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~380x170?cb=1689014546491",
+                        "384x216": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~384x216?cb=1689014546491",
+                        "384xauto": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~384xauto?cb=1689014546491",
+                        "640x720": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~640x720?cb=1689014546491",
+                        "760x340": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~760x340?cb=1689014546491",
+                        "768x432": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~768x432?cb=1689014546491",
+                        "768xauto": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~768xauto?cb=1689014546491",
+                        "840x140": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~840x140?cb=1689014546491",
+                        "840x280": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~840x280?cb=1689014546491",
+                        "840x360": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~840x360?cb=1689014546491",
+                        "860x344": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~860x344?cb=1689014546491",
+                        "936x520": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~936x520?cb=1689014546491",
+                        "original": "https:\/\/www.zdf.de\/assets\/ard-keyvisual-default-buehne-m-100~original?cb=1689014546491"
+                      }
+                    },
+                    "headerDecorationText": "",
+                    "profile": "http:\/\/zdf.de\/rels\/content-reference\/teaser-header-m",
+                    "http:\/\/zdf.de\/rels\/content-owner": {
+                      "id": "content-owner-ard-100",
+                      "externalId": "SCMS_35e46845-b337-4b89-af41-5d606b28ea10",
+                      "profile": "http:\/\/zdf.de\/rels\/content\/conf-content-owner",
+                      "self": "\/content\/documents\/zdf\/ard\/content-owner-ard-100.json",
+                      "canonical": "\/content\/documents\/content-owner-ard-100.json",
+                      "title": "ARD",
+                      "logo": {
+                        "title": "ARD Logo content owner",
+                        "altText": "ARD Logo",
+                        "caption": "ARD Logo",
+                        "copyrightNotice": "ARD",
+                        "source": "ARD",
+                        "profile": "http:\/\/zdf.de\/rels\/image",
+                        "self": "\/content\/documents\/zdf\/ard\/bilder\/logo-ard-content-owner-104.json",
+                        "canonical": "\/content\/documents\/logo-ard-content-owner-104.json",
+                        "layouts": {
+                          "240x270": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~240x270?cb=1678727394104",
+                          "276x155": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~276x155?cb=1678727394104",
+                          "276x311": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~276x311?cb=1678727394104",
+                          "314x314": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~314x314?cb=1678727394104",
+                          "380x170": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~380x170?cb=1678727394104",
+                          "384x216": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~384x216?cb=1678727394104",
+                          "384xauto": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~384xauto?cb=1678727394104",
+                          "760x340": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~760x340?cb=1678727394104",
+                          "original": "https:\/\/www.zdf.de\/assets\/logo-ard-content-owner-104~original?cb=1678727394104"
+                        }
+                      },
+                      "http:\/\/zdf.de\/rels\/content-owner-link": {
+                        "htmlAnchor": {
+                          "profile": "http:\/\/zdf.de\/rels\/teaser-target-web",
+                          "href": "https:\/\/www.zdf.de\/ard",
+                          "title": "ARD"
+                        },
+                        "profile": "http:\/\/zdf.de\/rels\/content\/index-link-page-index",
+                        "id": "ard-kanalseite-100",
+                        "title": "ARD",
+                        "contentType": "category",
+                        "structureNodePath": "\/zdf\/ard"
+                      },
+                      "label": "Ein Angebot von"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "tvService": "daserste",
+        "http:\/\/zdf.de\/rels\/docstats": {
+          "profile": "http:\/\/zdf.de\/rels\/index\/fallbackContent",
+          "self": "\/disabledSSI",
+          "viewCount": 0,
+          "ratingCount": 0,
+          "http:\/zdf.de\/rels\/target": "\/content\/documents"
+        },
+        "tracking": {
+          "szmng": {
+            "st": "zdf",
+            "cp": "ARD\/tagesschau",
+            "sv": "ke",
+            "co": "episode\/tagesschau\/page-video-ard_video_ard_dXJuOmFyZDpwdWJsaWNhdGlvbjplM2Y3MmZkYzhjZWM5MDM5"
+          },
+          "zdf": {
+            "config-v2": {
+              "playerTrackingRateInSeconds": 60
+            },
+            "templates-v2": {
+              "view": "\/\/tracksrv.zdf.de\/event?eventType=view&trackingId={trackingId}&appId={appId}{&searchResultsCount,abGroup,abName,searchParams,userAge,userGender,loggedIn,subprofile,channelId}&assetId=SCMS_page-video-ard_video_ard_dXJuOmFyZDpwdWJsaWNhdGlvbjplM2Y3MmZkYzhjZWM5MDM5&pagePath=https%3A%2F%2Fwww.zdf.de%2Fdaserste%2Ftagesschau%2Fpage-video-ard-tagesschau-104.html&pageTitle=tagesschau",
+              "click": "\/\/tracksrv.zdf.de\/event?eventType=click&trackingId={trackingId}&appId={appId}&clickedClusterPosition={clickedClusterPosition}&clickedTeaserPosition={clickedTeaserPosition}{&searchParams,abGroup,abName,recoEngine,element,recoId,userAge,userGender,loggedIn,subprofile,channelId,targetChannelId,nodeId,configuration}&assetId={assetId}&targetAssetId={targetAssetId}&pagePath=https%3A%2F%2Fwww.zdf.de%2Fdaserste%2Ftagesschau%2Fpage-video-ard-tagesschau-104.html",
+              "pause": "\/\/tracksrv.zdf.de\/event?eventType=pause&trackingId={trackingId}&appId={appId}&currentPosition={currentPosition}&duration={duration}{&abGroup,abName,playbackProgress,videoAssetId,userAge,userGender,loggedIn,subprofile,channelId}&assetId=SCMS_page-video-ard_video_ard_dXJuOmFyZDpwdWJsaWNhdGlvbjplM2Y3MmZkYzhjZWM5MDM5&pagePath=https%3A%2F%2Fwww.zdf.de%2Fdaserste%2Ftagesschau%2Fpage-video-ard-tagesschau-104.html",
+              "play": "\/\/tracksrv.zdf.de\/event?eventType=play&trackingId={trackingId}&appId={appId}&currentPosition={currentPosition}&duration={duration}{&abGroup,abName,playbackProgress,videoAssetId,userAge,userGender,loggedIn,subprofile,channelId}&assetId=SCMS_page-video-ard_video_ard_dXJuOmFyZDpwdWJsaWNhdGlvbjplM2Y3MmZkYzhjZWM5MDM5&pagePath=https%3A%2F%2Fwww.zdf.de%2Fdaserste%2Ftagesschau%2Fpage-video-ard-tagesschau-104.html"
+            }
+          },
+          "atInternet": {
+            "page": {
+              "level1": "zdf",
+              "level2": "ARD",
+              "chapter1": "\/tagesschau",
+              "chapter2": "episode",
+              "chapter3": "page-video-ard_video_ard_dXJuOmFyZDpwdWJsaWNhdGlvbjplM2Y3MmZkYzhjZWM5MDM5",
+              "name": "tagesschau",
+              "customObject": {
+                "domain": "zdf",
+                "level1": "zdf",
+                "level2": "ARD",
+                "chapter1": "\/tagesschau",
+                "broadcast": "daserste",
+                "id": "page-video-ard-tagesschau-104",
+                "inhaltsTyp": "episode",
+                "chapter4": ""
+              }
+            },
+            "richMedia": {
+              "mediaType": "video",
+              "mediaLevel2": "ARD",
+              "mediaLabel": "tagesschau::tagesschau",
+              "mediaTheme1": "ARD",
+              "mediaTheme2": "tagesschau",
+              "mediaTheme3": "episode",
+              "refreshDuration": {
+                "0": 5,
+                "1": 30,
+                "5": 60
+              },
+              "duration": "887",
+              "broadcastMode": "clip"
+            },
+            "event": {
+              "level1": "zdf",
+              "level2": "ARD",
+              "chapter1": "\/tagesschau",
+              "customObject": {
+                "domain": "zdf",
+                "level1": "zdf",
+                "level2": "ARD",
+                "chapter1": "\/tagesschau",
+                "broadcast": "daserste",
+                "id": "page-video-ard-tagesschau-104",
+                "inhaltsTyp": "episode"
+              }
+            },
+            "customVars": {
+              "site": {
+                "id": "page-video-ard-tagesschau-104",
+                "chapter2": "episode",
+                "chapter3": "page-video-ard_video_ard_dXJuOmFyZDpwdWJsaWNhdGlvbjplM2Y3MmZkYzhjZWM5MDM5"
+              }
+            }
+          }
+        },
+        "fskBlocked": false,
+        "seasonNumberPrefix": "St.",
+        "mainVideoContent": {
+          "http:\/\/zdf.de\/rels\/target": {
+            "title": "tagesschau",
+            "contentType": "episode",
+            "extId": "video_ard_dXJuOmFyZDpwdWJsaWNhdGlvbjplM2Y3MmZkYzhjZWM5MDM5",
+            "attrs": [
+              "UT"
+            ],
+            "duration": 887,
+            "geoLocation": "none",
+            "fsk": "none",
+            "visible": true,
+            "visibleFrom": "2023-07-31T20:42:32.054+02:00",
+            "visibleTo": "2099-01-01T01:00:00.092+01:00",
+            "isOnlineOnly": true,
+            "aspectRatio": "16:9",
+            "endDate": "2099-01-01T01:00:00.092+01:00",
+            "profile": "http:\/\/zdf.de\/rels\/content\/content-video-vod-partner-teaser",
+            "self": "\/content\/documents\/zdf\/daserste\/tagesschau\/vod-ard-tagesschau-104.json?profile=teaser",
+            "canonical": "\/content\/documents\/vod-ard-tagesschau-104.json",
+            "streams": {
+              "default": {
+                "label": "Normal",
+                "extId": "video_ard_dXJuOmFyZDpwdWJsaWNhdGlvbjplM2Y3MmZkYzhjZWM5MDM5",
+                "http:\/\/zdf.de\/rels\/streams\/ptmd-template": "\/content\/documents\/vod-ard-tagesschau-104.json?profile=tmd"
+              }
+            }
+          },
+          "profile": "http:\/\/zdf.de\/rels\/content-reference\/video-content"
+        }
+      },
+      "resultMode": null,
+      "profile": "http:\/\/zdf.de\/rels\/search\/result",
+      "id": "SCMS_page-video-ard_video_ard_dXJuOmFyZDpwdWJsaWNhdGlvbjplM2Y3MmZkYzhjZWM5MDM5",
+      "viewCount": 0,
+      "title": "tagesschau",
+      "ratingCount": 0,
+      "type": "page-video",
+      "resultType": "default"
+    }
+  ],
+  "profile": "http:\/\/zdf.de\/rels\/search\/result-page",
+  "self": "\/search\/documents?q=Tagesschau&limit=2",
+  "first": "\/search\/documents?q=Tagesschau&limit=2",
+  "facets": {
+    "attrs": [
+      {
+        "docCount": 2929,
+        "key": "UT"
+      }
+    ],
+    "broadcasters": [
+      {
+        "docCount": 2975,
+        "key": "daserste"
+      },
+      {
+        "docCount": 32,
+        "key": "ZDF"
+      },
+      {
+        "docCount": 32,
+        "key": "funk"
+      },
+      {
+        "docCount": 20,
+        "key": "NDR"
+      },
+      {
+        "docCount": 10,
+        "key": "SWR"
+      },
+      {
+        "docCount": 6,
+        "key": "ARD"
+      },
+      {
+        "docCount": 6,
+        "key": "WDR"
+      },
+      {
+        "docCount": 6,
+        "key": "alpha"
+      },
+      {
+        "docCount": 4,
+        "key": "KI.KA"
+      },
+      {
+        "docCount": 2,
+        "key": "HR"
+      }
+    ],
+    "episodes": {
+      "docCount": 3063
+    },
+    "teilbereich": [
+      {
+        "docCount": 3030,
+        "key": "ard"
+      },
+      {
+        "docCount": 19,
+        "key": "heute.de"
+      },
+      {
+        "docCount": 5,
+        "key": "tivi"
+      }
+    ],
+    "videoquality": []
+  }
+}

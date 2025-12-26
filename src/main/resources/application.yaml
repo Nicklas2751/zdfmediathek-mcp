@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: zdfmediathek-mcp
+
+  ai:
+    mcp:
+      server:
+        enabled: true
+        name: zdf-mediathek-mcp
+        protocol: streamable
+        streamable-http:
+          mcp-endpoint: /
+
+zdf:
+  url: https://prod-api.zdf.de
+  clientId: mediathek-search
+  clientSecret: ZDFmediathekSearchClientSecret

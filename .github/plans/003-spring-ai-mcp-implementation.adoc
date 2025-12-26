@@ -1,0 +1,968 @@
+= ZDF Mediathek MCP Server - Spring AI MCP Implementation Plan
+:toc: left
+:toclevels: 3
+:sectnums:
+
+== Plan Overview
+
+**Plan ID:** 003 +
+**Status:** Ready for Implementation +
+**Created:** 2025-12-25 +
+**Author:** GitHub Copilot +
+**Prerequisites:** Plan 001 completed, Spring Boot project initialized
+
+=== Purpose
+
+Implement the MCP server using Spring AI MCP with Spring Boot and Kotlin.
+This replaces the previous plan (002) which used the Kotlin MCP SDK directly.
+
+=== Technology Change Rationale
+
+**Changed from:** Kotlin MCP SDK with Ktor +
+**Changed to:** Spring AI MCP with Spring Boot
+
+**Why Spring AI MCP?**
+- Native Spring Boot integration (easier setup, less boilerplate) - Built-in WebFlux support for async/reactive operations - Automatic JSON-RPC handling - Better developer experience with Spring ecosystem - Production-ready features (health checks, metrics, etc.) - Easier testing with Spring Test framework
+
+=== Learning Objectives
+
+This plan serves as a **guided learning experience** for:
+- Building MCP servers with Spring AI - Working with Spring Boot and WebFlux - Integrating REST APIs with reactive programming - Test-driven development with Spring Test - Error handling in MCP servers
+
+**Approach:** Step-by-step tasks with validation, allowing you to learn by doing.
+
+---
+
+== Error Handling Guidelines
+
+=== Best Practices for MCP Tools
+
+**When a required parameter is missing or invalid:**
+✅ **DO:** Throw an `IllegalArgumentException` with a clear, helpful message +
+❌ **DON'T:** Return empty lists or null values
+
+**Example:**
+
+[source,kotlin]
+----
+if (query.isBlank()) {
+    throw IllegalArgumentException("Parameter 'query' is required and must not be empty")
+}
+----
+
+**Why?**
+- The MCP client (LLM) can understand error messages - The LLM can help the user correct their request - Returning empty results is misleading and confusing
+
+**Spring AI MCP handles exceptions automatically:**
+- Converts exceptions to JSON-RPC error responses - Returns proper error codes to the client - Preserves error messages for the LLM
+
+---
+
+== Response Format Guidelines
+
+=== Structured Data vs. Text
+
+**✅ CORRECT: Return structured JSON data**
+
+[source,kotlin]
+----
+data class SearchResult(
+    val title: String,
+    val description: String,
+    val broadcastDate: String,
+    val url: String,
+    val imageUrl: String?,
+    val duration: Int?,
+    val channel: String
+)
+
+fun searchContent(query: String): List<SearchResult> {
+    // Return structured data
+    return results
+}
+----
+
+**❌ WRONG: Return formatted text strings**
+
+[source,kotlin]
+----
+fun searchContent(query: String): String {
+    return "Found 3 results:\n1. Title: ...\n2. Title: ..."
+}
+----
+
+**Why structured data?**
+- MCP protocol works with structured data - LLM can process and combine data from multiple tools - LLM will format the response naturally for the user - Tools provide facts, LLM creates the dialogue
+
+=== API Response Transformation
+
+**✅ DO: Reduce to essential information**
+- Remove internal IDs and technical metadata - Keep user-relevant fields only - Simplify nested structures - Use clear field names
+
+**What to keep from ZDF API:**
+- Title, description, teaser - Broadcast date/time - Media URL (for playback) - Thumbnail/image URL - Duration (in minutes or seconds) - Channel name - Genre/category - Availability information (until when?)
+
+**What to remove:**
+- Internal tracking IDs - Technical metadata (encoding, bitrates, etc.) - Debug information - Redundant fields
+
+**Example transformation:**
+
+[source,kotlin]
+----
+// ZDF API Response (complex)
+data class ZdfApiResponse(
+    val id: String,
+    val title: String,
+    val description: String,
+    val teaserBild: ZdfImage,
+    val broadcastStartDate: String,
+    val editorialDate: String,
+    val tracking: TrackingInfo,
+    val mainVideoContent: VideoContent,
+    // ... many more fields
+)
+
+// MCP Tool Response (simplified)
+data class SearchResult(
+    val title: String,
+    val description: String,
+    val broadcastDate: String, // ISO 8601
+    val url: String,
+    val imageUrl: String?,
+    val durationMinutes: Int?,
+    val channel: String
+)
+----
+
+---
+
+== Phase 1: MCP Server Configuration
+
+=== Task 1.1: Configure Spring AI MCP Server
+
+**Learning Goal:** Understand Spring AI MCP configuration
+
+**Research Questions:**
+1. How does Spring AI MCP auto-configuration work?
+2. What properties can be configured in `application.properties`?
+3. How is the WebSocket transport configured?
+4. What is the default MCP endpoint path?
+
+**Task:**
+1. Read Spring AI MCP documentation 2. Configure `application.properties` with MCP settings 3. Understand the MCP server lifecycle
+
+**Example configuration to research:**
+
+[source,properties]
+----
+# MCP Server Configuration
+spring.ai.mcp.server.enabled=true
+spring.ai.mcp.server.transport=websocket
+spring.ai.mcp.server.path=/mcp
+spring.ai.mcp.server.name=zdf-mediathek-mcp
+spring.ai.mcp.server.version=0.1.0
+
+# Server Configuration
+server.port=8080
+
+# Logging
+logging.level.org.springframework.ai.mcp=DEBUG
+logging.level.eu.wiegandt.zdfmediathekmcp=DEBUG
+----
+
+**Questions to Answer:**
+- What is the WebSocket URL for the MCP client to connect?
+- How does Spring Boot detect MCP tool functions?
+- What annotations are needed for MCP tools?
+
+**Validation:**
+
+[source,bash]
+----
+./gradlew bootRun
+----
+
+Check logs for MCP server startup messages.
+
+---
+
+=== Task 1.2: Create First MCP Tool (TDD)
+
+**Learning Goal:** Learn how to create MCP tools with Spring AI and TDD
+
+**Step 1: Write the Test FIRST**
+
+Create: `src/test/kotlin/eu/wiegandt/zdfmediathekmcp/SearchContentToolTest.kt`
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp
+
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Test
+
+class SearchContentToolTest {
+
+    private val tool = SearchContentTool()
+
+    @Test
+    fun `should throw exception for empty query`() {
+        assertThatThrownBy { tool.searchContent("") }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("query")
+            .hasMessageContaining("required")
+    }
+
+    @Test
+    fun `should throw exception for blank query`() {
+        assertThatThrownBy { tool.searchContent("   ") }
+            .isInstanceOf(IllegalArgumentException::class.java)
+    }
+
+    @Test
+    fun `should accept valid query`() {
+        // This will fail until we implement real API call
+        // For now, just check it doesn't throw
+        assertThat(tool.searchContent("test")).isNotNull
+    }
+}
+----
+
+**Step 2: Run the test (should be RED)**
+
+[source,bash]
+----
+./gradlew test --tests SearchContentToolTest
+----
+
+**Step 3: Implement the tool to make tests GREEN**
+
+Create: `src/main/kotlin/eu/wiegandt/zdfmediathekmcp/SearchContentTool.kt`
+
+Requirements:
+- Annotate with Spring AI MCP tool annotations - Validate the `query` parameter (required, not blank) - Return a list of search results (initially empty or mock data) - Add proper documentation (description for the tool)
+
+**Questions to Answer:**
+- What annotation makes a function an MCP tool in Spring AI?
+- How do you document tool parameters for the LLM?
+- How do you specify required vs. optional parameters?
+
+**Validation:**
+
+[source,bash]
+----
+./gradlew test --tests SearchContentToolTest
+----
+
+All tests should be GREEN.
+
+---
+
+=== Task 1.3: Define Data Models (TDD)
+
+**Learning Goal:** Design clean data models for MCP responses
+
+**Step 1: Write Tests FIRST**
+
+Create: `src/test/kotlin/eu/wiegandt/zdfmediathekmcp/model/SearchResultTest.kt`
+
+Test requirements:
+- Test data class creation - Test JSON serialization (Spring Boot Jackson) - Test validation (if using Bean Validation) - Test date format (ISO 8601)
+
+**Step 2: Create Data Models**
+
+Create: `src/main/kotlin/eu/wiegandt/zdfmediathekmcp/model/SearchResult.kt`
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp.model
+
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.LocalDateTime
+
+/**
+ * Search result from ZDF Mediathek.
+ * Simplified representation for MCP clients.
+ */
+data class SearchResult(
+    val title: String,
+    val description: String,
+
+    @JsonProperty("broadcast_date")
+    val broadcastDate: LocalDateTime,
+
+    val url: String,
+
+    @JsonProperty("image_url")
+    val imageUrl: String? = null,
+
+    @JsonProperty("duration_minutes")
+    val durationMinutes: Int? = null,
+
+    val channel: String,
+
+    val genre: String? = null,
+
+    @JsonProperty("available_until")
+    val availableUntil: LocalDateTime? = null
+)
+----
+
+**Questions to Answer:**
+- Why use `@JsonProperty` with snake_case?
+- Should we use `LocalDateTime` or `String` for dates?
+- How does Jackson serialize nullable fields?
+- What are the benefits of data classes in Kotlin?
+
+**Validation:**
+
+[source,bash]
+----
+./gradlew test --tests SearchResultTest
+----
+
+---
+
+== Phase 2: ZDF API Integration
+
+=== Task 2.1: Research ZDF API
+
+**Learning Goal:** Understand the ZDF API structure and authentication
+
+**Research Tasks:**
+1. Review the OpenAPI spec: `zdf-restapi-product-playground.yaml`
+2. Identify the search endpoint and parameters 3. Understand the OAuth2 authentication flow 4. Analyze the response structure
+
+**Questions to Answer:**
+- What is the base URL for the ZDF API?
+- What OAuth2 flow is used (client credentials)?
+- What are the required OAuth2 scopes?
+- What is the structure of search responses?
+- How is pagination handled?
+- What are the rate limits?
+
+**Document your findings** in a comment or notes file.
+
+---
+
+=== Task 2.2: Create ZDF API Client (TDD)
+
+**Learning Goal:** Build a reactive HTTP client with WebFlux
+
+**Step 1: Create API Response Models**
+
+Create models that match the ZDF API response structure.
+
+Create: `src/main/kotlin/eu/wiegandt/zdfmediathekmcp/api/model/ZdfApiSearchResponse.kt`
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp.api.model
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ZdfApiSearchResponse(
+    val results: List<ZdfApiContent>?,
+    val totalResults: Int?,
+    val page: Int?,
+    val pageSize: Int?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ZdfApiContent(
+    val title: String?,
+    val description: String?,
+    val teaserBild: ZdfApiImage?,
+    val broadcastStartDate: String?,
+    val mainVideoContent: ZdfApiVideoContent?,
+    val channel: ZdfApiChannel?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ZdfApiImage(
+    val url: String?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ZdfApiVideoContent(
+    val duration: Int?, // in seconds
+    val http: String? // playback URL
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ZdfApiChannel(
+    val name: String?
+)
+----
+
+**Note:** Use `@JsonIgnoreProperties(ignoreUnknown = true)` to ignore unknown fields from the API.
+
+**Step 2: Write Tests for API Client**
+
+Create: `src/test/kotlin/eu/wiegandt/zdfmediathekmcp/api/ZdfApiClientTest.kt`
+
+Use `MockWebServer` or Spring's `WebTestClient` to mock HTTP responses.
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp.api
+
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+
+@SpringBootTest
+class ZdfApiClientTest {
+
+    @Autowired
+    private lateinit var apiClient: ZdfApiClient
+
+    @Test
+    fun `should search content with valid query`() {
+        // Test with mocked HTTP response
+    }
+
+    @Test
+    fun `should handle API errors gracefully`() {
+        // Test error scenarios
+    }
+
+    @Test
+    fun `should handle empty results`() {
+        // Test empty response
+    }
+}
+----
+
+**Step 3: Implement ZDF API Client**
+
+Create: `src/main/kotlin/eu/wiegandt/zdfmediathekmcp/api/ZdfApiClient.kt`
+
+Use Spring WebFlux's `WebClient` for HTTP calls:
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp.api
+
+import eu.wiegandt.zdfmediathekmcp.api.model.ZdfApiSearchResponse
+import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
+
+@Component
+class ZdfApiClient(
+    private val webClientBuilder: WebClient.Builder
+) {
+    private val webClient = webClientBuilder
+        .baseUrl("https://prod-api.zdf.de")
+        .build()
+
+    fun searchContent(query: String, limit: Int = 10): Mono<ZdfApiSearchResponse> {
+        return webClient.get()
+            .uri { builder ->
+                builder.path("/search")
+                    .queryParam("q", query)
+                    .queryParam("limit", limit)
+                    .build()
+            }
+            .retrieve()
+            .bodyToMono(ZdfApiSearchResponse::class.java)
+    }
+}
+----
+
+**Questions to Answer:**
+- What is the difference between `block()` and reactive processing?
+- How do you handle errors with WebClient?
+- Should the API client handle OAuth2 or use Spring Security?
+- How do you test reactive code?
+
+**Validation:**
+
+[source,bash]
+----
+./gradlew test --tests ZdfApiClientTest
+----
+
+---
+
+=== Task 2.3: Add OAuth2 Authentication
+
+**Learning Goal:** Implement OAuth2 client credentials flow with Spring Security
+
+**Task:**
+1. Add Spring Security OAuth2 Client dependency (if not already present) 2. Configure OAuth2 in `application.properties`
+3. Integrate OAuth2 with WebClient
+
+**Configuration Example:**
+
+[source,properties]
+----
+# OAuth2 Client Configuration
+spring.security.oauth2.client.registration.zdf.client-id=${ZDF_CLIENT_ID}
+spring.security.oauth2.client.registration.zdf.client-secret=${ZDF_CLIENT_SECRET}
+spring.security.oauth2.client.registration.zdf.authorization-grant-type=client_credentials
+spring.security.oauth2.client.registration.zdf.scope=api:read
+
+spring.security.oauth2.client.provider.zdf.token-uri=https://auth.zdf.de/oauth/token
+----
+
+**Update WebClient to use OAuth2:**
+
+[source,kotlin]
+----
+@Configuration
+class WebClientConfig {
+
+    @Bean
+    fun zdfWebClient(
+        authorizedClientManager: OAuth2AuthorizedClientManager
+    ): WebClient {
+        val oauth = ServletOAuth2AuthorizedClientExchangeFilterFunction(
+            authorizedClientManager
+        )
+        oauth.setDefaultClientRegistrationId("zdf")
+
+        return WebClient.builder()
+            .baseUrl("https://prod-api.zdf.de")
+            .apply(oauth.oauth2Configuration())
+            .build()
+    }
+}
+----
+
+**Questions to Answer:**
+- Where should OAuth2 credentials come from in production?
+- How does Spring Security handle token refresh?
+- How do you test OAuth2-protected APIs?
+
+---
+
+=== Task 2.4: Create Response Transformer (TDD)
+
+**Learning Goal:** Transform API responses to MCP-friendly format
+
+**Step 1: Write Tests**
+
+Create: `src/test/kotlin/eu/wiegandt/zdfmediathekmcp/transformer/SearchResultTransformerTest.kt`
+
+Test requirements:
+- Test transformation of complete API response - Test handling of missing/null fields - Test date parsing and formatting - Test duration conversion (seconds to minutes)
+
+**Step 2: Implement Transformer**
+
+Create: `src/main/kotlin/eu/wiegandt/zdfmediathekmcp/transformer/SearchResultTransformer.kt`
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp.transformer
+
+import eu.wiegandt.zdfmediathekmcp.api.model.ZdfApiContent
+import eu.wiegandt.zdfmediathekmcp.model.SearchResult
+import org.springframework.stereotype.Component
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+@Component
+class SearchResultTransformer {
+
+    fun transform(apiContent: ZdfApiContent): SearchResult? {
+        // Transform API response to SearchResult
+        // Return null if essential fields are missing
+        val title = apiContent.title ?: return null
+        val description = apiContent.description ?: return null
+
+        // Parse date
+        val broadcastDate = apiContent.broadcastStartDate?.let {
+            LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
+        } ?: return null
+
+        // Get URL
+        val url = apiContent.mainVideoContent?.http ?: return null
+
+        // Convert duration from seconds to minutes
+        val durationMinutes = apiContent.mainVideoContent.duration?.let {
+            it / 60
+        }
+
+        return SearchResult(
+            title = title,
+            description = description,
+            broadcastDate = broadcastDate,
+            url = url,
+            imageUrl = apiContent.teaserBild?.url,
+            durationMinutes = durationMinutes,
+            channel = apiContent.channel?.name ?: "ZDF"
+        )
+    }
+
+    fun transformList(apiContents: List<ZdfApiContent>): List<SearchResult> {
+        return apiContents.mapNotNull { transform(it) }
+    }
+}
+----
+
+**Questions to Answer:**
+- Why return `null` instead of throwing exceptions for invalid data?
+- Should we log when fields are missing?
+- How do we handle different date formats from the API?
+
+**Validation:**
+
+[source,bash]
+----
+./gradlew test --tests SearchResultTransformerTest
+----
+
+---
+
+== Phase 3: Integration and Testing
+
+=== Task 3.1: Integrate Components in SearchContentTool
+
+**Learning Goal:** Connect all components in the MCP tool
+
+**Task:**
+Update `SearchContentTool` to use the real API client and transformer.
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp
+
+import eu.wiegandt.zdfmediathekmcp.api.ZdfApiClient
+import eu.wiegandt.zdfmediathekmcp.model.SearchResult
+import eu.wiegandt.zdfmediathekmcp.transformer.SearchResultTransformer
+import org.springframework.ai.mcp.server.Tool
+import org.springframework.stereotype.Component
+
+@Component
+class SearchContentTool(
+    private val apiClient: ZdfApiClient,
+    private val transformer: SearchResultTransformer
+) {
+
+    @Tool(
+        name = "search_content",
+        description = "Search for content in ZDF Mediathek by title, topic, or description"
+    )
+    fun searchContent(
+        query: String,
+        limit: Int = 10
+    ): List<SearchResult> {
+        // Validate parameters
+        require(query.isNotBlank()) {
+            "Parameter 'query' is required and must not be empty"
+        }
+        require(limit in 1..50) {
+            "Parameter 'limit' must be between 1 and 50"
+        }
+
+        // Call API and transform results
+        return apiClient.searchContent(query, limit)
+            .map { response ->
+                transformer.transformList(response.results ?: emptyList())
+            }
+            .block() ?: emptyList()
+    }
+}
+----
+
+**Questions to Answer:**
+- Is it okay to use `.block()` here, or should we keep it reactive?
+- How do we handle API timeouts?
+- Should we add caching?
+
+**Validation:**
+Run integration tests and manual testing with a real MCP client.
+
+---
+
+=== Task 3.2: Add Logging
+
+**Learning Goal:** Implement proper logging for debugging and monitoring
+
+**Task:**
+1. Add SLF4J logger to components 2. Log important events (API calls, errors, transformations) 3. Configure Logback for appropriate log levels
+
+**Example:**
+
+[source,kotlin]
+----
+import org.slf4j.LoggerFactory
+
+@Component
+class SearchContentTool(
+    private val apiClient: ZdfApiClient,
+    private val transformer: SearchResultTransformer
+) {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
+    @Tool(name = "search_content", description = "...")
+    fun searchContent(query: String, limit: Int = 10): List<SearchResult> {
+        logger.info("Searching content with query='{}', limit={}", query, limit)
+
+        try {
+            val results = apiClient.searchContent(query, limit)
+                .map { response ->
+                    logger.debug("Received {} results from API", response.results?.size ?: 0)
+                    transformer.transformList(response.results ?: emptyList())
+                }
+                .block() ?: emptyList()
+
+            logger.info("Returning {} transformed results", results.size)
+            return results
+        } catch (e: Exception) {
+            logger.error("Error searching content: {}", e.message, e)
+            throw e
+        }
+    }
+}
+----
+
+**What NOT to log:**
+- User queries with PII (be careful!) - OAuth2 tokens or credentials - Full API responses (too much data)
+
+**What to log:**
+- Request parameters (query length, limit) - Result counts - Error messages and stack traces - Performance metrics (API call duration)
+
+**Configure Logback:**
+Create/update: `src/main/resources/logback-spring.xml`
+
+---
+
+=== Task 3.3: Error Handling and Resilience
+
+**Learning Goal:** Handle errors gracefully
+
+**Scenarios to Handle:**
+1. **Invalid Parameters** → `IllegalArgumentException` with helpful message 2. **API Connection Errors** → Log and throw with context 3. **OAuth2 Authentication Failures** → Log and throw 4. **API Rate Limiting (429)** → Log and throw with retry advice 5. **API Errors (4xx, 5xx)** → Log and throw with status code 6. **Timeout** → Log and throw 7. **Empty Results** → Return empty list (not an error!)
+
+**Example:**
+
+[source,kotlin]
+----
+fun searchContent(query: String, limit: Int = 10): List<SearchResult> {
+    require(query.isNotBlank()) {
+        "Parameter 'query' is required and must not be empty"
+    }
+    require(limit in 1..50) {
+        "Parameter 'limit' must be between 1 and 50"
+    }
+
+    return try {
+        apiClient.searchContent(query, limit)
+            .map { response ->
+                transformer.transformList(response.results ?: emptyList())
+            }
+            .timeout(Duration.ofSeconds(10))
+            .onErrorResume { error ->
+                logger.error("API call failed", error)
+                when (error) {
+                    is TimeoutException ->
+                        Mono.error(RuntimeException("ZDF API request timed out"))
+                    is WebClientResponseException.TooManyRequests ->
+                        Mono.error(RuntimeException("ZDF API rate limit exceeded, please try again later"))
+                    else ->
+                        Mono.error(RuntimeException("Failed to search ZDF Mediathek: ${error.message}"))
+                }
+            }
+            .block() ?: emptyList()
+    } catch (e: Exception) {
+        logger.error("Error in searchContent", e)
+        throw e
+    }
+}
+----
+
+---
+
+=== Task 3.4: Integration Testing
+
+**Learning Goal:** Test the complete flow with Spring Boot Test
+
+**Create Integration Test:**
+
+Create: `src/test/kotlin/eu/wiegandt/zdfmediathekmcp/SearchContentToolIntegrationTest.kt`
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp
+
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
+
+@SpringBootTest
+@ActiveProfiles("test")
+class SearchContentToolIntegrationTest {
+
+    @Autowired
+    private lateinit var searchContentTool: SearchContentTool
+
+    @Test
+    fun `should search and return results`() {
+        // This will call the real API (or mocked in test profile)
+        val results = searchContentTool.searchContent("Tatort", limit = 5)
+
+        assertThat(results).isNotNull
+        // Add more assertions based on expected results
+    }
+}
+----
+
+**Test Profile Configuration:**
+Create: `src/test/resources/application-test.properties`
+
+[source,properties]
+----
+# Use mock OAuth2 credentials for testing
+spring.security.oauth2.client.registration.zdf.client-id=test-client-id
+spring.security.oauth2.client.registration.zdf.client-secret=test-client-secret
+
+# Enable debug logging for tests
+logging.level.eu.wiegandt.zdfmediathekmcp=DEBUG
+----
+
+---
+
+== Phase 4: Additional Tools (Future)
+
+=== Task 4.1: Broadcast Schedule Tool
+
+Implement `get_broadcast_schedule` tool for retrieving TV schedules.
+
+=== Task 4.2: Current Broadcast Tool
+
+Implement `get_current_broadcast` tool for live program information.
+
+=== Task 4.3: Content Details Tool
+
+Implement `get_content_details` tool for detailed information about specific content.
+
+---
+
+== Phase 5: Docker and Deployment
+
+=== Task 5.1: Create Dockerfile
+
+**Learning Goal:** Containerize Spring Boot application
+
+**Create:** `Dockerfile`
+
+[source,dockerfile]
+----
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+
+COPY build/libs/*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
+----
+
+**Multi-stage build (optimized):**
+
+[source,dockerfile]
+----
+# Build stage
+FROM eclipse-temurin:21-jdk-alpine AS build
+WORKDIR /app
+COPY . .
+RUN ./gradlew build -x test
+
+# Runtime stage
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/build/libs/*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
+----
+
+---
+
+=== Task 5.2: Docker Compose for Development
+
+**Create:** `docker-compose.yml`
+
+[source,yaml]
+----
+version: '3.8'
+
+services:
+  zdf-mcp:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - ZDF_CLIENT_ID=${ZDF_CLIENT_ID}
+      - ZDF_CLIENT_SECRET=${ZDF_CLIENT_SECRET}
+      - SPRING_PROFILES_ACTIVE=prod
+    restart: unless-stopped
+----
+
+---
+
+=== Task 5.3: Update README with Docker Instructions
+
+Update the README.md with Docker usage instructions for all supported MCP clients.
+
+---
+
+== Testing Checklist
+
+Before considering a tool complete, verify:
+
+- [ ] Unit tests written first (TDD)
+- [ ] Unit tests pass
+- [ ] Integration tests pass
+- [ ] Error cases are tested
+- [ ] Parameter validation works
+- [ ] Logging is appropriate
+- [ ] No SonarQube issues
+- [ ] Code is documented
+- [ ] Manual testing with MCP client successful
+
+---
+
+== Learning Resources
+
+=== Spring AI MCP
+
+- https://docs.spring.io/spring-ai/reference/api/mcp.html
+- https://github.com/spring-projects/spring-ai
+
+=== Spring WebFlux
+
+- https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html
+
+=== Spring Security OAuth2
+
+- https://docs.spring.io/spring-security/reference/servlet/oauth2/client/index.html
+
+=== Kotlin + Spring Boot
+
+- https://spring.io/guides/tutorials/spring-boot-kotlin/
+
+---
+
+== Notes
+
+- Remember: **Tools return structured data, LLM formats it for users**
+- Always validate parameters and provide helpful error messages
+- Keep responses concise but complete
+- Test with real MCP clients early and often
+- OAuth2 credentials must come from environment variables
+- No PII logging!
+
+---
+
+**Last Updated:** 2025-12-25
+

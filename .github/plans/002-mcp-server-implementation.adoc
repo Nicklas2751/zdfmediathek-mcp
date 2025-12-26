@@ -1,0 +1,606 @@
+= ZDF Mediathek MCP Server - Implementation Plan
+:toc: left
+:toclevels: 3
+:sectnums:
+
+== Plan Overview
+
+**Plan ID:** 002 +
+**Status:** Ready for Implementation +
+**Created:** 2025-12-22 +
+**Author:** GitHub Copilot +
+**Prerequisites:** Plan 001 completed
+
+=== Purpose
+
+Implement the MCP server with Kotlin MCP SDK, including tool handlers for ZDF Mediathek API integration.
+
+=== Learning Objectives
+
+This plan serves as a **guided learning experience** for:
+- Building MCP servers in Kotlin - Working with the Kotlin MCP SDK - Integrating REST APIs with MCP tools - Test-driven development in Kotlin
+
+**Approach:** Step-by-step tasks with validation, allowing the developer to learn by doing.
+
+== Phase 1: Foundation (Learning Focus)
+
+=== Task 1.1: Understand MCP Architecture
+
+**Learning Goal:** Understand the MCP protocol and server architecture
+
+**Read and Research:**
+1. Read MCP documentation: https://modelcontextprotocol.io/
+2. Understand the concepts:
+- Tools (functions that AI can call)
+- Resources (data that AI can read)
+- Prompts (templates for AI interactions)
+- Transport (stdio vs HTTP)
+
+3. Review Kotlin MCP SDK repository
+4. Understand the server lifecycle
+
+**Deliverable:** Document your understanding in a short summary (can be verbal)
+
+**Questions to Answer:**
+- What is the difference between a tool and a resource?
+- Which transport method should we use for our Docker setup?
+- How does the MCP server communicate with the client?
+
+---
+
+=== Task 1.2: Add MCP SDK Dependency
+
+**Learning Goal:** Learn Gradle dependency management with Kotlin DSL
+
+**Task:**
+1. Research the latest version of Kotlin MCP SDK
+- Check JetBrains repositories or GitHub
+- Find the Maven coordinates
+
+2. Add the dependency to `app/build.gradle.kts`
+- Find the correct `dependencies` block
+- Add the MCP SDK dependency
+
+3. Sync Gradle and verify build still works
+
+**Validation:**
+
+```bash
+./gradlew build
+```
+
+**Questions:**
+- What is the difference between `implementation` and `api` in Gradle?
+- Why do we need the MCP SDK dependency?
+- How do you find the latest version of a library?
+
+**Hints:**
+- Look for `com.jetbrains:mcp-kotlin-sdk` or similar - If not available, we might need to use a different SDK or build our own
+
+---
+
+=== Task 1.3: Create Basic MCP Server Structure (TDD)
+
+**Learning Goal:** Set up basic MCP server with TDD approach
+
+**Step 1: Write the Test FIRST**
+
+Create: `app/src/test/kotlin/eu/wiegandt/zdfmediathekmcp/mcp/McpServerTest.kt`
+
+Test requirements:
+- Test that server can be instantiated - Test that server has a name "zdf-mediathek" - Test that server has a version
+
+**Step 2: Run the test (should be RED)**
+
+```bash
+./gradlew kotest
+```
+
+**Step 3: Create minimal implementation to compile**
+
+Create: `app/src/main/kotlin/eu/wiegandt/zdfmediathekmcp/mcp/McpServer.kt`
+
+**Step 4: Implement until test is GREEN**
+
+**Step 5: Refactor if needed**
+
+**Questions:**
+- Why do we write the test before the implementation?
+- What is the benefit of seeing a red test first?
+- How do you structure a test class?
+
+---
+
+== Phase 2: HTTP Client for ZDF API
+
+=== Task 2.1: Add Ktor Client Dependencies
+
+**Learning Goal:** Learn about HTTP clients and dependency management
+
+**Task:**
+1. Research Ktor Client documentation 2. Identify required dependencies:
+- Core client
+- Engine (CIO recommended for JVM)
+- Content negotiation (for JSON)
+- Logging
+
+3. Add dependencies to `build.gradle.kts`
+
+**Validation:**
+
+```bash
+./gradlew build
+```
+
+**Questions:**
+- What is Ktor and why do we use it?
+- What is content negotiation?
+- Why do we need multiple Ktor dependencies?
+
+---
+
+=== Task 2.2: Create ZDF API Client (TDD)
+
+**Learning Goal:** Build HTTP client with TDD, understand OAuth2
+
+**Step 1: Write Test for API Client Instantiation**
+
+Create: `app/src/test/kotlin/eu/wiegandt/zdfmediathekmcp/api/ZdfApiClientTest.kt`
+
+Test requirements:
+- Test that client can be created with credentials - Test that client has proper base URL - Test that client validates credentials
+
+**Step 2: Create minimal implementation**
+
+Create: `app/src/main/kotlin/eu/wiegandt/zdfmediathekmcp/api/ZdfApiClient.kt`
+
+**Step 3: Make test pass**
+
+**Questions:**
+- What is OAuth2 and why does ZDF API need it?
+- How should credentials be provided (environment variables)?
+- What happens if credentials are invalid?
+
+---
+
+=== Task 2.3: Implement Search Endpoint (TDD)
+
+**Learning Goal:** Make actual API calls with Ktor, handle responses
+
+**Reference:** ZDF API `/search/documents` endpoint from OpenAPI spec
+
+**Step 1: Write test for search functionality**
+
+Test cases:
+- Search with query returns results - Search with invalid query returns empty list - Search handles API errors gracefully
+
+**Step 2: Create data models**
+
+Create: `app/src/main/kotlin/eu/wiegandt/zdfmediathekmcp/model/SearchResult.kt`
+
+Models needed:
+- `SearchRequest` (query parameters) - `SearchResponse` (API response) - `SearchResult` (individual result)
+
+**Step 3: Implement search method in ZdfApiClient**
+
+**Step 4: Make tests pass**
+
+**Questions:**
+- How do you serialize/deserialize JSON in Kotlin?
+- What is kotlinx.serialization?
+- How do you handle API errors?
+- What HTTP status codes can occur?
+
+**Hints:**
+- Use `@Serializable` annotation - Use `try-catch` for error handling - Consider rate limiting
+
+---
+
+== Phase 3: MCP Tool Implementation
+
+=== Task 3.1: Create First MCP Tool: search_content (TDD)
+
+**Learning Goal:** Implement an MCP tool handler, understand tool definition
+
+**Tool Specification:**
+
+```json
+{
+  "name": "search_content",
+  "description": "Search for content in ZDF Mediathek",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Search query"
+      },
+      "limit": {
+        "type": "integer",
+        "description": "Maximum number of results (default: 10)"
+      }
+    },
+    "required": ["query"]
+  }
+}
+```
+
+**Step 1: Write tool handler test**
+
+Create: `app/src/test/kotlin/eu/wiegandt/zdfmediathekmcp/mcp/tools/SearchContentToolTest.kt`
+
+Test cases:
+- Tool accepts valid input - Tool validates required parameters - Tool calls ZDF API correctly - Tool formats response for MCP - Tool handles errors
+
+**Step 2: Create tool handler**
+
+Create: `app/src/main/kotlin/eu/wiegandt/zdfmediathekmcp/mcp/tools/SearchContentTool.kt`
+
+**Step 3: Implement and make tests pass**
+
+**Questions:**
+- What is a tool handler?
+- How do you validate input parameters?
+- How should the tool response be formatted?
+- What error information should be returned to the user?
+
+---
+
+=== Task 3.2: Register Tool with MCP Server
+
+**Learning Goal:** Understand tool registration and server configuration
+
+**Task:**
+1. Update `McpServer` to register the `search_content` tool 2. Write test to verify tool is registered 3. Implement tool registration
+
+**Questions:**
+- How does the MCP SDK handle tool registration?
+- Can tools be registered dynamically?
+- How are tool calls routed to handlers?
+
+---
+
+=== Task 3.3: Create Second Tool: get_broadcast_schedule (TDD)
+
+**Learning Goal:** Apply learned patterns to new tool
+
+**Tool Specification:**
+
+```json
+{
+  "name": "get_broadcast_schedule",
+  "description": "Get broadcast schedule for a specific channel and time range",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "channel": {
+        "type": "string",
+        "description": "Channel name (e.g., 'ZDF', 'ZDFneo')"
+      },
+      "date": {
+        "type": "string",
+        "description": "Date in ISO 8601 format (YYYY-MM-DD)"
+      }
+    },
+    "required": ["channel", "date"]
+  }
+}
+```
+
+**Repeat TDD cycle:**
+1. Write tests 2. Create data models if needed 3. Implement API client method 4. Implement tool handler 5. Register tool 6. Make all tests pass
+
+**Questions:**
+- How do you parse and validate dates?
+- How should channel names be normalized?
+- What if the API returns no schedule data?
+
+---
+
+=== Task 3.4: Create Third Tool: get_current_broadcast (TDD)
+
+**Tool Specification:**
+
+```json
+{
+  "name": "get_current_broadcast",
+  "description": "Get current or most recent broadcast for a channel",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "channel": {
+        "type": "string",
+        "description": "Channel name"
+      }
+    },
+    "required": ["channel"]
+  }
+}
+```
+
+**Repeat TDD cycle**
+
+**Questions:**
+- How do you get the current time in the correct timezone (CET/CEST)?
+- How do you find the "current" broadcast from schedule data?
+- What if there's no current broadcast?
+
+---
+
+== Phase 4: Server Integration
+
+=== Task 4.1: Create Application Entry Point
+
+**Learning Goal:** Wire everything together, understand application lifecycle
+
+**Task:**
+1. Update `App.kt` to:
+- Initialize MCP server
+- Configure ZDF API client
+- Start server with stdio transport
+- Handle graceful shutdown
+
+2. Write integration test
+
+**Questions:**
+- What is stdio transport and why do we use it?
+- How do you read credentials from environment variables?
+- How do you handle application shutdown?
+- What should happen if required environment variables are missing?
+
+---
+
+=== Task 4.2: Add Configuration Management
+
+**Learning Goal:** Externalize configuration, use environment variables
+
+**Task:**
+1. Create configuration class 2. Load from environment variables 3. Validate configuration at startup 4. Write tests for configuration loading
+
+Required configuration:
+- `ZDF_API_CLIENT_ID`
+- `ZDF_API_CLIENT_SECRET`
+- `ZDF_API_BASE_URL` (with default) - `LOG_LEVEL` (optional)
+
+**Questions:**
+- Why use environment variables instead of config files?
+- How do you provide defaults for optional configuration?
+- What should happen if required configuration is missing?
+
+---
+
+=== Task 4.3: Add Structured Logging
+
+**Learning Goal:** Implement proper logging, understand log levels
+
+**Task:**
+1. Configure logback.xml with:
+- Console appender
+- JSON format (for production)
+- Appropriate log levels
+- Context information
+
+2. Add logging to:
+- Server startup/shutdown
+- API calls
+- Tool invocations
+- Errors
+
+**Questions:**
+- What are the different log levels and when to use them?
+- Why is structured logging important?
+- What information should be logged?
+- What should NOT be logged (security)?
+
+**Important:** Never log credentials or sensitive data!
+
+---
+
+== Phase 5: Testing & Quality
+
+=== Task 5.1: Add Integration Tests
+
+**Learning Goal:** Test the complete flow from tool call to API response
+
+**Task:**
+1. Create integration test suite 2. Mock ZDF API responses 3. Test complete tool execution flow 4. Test error scenarios
+
+**Questions:**
+- What is the difference between unit and integration tests?
+- How do you mock HTTP responses?
+- What scenarios should be tested?
+
+---
+
+=== Task 5.2: Add Test Coverage Report
+
+**Learning Goal:** Measure and improve test coverage
+
+**Task:**
+1. Add JaCoCo plugin to Gradle 2. Configure coverage thresholds 3. Generate coverage report 4. Identify untested code
+
+**Target:** 80% code coverage minimum
+
+**Questions:**
+- What is code coverage?
+- Is 100% coverage always necessary?
+- What code is hard to test?
+
+---
+
+=== Task 5.3: Add Code Quality Checks
+
+**Learning Goal:** Maintain code quality with automated tools
+
+**Task:**
+1. Add Detekt plugin for static analysis 2. Configure rules 3. Fix any issues found 4. Add to CI pipeline
+
+**Questions:**
+- What is static code analysis?
+- Why is it useful?
+- What kind of issues can Detekt find?
+
+---
+
+== Phase 6: Docker & Deployment
+
+=== Task 6.1: Update Dockerfile
+
+**Learning Goal:** Create optimized Docker image
+
+**Task:**
+1. Update existing Dockerfile 2. Optimize layer caching 3. Minimize image size 4. Add health check endpoint
+
+**Questions:**
+- What is multi-stage build?
+- Why minimize image size?
+- What should a health check do?
+
+---
+
+=== Task 6.2: Add Docker Compose for Local Testing
+
+**Learning Goal:** Local development environment
+
+**Task:**
+1. Create `docker-compose.yml`
+2. Configure environment variables 3. Add volume mounts for development 4. Test complete setup
+
+**Questions:**
+- What is Docker Compose?
+- How do you provide environment variables?
+- How do you debug inside a container?
+
+---
+
+=== Task 6.3: Create GitHub Actions Workflow
+
+**Learning Goal:** CI/CD pipeline automation
+
+**Task:**
+1. Update `.github/workflows/build.yml`
+2. Add:
+- Build job
+- Test job
+- Coverage job
+- Docker build job
+3. Test workflow
+
+**Questions:**
+- What is CI/CD?
+- When should the workflow run?
+- How do you cache dependencies in GitHub Actions?
+
+---
+
+== Phase 7: Documentation & Polish
+
+=== Task 7.1: Update README.md
+
+**Task:**
+1. Fill in all placeholders 2. Add actual usage examples 3. Document all tools with examples 4. Add troubleshooting section
+
+---
+
+=== Task 7.2: Create User Guide
+
+**Task:**
+1. Create `docs/USER_GUIDE.md`
+2. Provide step-by-step setup instructions 3. Include example queries 4. Add FAQ section
+
+---
+
+=== Task 7.3: Create Developer Guide
+
+**Task:**
+1. Create `docs/DEVELOPER_GUIDE.md`
+2. Explain architecture 3. Document how to add new tools 4. Include contribution guidelines
+
+---
+
+== Validation Checklist
+
+After each phase, verify:
+
+**Phase 1:**
+- [ ] MCP SDK dependency added - [ ] Basic server structure created - [ ] All tests passing
+
+**Phase 2:**
+- [ ] Ktor dependencies added - [ ] ZDF API client implemented - [ ] Search endpoint working - [ ] All tests passing
+
+**Phase 3:**
+- [ ] All three tools implemented - [ ] Tools registered with server - [ ] All tests passing - [ ] Tools return proper MCP responses
+
+**Phase 4:**
+- [ ] Application starts successfully - [ ] Configuration loaded from environment - [ ] Logging working correctly - [ ] Graceful shutdown works
+
+**Phase 5:**
+- [ ] Integration tests passing - [ ] Code coverage ≥ 80% - [ ] No Detekt issues
+
+**Phase 6:**
+- [ ] Docker image builds - [ ] Container runs successfully - [ ] Health check working - [ ] CI/CD pipeline passing
+
+**Phase 7:**
+- [ ] Documentation complete - [ ] Examples working - [ ] No placeholder values remaining
+
+== Learning Resources
+
+=== Kotlin Resources
+
+- Kotlin Documentation: https://kotlinlang.org/docs/home.html
+- Kotlin Koans: https://play.kotlinlang.org/koans/overview
+
+=== MCP Resources
+
+- MCP Documentation: https://modelcontextprotocol.io/
+- MCP Specification: https://spec.modelcontextprotocol.io/
+
+=== Ktor Resources
+
+- Ktor Documentation: https://ktor.io/docs/
+- Ktor Client Guide: https://ktor.io/docs/getting-started-ktor-client.html
+
+=== Testing Resources
+
+- Kotest Documentation: https://kotest.io/
+- MockK Documentation: https://mockk.io/
+
+=== Gradle Resources
+
+- Gradle Documentation: https://docs.gradle.org/
+- Kotlin DSL Primer: https://docs.gradle.org/current/userguide/kotlin_dsl.html
+
+== Success Criteria
+
+✅ All tests passing (unit + integration) +
+✅ Code coverage ≥ 80% +
+✅ No code quality issues +
+✅ Docker image builds and runs +
+✅ All three MVP tools working +
+✅ Complete documentation +
+✅ CI/CD pipeline working +
+✅ Can be used with Claude Desktop +
+
+== Timeline Estimate
+
+**Per-phase estimates (learning included):**
+
+- Phase 1: 2-3 hours
+- Phase 2: 3-4 hours
+- Phase 3: 4-6 hours
+- Phase 4: 2-3 hours
+- Phase 5: 2-3 hours
+- Phase 6: 2-3 hours
+- Phase 7: 1-2 hours
+
+**Total:** ~16-24 hours of focused learning and development
+
+== Next Steps
+
+Start with **Task 1.1: Understand MCP Architecture**
+
+Read the MCP documentation and come back with your understanding summary.
+
+Good luck and have fun learning!
+🚀
+
