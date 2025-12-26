@@ -24,7 +24,7 @@ API. The server provides tools for content search, broadcast schedules, and live
 
 ```mermaid
 graph TB
-    Client[MCP Client<br/>Claude/Copilot/etc.] -->|WebSocket/MCP Protocol| Server[Spring Boot<br/>Spring AI MCP Server]
+    Client[MCP Client<br/>Claude/Copilot/etc.] -->|HTTP/MCP Protocol| Server[Spring Boot<br/>Spring AI MCP Server]
     Server -->|@Tool Annotation| Tools[Tool Functions]
     Tools -->|Dependency Injection| APIClient[WebClient<br/>ZDF API Client]
     APIClient -->|Spring Security OAuth2| Auth[OAuth2 Client]
@@ -37,7 +37,7 @@ graph TB
 ### Component Structure
 
 - **Spring Boot Application**: Main application with Spring AI MCP auto-configuration
-- **MCP Server**: Automatically configured by Spring AI (WebSocket transport)
+- **MCP Server**: Automatically configured by Spring AI (Streamable HTTP transport on port 8080, root path `/`)
 - **Tool Functions**: Spring beans with `@Tool` annotation
 - **WebClient**: Spring WebFlux HTTP client for ZDF API communication
 - **OAuth2 Client**: Spring Security OAuth2 for authentication and token management
@@ -209,31 +209,30 @@ zdfmediathek-mcp/
 │   ├── main/
 │   │   ├── kotlin/
 │   │   │   └── eu/wiegandt/zdfmediathekmcp/
-│   │   │       ├── api/          # ZDF API client
-│   │   │       │   ├── ZdfApiClient.kt
-│   │   │       │   ├── OAuth2Config.kt
-│   │   │       │   └── model/    # API DTOs
-│   │   │       ├── tool/         # MCP tool handlers
-│   │   │       │   ├── SearchContentTool.kt
-│   │   │       │   ├── GetBroadcastScheduleTool.kt
-│   │   │       │   └── GetCurrentBroadcastTool.kt
-│   │   │       ├── transformer/  # Response transformers
-│   │   │       │   └── SearchResultTransformer.kt
-│   │   │       ├── model/        # Domain models
-│   │   │       │   └── SearchResult.kt
-│   │   │       └── ZdfmediathekMcpApplication.kt
+│   │   │       ├── config/       # Configuration classes
+│   │   │       │   ├── HttpServicesConfiguration.kt
+│   │   │       │   └── ZdfProperties.kt
+│   │   │       ├── model/        # Domain models / DTOs
+│   │   │       │   ├── ZdfSearchResponse.kt
+│   │   │       │   ├── ZdfSearchResult.kt
+│   │   │       │   └── ZdfDocument.kt
+│   │   │       ├── SearchContentService.kt    # MCP tool service
+│   │   │       ├── ZdfMediathekService.kt     # HTTP client interface
+│   │   │       └── ZdfMediathekMcpApplication.kt
 │   │   └── resources/
-│   │       ├── application.properties
-│   │       └── logback-spring.xml
+│   │       ├── application.yaml
+│   │       └── logback-spring.xml (optional)
 │   └── test/
 │       ├── kotlin/
 │       │   └── eu/wiegandt/zdfmediathekmcp/
-│       │       ├── api/          # API client tests
-│       │       ├── tool/         # Tool handler tests
-│       │       ├── transformer/  # Transformer tests
-│       │       └── model/        # Model tests
+│       │       ├── config/       # Config tests
+│       │       ├── SearchContentServiceTest.kt
+│       │       ├── SearchContentServiceIT.kt
+│       │       ├── ZdfMediathekServiceIT.kt
+│       │       └── ZdfMediathekMcpApplicationTests.kt
 │       └── resources/
-│           └── application-test.properties
+│           └── __files/          # WireMock test fixtures
+│               └── search_documents.json
 ├── build.gradle.kts              # Build configuration
 ├── settings.gradle.kts           # Project settings
 ├── gradle.properties             # Gradle properties
@@ -464,8 +463,8 @@ Normalize user input to match API channel names (case-insensitive, handle variat
 
 - **Base URL:** `https://prod-api.zdf.de`
 - **Authentication:** OAuth2 Client Credentials
-- **Token Endpoint:** TODO (add from API documentation)
-- **Required Scopes:** TODO (add from API documentation)
+- **Token Endpoint:** `https://prod-api.zdf.de/oauth/token`
+- **Required Scopes:** None (client credentials flow without explicit scopes)
 
 ### Rate Limiting Handling
 
@@ -518,13 +517,27 @@ Handle common HTTP status codes:
 ### Test Naming Convention
 
 ```kotlin
-class SearchContentToolTest : FunSpec({
-    context("search_content tool") {
-        test("should return results for valid query") { }
-        test("should return error for empty query") { }
-        test("should handle API errors gracefully") { }
+@SpringBootTest
+class SearchContentServiceTest {
+
+    @Autowired
+    lateinit var searchContentService: SearchContentService
+
+    @Test
+    fun `search content should return results for valid query`() {
+        // given, when, then
     }
-})
+
+    @Test
+    fun `search content should throw exception for empty query`() {
+        // given, when, then
+    }
+
+    @Test
+    fun `search content should handle API errors gracefully`() {
+        // given, when, then
+    }
+}
 ```
 
 ### Running Tests
@@ -533,8 +546,11 @@ class SearchContentToolTest : FunSpec({
 # Run all tests
 ./gradlew test
 
-# Run specific test
-./gradlew test --tests "SearchContentToolTest"
+# Run specific test class
+./gradlew test --tests "SearchContentServiceTest"
+
+# Run specific test method
+./gradlew test --tests "SearchContentServiceTest.search content should return results for valid query"
 
 # Run with coverage
 ./gradlew test jacocoTestReport

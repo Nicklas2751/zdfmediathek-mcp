@@ -27,11 +27,16 @@ Code, IntelliJ IDEA, and others.
 
 The server provides the following MCP tools:
 
-### Phase 1 (MVP) - Available
+### Phase 1 (MVP) - Currently Available
+
+| Tool             | Description                         | Key Parameters                                                        |
+|------------------|-------------------------------------|-----------------------------------------------------------------------|
+| `search_content` | Search for content in ZDF Mediathek | `query` (string, required)<br/>`limit` (number, optional, default: 5) |
+
+### Phase 1 - Planned (Next)
 
 | Tool                     | Description                                     | Key Parameters                                                              |
 |--------------------------|-------------------------------------------------|-----------------------------------------------------------------------------|
-| `search_content`         | Search for content in ZDF Mediathek             | `query` (string, required)<br/>`limit` (number, optional, default: 5)       |
 | `get_broadcast_schedule` | Get TV schedule for a specific channel and date | `channel` (string, required)<br/>`date` (string, ISO 8601 format, optional) |
 | `get_current_broadcast`  | Get currently airing program on a channel       | `channel` (string, required)                                                |
 
@@ -90,12 +95,13 @@ The server provides the following MCP tools:
 
 ### Prerequisites
 
-1. **ZDF API Credentials**: Obtain OAuth2 credentials from ZDF API (TODO: Add registration URL)
+1. **ZDF API Credentials**: Obtain OAuth2 credentials
+   from [ZDF Developer Portal](https://developer.zdf.de/limited-access)
 2. **Docker**: Install Docker on your system (or use native Kotlin build)
 
 ### Docker Setup (General)
 
-The MCP server runs on Spring Boot with WebSocket transport.
+The MCP server runs on Spring Boot with Streamable HTTP transport.
 
 Pull and run the Docker image:
 
@@ -107,7 +113,7 @@ docker run -p 8080:8080 \
   <registry>/zdf-mediathek-mcp:<version>
 ```
 
-**MCP Endpoint:** `ws://localhost:8080/mcp` (WebSocket)
+**MCP Endpoint:** `http://localhost:8080/` (Streamable HTTP)
 
 > **Note**: Container name, registry URL, and version numbers will be added after initial release.
 
@@ -127,9 +133,13 @@ docker run -p 8080:8080 \
     "zdf-mediathek": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm",
-        "-e", "ZDF_CLIENT_ID=your-client-id",
-        "-e", "ZDF_CLIENT_SECRET=your-secret",
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "ZDF_CLIENT_ID=your-client-id",
+        "-e",
+        "ZDF_CLIENT_SECRET=your-secret",
         "<container-name>"
       ]
     }
@@ -177,9 +187,13 @@ gh copilot suggest "What's on ZDF tonight?"
       "zdf-mediathek": {
         "command": "docker",
         "args": [
-          "run", "-i", "--rm",
-          "-e", "ZDF_API_CLIENT_ID=your-client-id",
-          "-e", "ZDF_API_CLIENT_SECRET=your-secret",
+          "run",
+          "-i",
+          "--rm",
+          "-e",
+          "ZDF_CLIENT_ID=your-client-id",
+          "-e",
+          "ZDF_CLIENT_SECRET=your-secret",
           "<container-name>"
         ]
       }
@@ -226,8 +240,8 @@ For any MCP-compatible client supporting stdio transport:
 
 ```bash
 docker run -i --rm \
-  -e ZDF_API_CLIENT_ID=your-client-id \
-  -e ZDF_API_CLIENT_SECRET=your-secret \
+  -e ZDF_CLIENT_ID=your-client-id \
+  -e ZDF_CLIENT_SECRET=your-secret \
   <container-name>
 ```
 
@@ -269,30 +283,49 @@ ZDF_CLIENT_ID=your-id ZDF_CLIENT_SECRET=your-secret ./gradlew bootRun
 | `ZDF_CLIENT_SECRET` | Yes      | OAuth2 Client Secret          | `xyz789...`      |
 | `SERVER_PORT`       | No       | Server port                   | `8080` (default) |
 
-**Application Properties** (`src/main/resources/application.properties`):
+**Application Configuration** (`src/main/resources/application.yaml`):
 
-```properties
-# MCP Server Configuration
-spring.ai.mcp.server.enabled=true
-spring.ai.mcp.server.transport=websocket
-spring.ai.mcp.server.path=/mcp
-spring.ai.mcp.server.name=zdf-mediathek-mcp
-spring.ai.mcp.server.version=0.1.0
+```yaml
+spring:
+  application:
+    name: zdfmediathek-mcp
+
+  ai:
+    mcp:
+      server:
+        enabled: true
+        name: zdf-mediathek-mcp
+        protocol: streamable
+        streamable-http:
+          mcp-endpoint: /
+
+  security:
+    oauth2:
+      client:
+        registration:
+          zdf:
+            client-id: ${ZDF_CLIENT_ID}
+            client-secret: ${ZDF_CLIENT_SECRET}
+            client-authentication-method: client_secret_post
+            authorization-grant-type: client_credentials
+        provider:
+          zdf:
+            token-uri: https://prod-api.zdf.de/oauth/token
 
 # Server Configuration
-server.port=${SERVER_PORT:8080}
+server:
+  port: ${SERVER_PORT:8080}
 
-# OAuth2 Configuration
-spring.security.oauth2.client.registration.zdf.client-id=${ZDF_CLIENT_ID}
-spring.security.oauth2.client.registration.zdf.client-secret=${ZDF_CLIENT_SECRET}
-spring.security.oauth2.client.registration.zdf.authorization-grant-type=client_credentials
-spring.security.oauth2.client.registration.zdf.scope=api:read
-
-# ZDF API Provider
-spring.security.oauth2.client.provider.zdf.token-uri=https://auth.zdf.de/oauth/token
+# ZDF API Configuration
+zdf:
+  url: https://prod-api.zdf.de
+  clientId: ${ZDF_CLIENT_ID}
+  clientSecret: ${ZDF_CLIENT_SECRET}
 
 # Logging
-logging.level.eu.wiegandt.zdfmediathekmcp=${LOG_LEVEL:INFO}
+logging:
+  level:
+    eu.wiegandt.zdfmediathekmcp: ${LOG_LEVEL:INFO}
 ```
 
 **OAuth2 Setup:**
