@@ -1,0 +1,26 @@
+{
+  "http://zdf.de/rels/cmdm/broadcasts": [
+    {
+      "airtimeBegin": "2025-12-27T20:15:00+01:00",
+      "airtimeEnd": "2025-12-27T21:45:00+01:00",
+      "duration": 5400,
+      "tvService": "ZDF",
+      "title": "Tatort",
+      "subtitle": "Der letzte Schrei",
+      "text": "Kriminalfilm aus Hamburg",
+      "http://zdf.de/rels/cmdm/programme-item": "/cmdm/epg/programme-items/POS_12345"
+    },
+    {
+      "airtimeBegin": "2025-12-27T21:45:00+01:00",
+      "airtimeEnd": "2025-12-27T22:15:00+01:00",
+      "duration": 1800,
+      "tvService": "ZDF",
+      "title": "heute journal",
+      "subtitle": null,
+      "text": "Die Nachrichtensendung des ZDF",
+      "http://zdf.de/rels/cmdm/programme-item": "/cmdm/epg/programme-items/POS_67890"
+    }
+  ],
+  "next-archive": null
+}
+
