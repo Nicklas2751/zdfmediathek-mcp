@@ -1,9 +1,10 @@
 # ZDF Mediathek MCP Server
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Kotlin](https://img.shields.io/badge/kotlin-1.9+-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/kotlin-2.3+-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Status](https://img.shields.io/badge/status-development-orange.svg)]()
 [![MCP](https://img.shields.io/badge/MCP-1.0-purple.svg)]()
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Nicklas2751_zdfmediathek-mcp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Nicklas2751_zdfmediathek-mcp)
 
 ## Overview
 
