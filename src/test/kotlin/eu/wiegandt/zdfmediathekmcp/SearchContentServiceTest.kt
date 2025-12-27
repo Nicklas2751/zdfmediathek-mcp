@@ -44,7 +44,7 @@ class SearchContentServiceTest {
     fun searchContent_validQuery_returnsCorrectResult() {
         // given
         val zdfSearchResponse = ZdfSearchResponse()
-        doReturn(zdfSearchResponse).`when`(zdfMediathekService).searchDocuments("heute-show 19. Dezember", 10)
+        doReturn(zdfSearchResponse).`when`(zdfMediathekService).searchDocuments("heute-show 19. Dezember", 5)
 
         // when
         val results = searchContentService.searchContent("heute-show 19. Dezember")

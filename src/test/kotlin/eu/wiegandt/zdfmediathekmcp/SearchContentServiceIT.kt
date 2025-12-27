@@ -22,7 +22,7 @@ import org.springframework.web.reactive.function.client.WebClient
 )
 class SearchContentServiceIT {
     @LocalServerPort
-    private lateinit var port: Integer
+    private var port: Int = 0
 
     @Autowired
     private lateinit var webClientBuilder: WebClient.Builder
@@ -33,7 +33,9 @@ class SearchContentServiceIT {
     fun setUp() {
         val transport = WebClientStreamableHttpTransport.builder(
             webClientBuilder.baseUrl("http://localhost:$port")
-        ).build()
+        )
+            .endpoint("/")
+            .build()
 
         mcpClient = McpClient.async(transport).build()
         mcpClient.initialize().block()
