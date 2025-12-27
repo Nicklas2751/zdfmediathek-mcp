@@ -1,0 +1,981 @@
+= Implementation Plan: Get Broadcast Schedule (TDD)
+:author: GitHub Copilot
+:date: 2025-12-27
+:version: 2.0
+:status: Draft - Awaiting Approval
+:toc: left
+:toclevels: 3
+:sectnums:
+
+== Overview
+
+=== Goal
+
+Implement the `get_broadcast_schedule` MCP tool using Test-Driven Development (TDD) to retrieve TV program schedules from the ZDF API.
+
+=== Scope
+
+* Design and implement comprehensive test suite FIRST
+* Implement production code to make tests pass
+* Follow Spring Boot and Kotlin best practices
+* Ensure high code quality suitable for open source
+* Maintain consistency with existing `search_content` implementation
+
+=== Success Criteria
+
+* ✅ All tests pass (100% for new code)
+* ✅ No SonarQube issues
+* ✅ Clean, readable, maintainable code
+* ✅ Proper error handling and validation
+* ✅ Complete documentation (KDoc, README updates)
+
+== ZDF API Analysis
+
+=== Endpoint Information
+
+Based on actual API testing and `zdf-mcp-endpoints-analysis.adoc`:
+
+[source]
+----
+GET https://api.zdf.de/cmdm/epg/broadcasts
+
+Required Query Parameters:
+  - from: ISO 8601 datetime (e.g., "2025-12-27T00:00:00+01:00")
+  - to: ISO 8601 datetime (e.g., "2025-12-27T23:59:59+01:00")
+
+Optional Query Parameters:
+  - tvServices: Comma-separated channels (e.g., "ZDF,ZDFneo")
+                If omitted, returns ALL channels
+  - limit: Max results per page (default: 50)
+  - page: Page number for pagination
+  - profile: "default" or "teaser"
+  - order: "asc" or "desc"
+----
+
+=== MCP Tool Interface Design
+
+The MCP tool will expose the same flexible interface as the ZDF API:
+
+**Parameters:**
+* `from`: ISO 8601 datetime string (required) * `to`: ISO 8601 datetime string (required) * `tvService`: Single channel name (optional, e.g., "ZDF")
+
+**Rationale:**
+* Maximum flexibility for the LLM * LLM can construct time ranges based on user intent (start/end of day, specific hours, multi-day) * No artificial limitations or conversions * Simple passthrough to API
+
+**Example LLM Usage:**
+* User: "What's on ZDF today?" → LLM: `from="2025-12-27T00:00:00+01:00", to="2025-12-27T23:59:59+01:00", tvService="ZDF"`
+* User: "Show prime time on ZDFneo" → LLM: `from="2025-12-27T20:00:00+01:00", to="2025-12-27T23:00:00+01:00", tvService="ZDFneo"`
+
+=== Actual API Response Structure
+
+Based on real API response from `2025-12-27T011753.200.json`:
+
+[source,json]
+----
+{
+  "next-archive": "/cmdm/epg/broadcasts?limit=3&page=2&order=asc",
+  "profile": "http://zdf.de/rels/cmdm/resultpage-broadcasts",
+  "http://zdf.de/rels/cmdm/broadcasts": [
+    {
+      "airtimeBegin": "2014-07-10T01:20:00+02:00",
+      "airtimeEnd": "2014-07-10T02:50:00+02:00",
+      "airtimeDate": "2014-07-09+02:00",
+      "duration": 5400,
+      "tvService": "ZDF",
+      "tvServiceId": "1",
+      "title": "Mit stahlharter Faust",
+      "subtitle": null,
+      "text": "Cowboy Dempsey Rae liebt seine Unabhängigkeit...",
+      "primaryBrandId": "7e6db719-97cc-33d7-ba5a-74a37df71e49",
+      "primaryBrand": "Spielfilm-Highlights",
+      "http://zdf.de/rels/image": {
+        "layouts": {
+          "1920x1080": "https://epg-image.zdf.de/...",
+          "768x432": "https://epg-image.zdf.de/..."
+        }
+      },
+      "http://zdf.de/rels/cmdm/programme-item": "/cmdm/epg/programme-items/POS_20320706"
+    }
+  ]
+}
+----
+
+**Key Fields We'll Use:**
+* `airtimeBegin` / `airtimeEnd`: Broadcast times * `duration`: Duration in seconds * `tvService`: Channel name * `title`: Program title * `subtitle`: Episode/subtitle (optional) * `text`: Program description * `http://zdf.de/rels/cmdm/programme-item`: Link to detailed program info
+
+== TDD Implementation Plan
+
+=== Phase 1: Test Design & Setup
+
+==== Step 1.1: Create Domain Models
+
+**File:** `src/main/kotlin/eu/wiegandt/zdfmediathekmcp/model/ZdfBroadcast.kt`
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp.model
+
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.OffsetDateTime
+
+/**
+ * Represents a single broadcast/program in the TV schedule.
+ *
+ * Maps to ZDF API's broadcast object structure from /cmdm/epg/broadcasts endpoint.
+ *
+ * @property airtimeBegin Start time with timezone
+ * @property airtimeEnd End time with timezone
+ * @property duration Duration in seconds
+ * @property tvService Channel identifier (e.g., "ZDF")
+ * @property title Program title
+ * @property subtitle Episode/subtitle (optional)
+ * @property text Program description
+ * @property programmeItem Link to detailed programme item
+ */
+data class ZdfBroadcast(
+    val airtimeBegin: OffsetDateTime,
+    val airtimeEnd: OffsetDateTime,
+    val duration: Int,
+    val tvService: String,
+    val title: String,
+    val subtitle: String?,
+    val text: String?,
+    @JsonProperty("http://zdf.de/rels/cmdm/programme-item")
+    val programmeItem: String?
+)
+----
+
+**File:** `src/main/kotlin/eu/wiegandt/zdfmediathekmcp/model/ZdfBroadcastScheduleResponse.kt`
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp.model
+
+import com.fasterxml.jackson.annotation.JsonProperty
+
+/**
+ * Response wrapper for broadcast schedule queries.
+ *
+ * Maps to ZDF API's HAL+JSON response structure.
+ *
+ * @property broadcasts List of broadcasts
+ * @property nextArchive Link to next page (pagination)
+ */
+data class ZdfBroadcastScheduleResponse(
+    @JsonProperty("http://zdf.de/rels/cmdm/broadcasts")
+    val broadcasts: List<ZdfBroadcast>,
+    @JsonProperty("next-archive")
+    val nextArchive: String?
+)
+----
+
+==== Step 1.2: Create Test Fixture
+
+**File:** `src/test/resources/__files/broadcast_schedule_response.json`
+
+[source,json]
+----
+{
+  "next-archive": null,
+  "profile": "http://zdf.de/rels/cmdm/resultpage-broadcasts",
+  "http://zdf.de/rels/cmdm/broadcasts": [
+    {
+      "airtimeBegin": "2025-12-27T20:15:00+01:00",
+      "airtimeEnd": "2025-12-27T21:45:00+01:00",
+      "airtimeDate": "2025-12-27+01:00",
+      "duration": 5400,
+      "tvService": "ZDF",
+      "tvServiceId": "1",
+      "title": "Tatort",
+      "subtitle": "Der letzte Schrei",
+      "text": "Kriminalfilm aus Hamburg",
+      "primaryBrandId": "tatort-id",
+      "primaryBrand": "Tatort",
+      "http://zdf.de/rels/cmdm/programme-item": "/cmdm/epg/programme-items/POS_12345"
+    },
+    {
+      "airtimeBegin": "2025-12-27T21:45:00+01:00",
+      "airtimeEnd": "2025-12-27T22:15:00+01:00",
+      "airtimeDate": "2025-12-27+01:00",
+      "duration": 1800,
+      "tvService": "ZDF",
+      "tvServiceId": "1",
+      "title": "heute journal",
+      "subtitle": null,
+      "text": "Die Nachrichtensendung des ZDF",
+      "primaryBrandId": "heute-journal-id",
+      "primaryBrand": "heute journal",
+      "http://zdf.de/rels/cmdm/programme-item": "/cmdm/epg/programme-items/POS_67890"
+    }
+  ]
+}
+----
+
+==== Step 1.3: Write Integration Tests for ZdfMediathekService
+
+**File:** `src/test/kotlin/eu/wiegandt/zdfmediathekmcp/ZdfMediathekServiceIT.kt`
+
+Add new test methods to existing test class:
+
+[source,kotlin]
+----
+@Test
+fun `getBroadcastSchedule with valid parameters returns schedule`() {
+    // given
+    val from = "2025-12-27T00:00:00+01:00"
+    val to = "2025-12-27T23:59:59+01:00"
+    val tvService = "ZDF"
+
+    val expectedBroadcasts = listOf(
+        ZdfBroadcast(
+            airtimeBegin = OffsetDateTime.parse("2025-12-27T20:15:00+01:00"),
+            airtimeEnd = OffsetDateTime.parse("2025-12-27T21:45:00+01:00"),
+            duration = 5400,
+            tvService = "ZDF",
+            title = "Tatort",
+            subtitle = "Der letzte Schrei",
+            text = "Kriminalfilm aus Hamburg",
+            programmeItem = "/cmdm/epg/programme-items/POS_12345"
+        ),
+        ZdfBroadcast(
+            airtimeBegin = OffsetDateTime.parse("2025-12-27T21:45:00+01:00"),
+            airtimeEnd = OffsetDateTime.parse("2025-12-27T22:15:00+01:00"),
+            duration = 1800,
+            tvService = "ZDF",
+            title = "heute journal",
+            subtitle = null,
+            text = "Die Nachrichtensendung des ZDF",
+            programmeItem = "/cmdm/epg/programme-items/POS_67890"
+        )
+    )
+
+    // Mock OAuth token (single stub for all tests)
+    stubFor(
+        post(urlPathEqualTo("/oauth/token"))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("""{"access_token":"test-token","token_type":"Bearer","expires_in":3600}""")
+            )
+    )
+
+    // Mock broadcast schedule endpoint
+    stubFor(
+        get(urlPathEqualTo("/cmdm/epg/broadcasts"))
+            .withQueryParam("from", equalTo(from))
+            .withQueryParam("to", equalTo(to))
+            .withQueryParam("tvService", equalTo(tvService))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBodyFile("broadcast_schedule_response.json")
+            )
+    )
+
+    // when
+    val response = zdfMediathekService.getBroadcastSchedule(from, to, tvService)
+
+    // then
+    assertThat(response.broadcasts).hasSize(2)
+    assertThat(response.broadcasts).usingRecursiveComparison()
+        .isEqualTo(expectedBroadcasts)
+}
+
+@Test
+fun `getBroadcastSchedule without tvService parameter returns all channels`() {
+    // given
+    val from = "2025-12-27T00:00:00+01:00"
+    val to = "2025-12-27T23:59:59+01:00"
+
+    stubFor(
+        post(urlPathEqualTo("/oauth/token"))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("""{"access_token":"test-token","token_type":"Bearer","expires_in":3600}""")
+            )
+    )
+
+    stubFor(
+        get(urlPathEqualTo("/cmdm/epg/broadcasts"))
+            .withQueryParam("from", equalTo(from))
+            .withQueryParam("to", equalTo(to))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBodyFile("broadcast_schedule_response.json")
+            )
+    )
+
+    // when
+    val response = zdfMediathekService.getBroadcastSchedule(from, to, null)
+
+    // then
+    assertThat(response.broadcasts).isNotEmpty
+    verify(
+        getRequestedFor(urlPathEqualTo("/cmdm/epg/broadcasts"))
+            .withQueryParam("from", equalTo(from))
+            .withQueryParam("to", equalTo(to))
+            .withoutQueryParam("tvService")
+    )
+}
+----
+
+==== Step 1.4: Write Unit Tests for BroadcastScheduleService
+
+**File:** `src/test/kotlin/eu/wiegandt/zdfmediathekmcp/BroadcastScheduleServiceTest.kt`
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp
+
+import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcast
+import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcastScheduleResponse
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
+import java.time.OffsetDateTime
+
+class BroadcastScheduleServiceTest {
+
+    private val zdfMediathekService: ZdfMediathekService = mock(ZdfMediathekService::class.java)
+    private val broadcastScheduleService = BroadcastScheduleService(zdfMediathekService)
+
+    @Test
+    fun `getBroadcastSchedule with valid parameters returns results`() {
+        // given
+        val from = "2025-12-27T00:00:00+01:00"
+        val to = "2025-12-27T23:59:59+01:00"
+        val tvService = "ZDF"
+        val mockResponse = ZdfBroadcastScheduleResponse(
+            broadcasts = listOf(
+                ZdfBroadcast(
+                    airtimeBegin = OffsetDateTime.parse("2025-12-27T20:15:00+01:00"),
+                    airtimeEnd = OffsetDateTime.parse("2025-12-27T21:45:00+01:00"),
+                    duration = 5400,
+                    tvService = "ZDF",
+                    title = "Test Program",
+                    subtitle = null,
+                    text = "Test Description",
+                    programmeItem = null
+                )
+            ),
+            nextArchive = null
+        )
+
+        `when`(zdfMediathekService.getBroadcastSchedule(from, to, tvService)).thenReturn(mockResponse)
+
+        // when
+        val result = broadcastScheduleService.getBroadcastSchedule(from, to, tvService)
+
+        // then
+        assertThat(result).isEqualTo(mockResponse)
+        verify(zdfMediathekService).getBroadcastSchedule(from, to, tvService)
+    }
+
+    @Test
+    fun `getBroadcastSchedule with blank from throws exception`() {
+        // when / then
+        val exception = assertThrows<IllegalArgumentException> {
+            broadcastScheduleService.getBroadcastSchedule("", "2025-12-27T23:59:59+01:00", "ZDF")
+        }
+
+        assertThat(exception.message).contains("from")
+        assertThat(exception.message).contains("required")
+    }
+
+    @Test
+    fun `getBroadcastSchedule with blank to throws exception`() {
+        // when / then
+        val exception = assertThrows<IllegalArgumentException> {
+            broadcastScheduleService.getBroadcastSchedule("2025-12-27T00:00:00+01:00", "", "ZDF")
+        }
+
+        assertThat(exception.message).contains("to")
+        assertThat(exception.message).contains("required")
+    }
+
+    @Test
+    fun `getBroadcastSchedule with invalid from format throws exception`() {
+        // when / then
+        val exception = assertThrows<IllegalArgumentException> {
+            broadcastScheduleService.getBroadcastSchedule("2025-12-27", "2025-12-27T23:59:59+01:00", "ZDF")
+        }
+
+        assertThat(exception.message).contains("from")
+        assertThat(exception.message).contains("ISO 8601")
+    }
+
+    @Test
+    fun `getBroadcastSchedule with invalid to format throws exception`() {
+        // when / then
+        val exception = assertThrows<IllegalArgumentException> {
+            broadcastScheduleService.getBroadcastSchedule("2025-12-27T00:00:00+01:00", "2025-12-27", "ZDF")
+        }
+
+        assertThat(exception.message).contains("to")
+        assertThat(exception.message).contains("ISO 8601")
+    }
+
+    @Test
+    fun `getBroadcastSchedule with null tvService passes null to service`() {
+        // given
+        val from = "2025-12-27T00:00:00+01:00"
+        val to = "2025-12-27T23:59:59+01:00"
+        val mockResponse = ZdfBroadcastScheduleResponse(broadcasts = emptyList(), nextArchive = null)
+
+        `when`(zdfMediathekService.getBroadcastSchedule(from, to, null)).thenReturn(mockResponse)
+
+        // when
+        val result = broadcastScheduleService.getBroadcastSchedule(from, to, null)
+
+        // then
+        assertThat(result).isEqualTo(mockResponse)
+        verify(zdfMediathekService).getBroadcastSchedule(from, to, null)
+    }
+
+    @Test
+    fun `getBroadcastSchedule with from after to throws exception`() {
+        // when / then
+        val exception = assertThrows<IllegalArgumentException> {
+            broadcastScheduleService.getBroadcastSchedule(
+                "2025-12-27T23:59:59+01:00",
+                "2025-12-27T00:00:00+01:00",
+                "ZDF"
+            )
+        }
+
+        assertThat(exception.message).contains("from")
+        assertThat(exception.message).contains("must be before")
+    }
+}
+----
+
+==== Step 1.5: Write Integration Tests for MCP Tool
+
+**File:** `src/test/kotlin/eu/wiegandt/zdfmediathekmcp/BroadcastScheduleServiceIT.kt`
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp
+
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.wiremock.spring.ConfigureWireMock
+import org.wiremock.spring.EnableWireMock
+
+@SpringBootTest(
+    properties = [
+        "zdf.clientId=test-client",
+        "zdf.clientSecret=test-secret"
+    ]
+)
+@EnableWireMock(
+    ConfigureWireMock(
+        baseUrlProperties = ["zdf.url"]
+    )
+)
+class BroadcastScheduleServiceIT {
+
+    @Autowired
+    lateinit var broadcastScheduleService: BroadcastScheduleService
+
+    @Test
+    fun `getBroadcastSchedule returns results for valid request`() {
+        // given
+        val from = "2025-12-27T00:00:00+01:00"
+        val to = "2025-12-27T23:59:59+01:00"
+        val tvService = "ZDF"
+
+        // Mock OAuth token
+        stubFor(
+            post(urlPathEqualTo("/oauth/token"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("""{"access_token":"test-token","token_type":"Bearer","expires_in":3600}""")
+                )
+        )
+
+        // Mock broadcast schedule endpoint
+        stubFor(
+            get(urlPathEqualTo("/cmdm/epg/broadcasts"))
+                .withQueryParam("from", equalTo(from))
+                .withQueryParam("to", equalTo(to))
+                .withQueryParam("tvService", equalTo(tvService))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("broadcast_schedule_response.json")
+                )
+        )
+
+        // when
+        val result = broadcastScheduleService.getBroadcastSchedule(from, to, tvService)
+
+        // then
+        assertThat(result.broadcasts).isNotEmpty
+        assertThat(result.broadcasts).hasSize(2)
+        assertThat(result.broadcasts[0].title).isEqualTo("Tatort")
+        assertThat(result.broadcasts[0].tvService).isEqualTo("ZDF")
+        assertThat(result.broadcasts[1].title).isEqualTo("heute journal")
+    }
+
+    @Test
+    fun `getBroadcastSchedule throws exception for invalid from parameter`() {
+        // when / then
+        val exception = assertThrows<IllegalArgumentException> {
+            broadcastScheduleService.getBroadcastSchedule("invalid-date", "2025-12-27T23:59:59+01:00", "ZDF")
+        }
+
+        assertThat(exception.message).contains("ISO 8601")
+    }
+}
+----
+
+=== Phase 2: Implementation
+
+==== Step 2.1: Extend ZdfMediathekService Interface
+
+**File:** `src/main/kotlin/eu/wiegandt/zdfmediathekmcp/ZdfMediathekService.kt`
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp
+
+import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcastScheduleResponse
+import eu.wiegandt.zdfmediathekmcp.model.ZdfSearchResponse
+import org.springframework.stereotype.Service
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.service.annotation.GetExchange
+
+@Service
+interface ZdfMediathekService {
+
+    @GetExchange("/search/documents")
+    fun searchDocuments(
+        @RequestParam("q") q: String,
+        @RequestParam("limit") limit: Int = 5
+    ): ZdfSearchResponse
+
+    @GetExchange("/cmdm/epg/broadcasts")
+    fun getBroadcastSchedule(
+        @RequestParam("from") from: String,
+        @RequestParam("to") to: String,
+        @RequestParam("tvService") tvService: String?
+    ): ZdfBroadcastScheduleResponse
+}
+----
+
+**Why this design:**
+* Consistent with existing `searchDocuments` method * Uses Spring's `@GetExchange` for declarative HTTP client * Parameters match ZDF API exactly * `tvService` is optional (null = all channels) * Spring automatically handles OAuth2 via existing configuration
+
+==== Step 2.2: Create BroadcastScheduleService
+
+**File:** `src/main/kotlin/eu/wiegandt/zdfmediathekmcp/BroadcastScheduleService.kt`
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp
+
+import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcastScheduleResponse
+import org.slf4j.LoggerFactory
+import org.springaicommunity.mcp.annotation.McpTool
+import org.springframework.stereotype.Service
+import java.time.OffsetDateTime
+import java.time.format.DateTimeParseException
+
+/**
+ * MCP tool service for retrieving TV broadcast schedules from ZDF Mediathek.
+ *
+ * Provides the `get_broadcast_schedule` tool that allows AI assistants to query
+ * TV program schedules for ZDF channels using flexible time ranges.
+ */
+@Service
+class BroadcastScheduleService(
+    private val zdfMediathekService: ZdfMediathekService
+) {
+    private val logger = LoggerFactory.getLogger(BroadcastScheduleService::class.java)
+
+    /**
+     * Retrieves the TV broadcast schedule for a specific time range and optional channel.
+     *
+     * @param from Start time in ISO 8601 format with timezone (e.g., "2025-12-27T00:00:00+01:00")
+     * @param to End time in ISO 8601 format with timezone (e.g., "2025-12-27T23:59:59+01:00")
+     * @param tvService Optional channel name (e.g., "ZDF", "ZDFneo"). If null, returns all channels.
+     * @return The broadcast schedule response containing a list of programs.
+     * @throws IllegalArgumentException if parameters are invalid or time format is wrong.
+     */
+    @McpTool(
+        name = "get_broadcast_schedule",
+        description = """Get the TV broadcast schedule for ZDF channels within a specific time range.
+
+            Parameters:
+            - from: Start time in ISO 8601 format with timezone (e.g., "2025-12-27T00:00:00+01:00")
+            - to: End time in ISO 8601 format with timezone (e.g., "2025-12-27T23:59:59+01:00")
+            - tvService: Optional channel name (e.g., "ZDF", "ZDFneo", "3sat"). If omitted, returns all channels.
+
+            Common channels: ZDF, ZDFneo, ZDFinfo, 3sat, PHOENIX, KIKA
+            Timezone: Use +01:00 (CET) or +02:00 (CEST) for German time
+
+            Returns a list of programs with title, time, description, and channel info.
+        """.trimIndent()
+    )
+    fun getBroadcastSchedule(
+        from: String,
+        to: String,
+        tvService: String? = null
+    ): ZdfBroadcastScheduleResponse {
+        // Validate parameters
+        require(from.isNotBlank()) {
+            "Parameter 'from' is required and must not be empty"
+        }
+        require(to.isNotBlank()) {
+            "Parameter 'to' is required and must not be empty"
+        }
+
+        // Validate datetime format
+        val fromDateTime = validateAndParseDateTime(from, "from")
+        val toDateTime = validateAndParseDateTime(to, "to")
+
+        // Validate time range
+        require(fromDateTime.isBefore(toDateTime)) {
+            "Parameter 'from' must be before 'to'. Got: from=$from, to=$to"
+        }
+
+        logger.debug(
+            "Fetching broadcast schedule from={}, to={}, tvService={}",
+            from,
+            to,
+            tvService ?: "all"
+        )
+
+        return try {
+            zdfMediathekService.getBroadcastSchedule(from, to, tvService)
+        } catch (e: Exception) {
+            logger.error(
+                "Failed to fetch broadcast schedule from={}, to={}, tvService={}",
+                from,
+                to,
+                tvService,
+                e
+            )
+            throw RuntimeException(
+                "Failed to retrieve broadcast schedule: ${e.message}",
+                e
+            )
+        }
+    }
+
+    /**
+     * Validates and parses an ISO 8601 datetime string with timezone.
+     *
+     * @param datetime The datetime string to validate.
+     * @param paramName Parameter name for error messages.
+     * @return The parsed OffsetDateTime.
+     * @throws IllegalArgumentException if the datetime format is invalid.
+     */
+    private fun validateAndParseDateTime(datetime: String, paramName: String): OffsetDateTime {
+        try {
+            return OffsetDateTime.parse(datetime)
+        } catch (e: DateTimeParseException) {
+            throw IllegalArgumentException(
+                "Invalid '$paramName' format: '$datetime'. " +
+                "Expected ISO 8601 format with timezone (e.g., '2025-12-27T20:15:00+01:00')",
+                e
+            )
+        }
+    }
+}
+----
+
+**Design Rationale:**
+
+* **Direct Passthrough**: No conversion, just validation and passthrough to API
+* **Flexible Interface**: LLM decides time ranges, not the service
+* **Minimal Validation**: Only format and logical constraints (from < to)
+* **No Channel Validation**: ZDF API handles that
+* **Clear Error Messages**: Helpful for LLM to correct mistakes
+* **Comprehensive KDoc**: Explains usage for open source
+* **Logging**: Debug info without PII
+
+=== Phase 3: Verification & Refinement
+
+==== Step 3.1: Run Tests
+
+[source,bash]
+----
+# Run all tests
+./gradlew test
+
+# Run specific test class
+./gradlew test --tests "BroadcastScheduleServiceTest"
+
+# Run integration tests
+./gradlew test --tests "BroadcastScheduleServiceIT"
+
+# Run with coverage
+./gradlew test jacocoTestReport
+----
+
+**Expected Results:**
+* All tests should pass * Test coverage should be 100% for new code * No SonarQube issues
+
+==== Step 3.2: Update Documentation
+
+**File:** `README.md`
+
+Update the "MCP Tools Reference" section:
+
+[source,markdown]
+----
+### Phase 1 (MVP) - Currently Available
+
+| Tool                     | Description                                     | Key Parameters                                                                                                              |
+|--------------------------|-------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| `search_content`         | Search for content in ZDF Mediathek             | `query` (string, required)<br/>`limit` (number, optional, default: 5)                                                       |
+| `get_broadcast_schedule` | Get TV schedule for a time range                | `from` (ISO 8601 datetime, required)<br/>`to` (ISO 8601 datetime, required)<br/>`tvService` (string, optional, e.g., "ZDF") |
+----
+
+Add example usage:
+
+[source,markdown]
+----
+**Get Broadcast Schedule for ZDF today:**
+
+```json
+{
+  "tool": "get_broadcast_schedule",
+  "arguments": {
+    "from": "2025-12-27T00:00:00+01:00",
+    "to": "2025-12-27T23:59:59+01:00",
+    "tvService": "ZDF"
+  }
+}
+```
+
+**Get Prime Time Schedule (all channels):**
+
+```json
+{
+  "tool": "get_broadcast_schedule",
+  "arguments": {
+    "from": "2025-12-27T20:00:00+01:00",
+    "to": "2025-12-27T23:00:00+01:00"
+  }
+}
+```
+----
+
+==== Step 3.3: Update AGENTS.md
+
+Remove `get_broadcast_schedule` from "Phase 1 - Planned (Next)" since it's now implemented.
+
+=== Phase 4: Manual Testing
+
+==== Step 4.1: Test with Real ZDF API
+
+1. Start the application locally: `./gradlew bootRun`
+2. Test with actual ZDF credentials
+3. Verify responses match expectations
+4. Test different time ranges and channels
+
+==== Step 4.2: Validate API Responses
+
+* Check actual response structure matches our models
+* Verify OAuth2 authentication works
+* Test with different channels
+* Test with different time ranges
+
+== Implementation Order (TDD Workflow)
+
+=== Step-by-Step Execution Order
+
+1. **Create Domain Models** (ZdfBroadcast, ZdfBroadcastScheduleResponse)
+- Reason: Needed for test data
+
+2. **Create Test Fixture** (broadcast_schedule_response.json)
+- Reason: Needed for WireMock stubs
+
+3. **Write All Tests** (fail initially - RED phase):
+- BroadcastScheduleServiceTest (unit tests with Mockito)
+- ZdfMediathekServiceIT (HTTP client integration tests)
+- BroadcastScheduleServiceIT (full integration tests)
+
+4. **Run Tests** - All should FAIL (expected)
+[source,bash]
+---- ./gradlew test ----
+
+5. **Extend ZdfMediathekService Interface**
+- Add `getBroadcastSchedule` method
+
+6. **Implement BroadcastScheduleService**
+- Implement minimal code to make tests pass
+
+7. **Run Tests Again** - Tests should PASS (GREEN phase)
+[source,bash]
+---- ./gradlew test ----
+
+8. **Refactor** (if needed) while keeping tests green
+- Improve code readability
+- Extract helper methods if needed
+
+9. **Verify Code Quality**
+[source,bash]
+---- ./gradlew build ----
+
+10. **Update Documentation** (README, AGENTS.md)
+
+== Code Quality Checklist
+
+=== Before Committing
+
+- [ ] All tests pass (100%)
+- [ ] Test coverage ≥ 80% (aim for 100% on new code)
+- [ ] No compiler warnings
+- [ ] No SonarQube issues
+- [ ] KDoc comments on all public APIs
+- [ ] Meaningful variable and function names
+- [ ] No magic strings (constants where appropriate)
+- [ ] Proper error messages (helpful for LLM)
+- [ ] Logging at appropriate levels (DEBUG, ERROR)
+- [ ] No PII in logs
+- [ ] README updated with examples
+- [ ] AGENTS.md updated
+
+=== Code Review Questions
+
+1. **Readability**: Can another developer understand the code without comments?
+2. **Maintainability**: Is it easy to modify or extend?
+3. **Testability**: Are all code paths testable?
+4. **Security**: Are inputs validated?
+No credential leaks?
+5. **Performance**: Are there obvious performance issues?
+6. **Consistency**: Does it follow the same patterns as existing code?
+
+== Technical Decisions
+
+=== Design Decision 1: Direct API Interface
+
+**Decision:** MCP tool uses same parameters as ZDF API (from/to/tvService)
+
+**Rationale:**
+* Maximum flexibility for LLM * No artificial limitations * LLM can construct appropriate time ranges based on context * Simpler implementation (no conversion logic) * Easier to extend later
+
+**Trade-offs:**
+* ✅ More flexible * ✅ Simpler code * ❌ Slightly more complex for LLM (but manageable)
+
+=== Design Decision 2: No Channel Validation
+
+**Decision:** Don't validate channel names in our code
+
+**Rationale:**
+* ZDF API already validates channels * We don't need to maintain a list of valid channels * API might add/remove channels over time * Clear error messages from API are sufficient
+
+**Trade-offs:**
+* ✅ Less maintenance * ✅ Always up-to-date with API changes * ❌ No client-side validation (but not needed)
+
+=== Design Decision 3: Mockito Instead of MockK
+
+**Decision:** Use Mockito for unit tests
+
+**Rationale:**
+* Already familiar to most Java/Kotlin developers * Mature and stable * Good Spring Boot integration * No additional learning curve
+
+== Dependencies
+
+=== No New Dependencies Required
+
+* **Mockito**: Already included in `spring-boot-starter-test`
+* **WireMock**: Already included in test dependencies
+* **AssertJ**: Already included in test dependencies
+
+=== Verify Dependencies
+
+Ensure these are in `build.gradle.kts`:
+
+[source,kotlin]
+----
+testImplementation("org.springframework.boot:spring-boot-starter-test")
+testImplementation("org.wiremock.integrations:wiremock-spring-boot:3.10.0")
+testImplementation("org.assertj:assertj-core")
+----
+
+== Open Questions
+
+=== TO BE VALIDATED
+
+1. **Response Pagination**: How to handle `next-archive` pagination?
+- Current approach: Return first page only
+- Future: Add pagination support if needed
+
+2. **Empty Results**: Confirmed API returns empty array
+
+3. **Historical Data Limits**: Need to test how far back we can query
+
+4. **Future Data Limits**: Need to test how far forward we can query
+
+5. **Timezone Handling in Different Seasons**: Test DST transitions
+
+== Risk Assessment
+
+=== Low Risk
+
+* Implementation follows existing patterns exactly
+* Spring Boot handles OAuth2 automatically
+* WireMock allows thorough testing
+* No complex logic (mostly validation and passthrough)
+
+=== Medium Risk
+
+* API response structure might have edge cases
+- **Mitigation**: Comprehensive test fixtures
+- **Mitigation**: Integration tests with WireMock
+
+=== High Risk
+
+* None identified
+
+== Success Metrics
+
+* **Test Coverage**: 100% for new code
+* **Build Time**: No significant increase
+* **Code Quality**: Zero SonarQube issues
+* **Documentation**: Complete and clear
+* **Functionality**: Works with real ZDF API
+
+== Next Steps After Implementation
+
+1. Test with real ZDF API credentials
+2. Validate response structure with real data
+3. Test various time ranges and channels
+4. Gather feedback
+5. Consider adding `get_current_broadcast` (uses same API with different time range)
+6. Consider adding pagination support if needed
+
+== Conclusion
+
+This plan follows strict TDD principles:
+1. **Write tests first** (RED) 2. **Implement minimal code** to pass tests (GREEN) 3. **Refactor** while keeping tests green (REFACTOR)
+
+Key changes from original plan:
+* ✅ MCP tool uses `from`/`to`/`tvService` (same as API) * ✅ No channel validation (API handles it) * ✅ Simplified OAuth testing (single stub per test class) * ✅ Using Mockito instead of MockK * ✅ Based on actual API response structure
+
+The implementation will be:
+* **Testable**: 100% test coverage * **Maintainable**: Clear structure, minimal logic * **Consistent**: Follows existing patterns * **Production-ready**: Proper error handling and logging * **Open-source quality**: Well-documented and professional
+
+**Ready for approval to proceed with implementation.**
+

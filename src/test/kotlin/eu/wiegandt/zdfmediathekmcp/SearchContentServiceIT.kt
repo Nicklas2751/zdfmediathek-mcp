@@ -45,7 +45,7 @@ class SearchContentServiceIT {
     fun tearDown() {
         mcpClient.closeGracefully().block()
     }
-
+    
     @Test
     fun `search_content tool is available`() {
         // given
