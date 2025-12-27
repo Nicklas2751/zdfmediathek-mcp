@@ -116,13 +116,13 @@ class ZdfMediathekServiceIT {
                     aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody("""{"access_token":"mock-token","token_type":"Bearer","expires_in":3600}""")
+                        .withBody("""{"access_token":"test-token","token_type":"Bearer","expires_in":3600}""")
                 )
         )
 
         stubFor(
             get(urlPathEqualTo("/search/documents"))
-                .withHeader("Authorization", equalTo("Bearer mock-token"))
+                .withHeader("Authorization", equalTo("Bearer test-token"))
                 .willReturn(
                     aResponse()
                         .withStatus(200)
@@ -139,7 +139,7 @@ class ZdfMediathekServiceIT {
         verify(postRequestedFor(urlPathEqualTo("/oauth/token")))
         verify(
             getRequestedFor(urlPathEqualTo("/search/documents"))
-                .withHeader("Authorization", equalTo("Bearer mock-token"))
+                .withHeader("Authorization", equalTo("Bearer test-token"))
         )
     }
 
