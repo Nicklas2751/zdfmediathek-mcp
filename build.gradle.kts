@@ -65,6 +65,14 @@ kotlin {
     }
 }
 
+sonar {
+    properties {
+        property("sonar.projectKey", "Nicklas2751_zdfmediathek-mcp")
+        property("sonar.organization", "nicklas2751-github")
+    }
+}
+
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
@@ -72,14 +80,11 @@ tasks.withType<Test> {
 tasks.test {
     finalizedBy(tasks.jacocoTestReport)
 }
+
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
-}
-
-sonar {
-    properties {
-        property("sonar.projectKey", "Nicklas2751_zdfmediathek-mcp")
-        property("sonar.organization", "nicklas2751-github")
+    reports {
+        xml.required = true
     }
 }
 
