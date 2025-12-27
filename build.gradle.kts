@@ -72,7 +72,6 @@ sonar {
     properties {
         property("sonar.projectKey", "Nicklas2751_zdfmediathek-mcp")
         property("sonar.organization", "nicklas2751-github")
-        property("sonar.host.url", "https://sonarcloud.io")
     }
 }
 
