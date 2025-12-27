@@ -143,7 +143,8 @@ This is non-negotiable unless explicitly stated otherwise by user.
 - **JSON Serialization:** Jackson (Spring Boot default)
 - **OAuth2:** Spring Security OAuth2 Client
 - **Logging:** SLF4J with Logback
-- **Testing:** JUnit 5, AssertJ, Spring Boot Test
+- **Testing:** JUnit 5, AssertJ, Spring Boot Test, WireMock
+- **Code Quality:** SonarQube Gradle Plugin (SonarCloud)
 - **Docker:** Eclipse Temurin JRE (Alpine)
 
 ### Key Dependencies
@@ -186,15 +187,59 @@ testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 # Run with coverage
 ./gradlew test jacocoTestReport
 
+# Run SonarQube analysis (requires SONAR_TOKEN environment variable)
+./gradlew sonar
+
 # Check code quality (if detekt is configured)
 ./gradlew detekt
 
 # Run application
-./gradlew run
+./gradlew bootRun
 
 # Build Docker image
 docker build -t zdf-mediathek-mcp .
 ```
+
+---
+
+## SonarQube Configuration
+
+The project uses the SonarQube Gradle Plugin for code quality analysis with SonarCloud.
+
+### Configuration
+
+The SonarQube plugin is configured in `build.gradle.kts`:
+
+```kotlin
+plugins {
+    id("org.sonarqube") version "7.2.2.6593"
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "mediathek-ai_zdfmediathek-mcp")
+        property("sonar.organization", "mediathek-ai")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
+}
+```
+
+### Running Analysis
+
+```bash
+# Requires SONAR_TOKEN environment variable
+export SONAR_TOKEN=your-token-here
+./gradlew sonar
+```
+
+### CI/CD Integration
+
+The GitHub Actions CI workflow automatically runs SonarQube analysis on every push and pull request. The workflow uses
+the Gradle plugin instead of the SonarCloud GitHub Action for more accurate results.
+
+**Required GitHub Secrets:**
+
+- `SONAR_TOKEN`: SonarCloud authentication token
 
 ---
 
