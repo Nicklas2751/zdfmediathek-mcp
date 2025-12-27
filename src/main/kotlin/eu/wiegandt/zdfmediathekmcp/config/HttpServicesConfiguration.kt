@@ -4,7 +4,6 @@ import eu.wiegandt.zdfmediathekmcp.ZdfMediathekService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.oauth2.client.AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder
@@ -20,7 +19,6 @@ import org.springframework.web.service.invoker.createClient
 private const val OAUTH2_CLIENT_REGISTRATION_ID = "zdf"
 
 @Configuration
-@EnableWebFluxSecurity
 class HttpServicesConfiguration {
 
     /**
