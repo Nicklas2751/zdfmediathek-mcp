@@ -1,0 +1,413 @@
+= CI/CD Implementation with GitHub Actions
+:author: GitHub Copilot
+:date: 2025-12-27
+:revnumber: 1.0
+:toc: left
+:toclevels: 3
+:sectnums:
+
+== Overview
+
+This plan describes the implementation of CI/CD pipelines using GitHub Actions for the zdfmediathek-mcp project, as requested in Issue #1.
+
+=== Goals
+
+1. **Continuous Integration (CI)**: Automated build, test, and SonarQube quality checks on every push and pull request
+2. **Continuous Delivery (CD)**: Automated release builds with fat JAR and container image publication
+
+=== Related Documentation
+
+* GitHub Issue: #1
+* Project: https://github.com/Nicklas2751/zdfmediathek-mcp
+
+== Requirements Analysis
+
+=== 1. CI Workflow: Build, Test, and Quality Check
+
+**Trigger Events:**
+
+* Push to any branch
+* Pull request creation
+* Pull request updates
+
+**Steps Required:**
+
+. Set up JDK 21 (Eclipse Temurin)
+. Configure Gradle build cache
+. Build project with Gradle
+. Run all tests
+. Execute SonarQube code quality analysis
+. Fail workflow if any step fails
+
+**Tools & Actions:**
+
+* `actions/checkout@v4` - Check out repository
+* `actions/setup-java@v4` - Set up JDK 21
+* `gradle/actions/setup-gradle@v4` - Set up Gradle with caching
+* `SonarSource/sonarqube-scan-action@v3` - SonarQube analysis
+
+**Secrets Required:**
+
+* `SONAR_TOKEN` - Already configured in repository
+
+=== 2. CD Workflow: Automated Release Build
+
+**Trigger Events:**
+
+* GitHub Release published
+
+**Steps Required:**
+
+. Set up JDK 21
+. Build fat JAR using Gradle
+. Attach fat JAR to GitHub release
+. Build container image using buildpacks
+. Tag image with release version and `latest`
+. Publish to GitHub Container Registry (ghcr.io)
+
+**Tools & Actions:**
+
+* `actions/checkout@v4` - Check out repository
+* `actions/setup-java@v4` - Set up JDK 21
+* `gradle/actions/setup-gradle@v4` - Set up Gradle
+* `softprops/action-gh-release@v2` - Attach artifacts to release
+* `docker/login-action@v3` - Log in to GHCR
+* `docker/metadata-action@v5` - Generate Docker metadata
+
+**Permissions Required:**
+
+* `contents: write` - For attaching release assets
+* `packages: write` - For publishing to GHCR
+
+== Technical Design
+
+=== Workflow Files
+
+Two workflow files will be created in `.github/workflows/`:
+
+1. **`ci.yml`** - Continuous Integration
+2. **`release.yml`** - Release Build and Publish
+
+=== CI Workflow Design
+
+[source,yaml]
+----
+name: CI - Build, Test, and Quality Check
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - Checkout code
+      - Setup JDK 21 (Eclipse Temurin)
+      - Setup Gradle with caching
+      - Build and test
+      - SonarQube analysis
+----
+
+**Key Features:**
+
+* Runs on all branches and PRs
+* Uses Gradle build cache for faster builds
+* Fails on build/test/quality issues
+* Integrates SonarQube analysis
+
+=== Release Workflow Design
+
+[source,yaml]
+----
+name: Release - Build and Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-jar:
+    runs-on: ubuntu-latest
+    steps:
+      - Build fat JAR
+      - Upload to release
+  
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - Build container with buildpacks
+      - Tag with version and latest
+      - Push to GHCR
+----
+
+**Key Features:**
+
+* Triggered only on release publication
+* Builds both JAR and container image
+* Automatically tags with version and `latest`
+* Publishes to GitHub Container Registry
+
+=== Gradle Configuration for Fat JAR
+
+The project uses Spring Boot, which provides built-in fat JAR support via `bootJar` task.
+
+**Gradle Task:**
+
+[source,bash]
+----
+./gradlew bootJar
+----
+
+**Output Location:**
+
+[source]
+----
+build/libs/zdfmediathek-mcp-{version}.jar
+----
+
+=== Buildpacks Integration
+
+Spring Boot 3.x includes built-in Cloud Native Buildpacks support.
+
+**Gradle Task:**
+
+[source,bash]
+----
+./gradlew bootBuildImage \
+  --imageName=ghcr.io/nicklas2751/zdfmediathek-mcp:$VERSION
+----
+
+**Buildpack Features:**
+
+* Automatically detects Spring Boot application
+* Creates optimized layered image
+* Uses Eclipse Temurin JRE
+* No Dockerfile needed
+
+== Implementation Plan
+
+=== Phase 1: CI Workflow
+
+. Create `.github/workflows/ci.yml`
+. Configure job with JDK 21 setup
+. Add Gradle build and test steps
+. Integrate SonarQube scanning
+. Test workflow on push
+
+=== Phase 2: Release Workflow
+
+. Create `.github/workflows/release.yml`
+. Implement fat JAR build job
+. Add release asset upload
+. Implement container image build job
+. Configure GHCR authentication and push
+. Test workflow with test release
+
+=== Phase 3: Documentation
+
+. Update README.md with CI/CD badges (optional)
+. Document release process
+
+== Workflow File Specifications
+
+=== CI Workflow (`ci.yml`)
+
+[source,yaml]
+----
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Build, Test, and Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for SonarQube
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+      
+      - name: Build and Test
+        run: ./gradlew build
+      
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v3
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+----
+
+=== Release Workflow (`release.yml`)
+
+[source,yaml]
+----
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-jar:
+    name: Build and Upload JAR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      
+      - name: Build JAR
+        run: ./gradlew bootJar
+      
+      - name: Upload JAR to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/libs/*.jar
+  
+  build-image:
+    name: Build and Push Container Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+      - name: Build and push container image
+        run: |
+          ./gradlew bootBuildImage \
+            --imageName=ghcr.io/${{ github.repository_owner }}/zdfmediathek-mcp:${{ steps.version.outputs.VERSION }}
+          docker tag ghcr.io/${{ github.repository_owner }}/zdfmediathek-mcp:${{ steps.version.outputs.VERSION }} \
+            ghcr.io/${{ github.repository_owner }}/zdfmediathek-mcp:latest
+          docker push ghcr.io/${{ github.repository_owner }}/zdfmediathek-mcp:${{ steps.version.outputs.VERSION }}
+          docker push ghcr.io/${{ github.repository_owner }}/zdfmediathek-mcp:latest
+----
+
+== Testing Strategy
+
+=== CI Workflow Testing
+
+. Push to feature branch → workflow should run
+. Create PR → workflow should run
+. Update PR → workflow should run
+. Verify build cache is working (check action logs)
+. Verify SonarQube analysis completes
+. Introduce test failure → workflow should fail
+
+=== Release Workflow Testing
+
+. Create test release (draft or pre-release)
+. Verify JAR is built and attached
+. Verify container image is built
+. Check GHCR for published images
+. Verify tags (version and latest) are present
+
+== Security Considerations
+
+=== Secrets Management
+
+* `SONAR_TOKEN` - Already configured, used for SonarQube authentication
+* `GITHUB_TOKEN` - Automatically provided by GitHub Actions, used for GHCR authentication
+
+=== Permissions
+
+* CI workflow: Read-only access (default)
+* Release workflow: 
+  * `contents: write` - For uploading release assets
+  * `packages: write` - For publishing to GHCR
+
+=== Best Practices
+
+* Use specific action versions (e.g., `@v4` instead of `@main`)
+* Minimal permissions principle
+* No hardcoded credentials
+* Use `fetch-depth: 0` for SonarQube (needs full git history)
+
+== Open Questions
+
+1. **SonarQube Configuration**: Is `SONAR_HOST_URL` configured as a repository variable? If not using SonarCloud, we need the host URL.
+2. **Version Strategy**: Should we use semantic versioning? Format expected?
+3. **Image Registry**: Should we use lowercase repository name for GHCR? (GitHub recommends lowercase)
+
+== Success Criteria
+
+* ✅ CI workflow runs on all pushes and PRs
+* ✅ CI workflow fails on test failures
+* ✅ SonarQube analysis completes successfully
+* ✅ Release workflow builds fat JAR
+* ✅ JAR is attached to GitHub release
+* ✅ Container image is built with buildpacks
+* ✅ Image is tagged with version and `latest`
+* ✅ Image is published to GHCR
+* ✅ Workflows follow GitHub Actions best practices
+
+== References
+
+* https://docs.github.com/en/actions[GitHub Actions Documentation]
+* https://github.com/SonarSource/sonarqube-scan-action[SonarQube Scan Action]
+* https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#build-image[Spring Boot Buildpacks Documentation]
+* https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry[GitHub Container Registry Documentation]
+
+== Revision History
+
+[cols="1,2,4"]
+|===
+|Version |Date |Changes
+
+|1.0
+|2025-12-27
+|Initial plan creation
+|===
