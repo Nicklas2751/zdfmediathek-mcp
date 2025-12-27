@@ -47,8 +47,8 @@ jobs:
       - name: Build and push container image
         run: |
           ./gradlew bootBuildImage \
-            --imageName=ghcr.io/${{ github.repository_owner }}/zdfmediathek-mcp:${{ steps.version.outputs.VERSION }}
-          docker tag ghcr.io/${{ github.repository_owner }}/zdfmediathek-mcp:${{ steps.version.outputs.VERSION }} \
-            ghcr.io/${{ github.repository_owner }}/zdfmediathek-mcp:latest
-          docker push ghcr.io/${{ github.repository_owner }}/zdfmediathek-mcp:${{ steps.version.outputs.VERSION }}
-          docker push ghcr.io/${{ github.repository_owner }}/zdfmediathek-mcp:latest
+            --imageName=ghcr.io/${{ toLower(github.repository_owner) }}/zdfmediathek-mcp:${{ steps.version.outputs.VERSION }}
+          docker tag ghcr.io/${{ toLower(github.repository_owner) }}/zdfmediathek-mcp:${{ steps.version.outputs.VERSION }} \
+            ghcr.io/${{ toLower(github.repository_owner) }}/zdfmediathek-mcp:latest
+          docker push ghcr.io/${{ toLower(github.repository_owner) }}/zdfmediathek-mcp:${{ steps.version.outputs.VERSION }}
+          docker push ghcr.io/${{ toLower(github.repository_owner) }}/zdfmediathek-mcp:latest
