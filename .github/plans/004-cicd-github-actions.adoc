@@ -12,7 +12,7 @@ This plan describes the implementation of CI/CD pipelines using GitHub Actions f
 
 === Goals
 
-1. **Continuous Integration (CI)**: Automated build, test, and SonarQube quality checks on every push and pull request
+1. **Continuous Integration (CI)**: Automated build, test, and SonarCloud quality checks on every push and pull request
 2. **Continuous Delivery (CD)**: Automated release builds with fat JAR and container image publication
 
 === Related Documentation
@@ -36,7 +36,7 @@ This plan describes the implementation of CI/CD pipelines using GitHub Actions f
 . Configure Gradle build cache
 . Build project with Gradle
 . Run all tests
-. Execute SonarQube code quality analysis
+. Execute SonarCloud code quality analysis
 . Fail workflow if any step fails
 
 **Tools & Actions:**
@@ -44,7 +44,7 @@ This plan describes the implementation of CI/CD pipelines using GitHub Actions f
 * `actions/checkout@v4` - Check out repository
 * `actions/setup-java@v4` - Set up JDK 21
 * `gradle/actions/setup-gradle@v4` - Set up Gradle with caching
-* `SonarSource/sonarqube-scan-action@v3` - SonarQube analysis
+* `SonarSource/sonarcloud-github-action@v3` - SonarCloud analysis
 
 **Secrets Required:**
 
@@ -116,7 +116,7 @@ jobs:
 * Runs on all branches and PRs
 * Uses Gradle build cache for faster builds
 * Fails on build/test/quality issues
-* Integrates SonarQube analysis
+* Integrates SonarCloud analysis
 
 === Release Workflow Design
 
@@ -250,11 +250,10 @@ jobs:
       - name: Build and Test
         run: ./gradlew build
       
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v3
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v3
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
 ----
 
 === Release Workflow (`release.yml`)
@@ -344,7 +343,7 @@ jobs:
 . Create PR → workflow should run
 . Update PR → workflow should run
 . Verify build cache is working (check action logs)
-. Verify SonarQube analysis completes
+. Verify SonarCloud analysis completes
 . Introduce test failure → workflow should fail
 
 === Release Workflow Testing
@@ -359,7 +358,7 @@ jobs:
 
 === Secrets Management
 
-* `SONAR_TOKEN` - Already configured, used for SonarQube authentication
+* `SONAR_TOKEN` - Already configured, used for SonarCloud authentication
 * `GITHUB_TOKEN` - Automatically provided by GitHub Actions, used for GHCR authentication
 
 === Permissions
@@ -374,19 +373,18 @@ jobs:
 * Use specific action versions (e.g., `@v4` instead of `@main`)
 * Minimal permissions principle
 * No hardcoded credentials
-* Use `fetch-depth: 0` for SonarQube (needs full git history)
+* Use `fetch-depth: 0` for SonarCloud (needs full git history)
 
 == Open Questions
 
-1. **SonarQube Configuration**: Is `SONAR_HOST_URL` configured as a repository variable? If not using SonarCloud, we need the host URL.
-2. **Version Strategy**: Should we use semantic versioning? Format expected?
-3. **Image Registry**: Should we use lowercase repository name for GHCR? (GitHub recommends lowercase)
+1. **Version Strategy**: Should we use semantic versioning? Format expected?
+2. **Image Registry**: Should we use lowercase repository name for GHCR? (GitHub recommends lowercase)
 
 == Success Criteria
 
 * ✅ CI workflow runs on all pushes and PRs
 * ✅ CI workflow fails on test failures
-* ✅ SonarQube analysis completes successfully
+* ✅ SonarCloud analysis completes successfully
 * ✅ Release workflow builds fat JAR
 * ✅ JAR is attached to GitHub release
 * ✅ Container image is built with buildpacks
@@ -397,7 +395,8 @@ jobs:
 == References
 
 * https://docs.github.com/en/actions[GitHub Actions Documentation]
-* https://github.com/SonarSource/sonarqube-scan-action[SonarQube Scan Action]
+* https://github.com/SonarSource/sonarcloud-github-action[SonarCloud GitHub Action]
+* https://docs.sonarcloud.io/[SonarCloud Documentation]
 * https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#build-image[Spring Boot Buildpacks Documentation]
 * https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry[GitHub Container Registry Documentation]
 
