@@ -1,0 +1,118 @@
+= TDD-Plan: search_brands Feature
+:toc: left
+:toclevels: 3
+:sectnums:
+
+== Überblick
+
+Implementierung eines MCP-Tools `search_brands`, das es ermöglicht, nach TV-Marken/Serien ("Brands") in der ZDF Mediathek zu suchen.
+
+== Motivation
+
+* Nutzer/LLMs möchten gezielt nach Sendungsreihen, Marken oder Serien suchen (z.B. "Terra X", "Tatort", "heute-show").
+* Ermöglicht die Identifikation und Auswahl von Serien für weitere Abfragen (z.B. Details, Episoden).
+* Ergänzt die bestehenden Such- und Schedule-Tools um eine strukturierte Markensuche.
+
+== API-Design
+
+=== MCP Tool Signatur
+
+[source,kotlin]
+----
+@Tool(
+    name = "search_brands",
+    description = "Search for TV brands/series in the ZDF Mediathek. Returns a list of brands with title, id, and description. " +
+                 "Parameters: brandName (optional, string, e.g. 'Terra X'), limit (optional, default: 10). "
+)
+fun searchBrands(brandName: String? = null, limit: Int = 10): List<BrandSummary>
+----
+
+=== Parameter
+
+* `brandName` (String, optional): Suchbegriff für die Marke/Serie (z.B. "Terra X").
+Wenn nicht angegeben, werden alle Brands durchsucht oder ein Default-Listing geliefert (abhängig von der API).
+* `limit` (Int, optional, default: 10): Maximale Anzahl der Ergebnisse
+
+=== Rückgabewert
+
+Liste von `BrandSummary` Objekten:
+
+[source,kotlin]
+----
+data class BrandSummary(
+    val id: String,           // Brand UUID
+    val title: String,        // Marken-/Serientitel
+    val description: String?, // Kurzbeschreibung
+    val imageUrl: String?     // Optional: Bild-URL
+)
+----
+
+== TDD-Phasen
+
+=== Phase 1: Red - Unit Tests schreiben (schlagen fehl)
+
+* Teste Suchanfragen mit verschiedenen Begriffen (brandName)
+* Teste leere Ergebnisse
+* Teste Fehlerfälle (z.B. leere brandName, API-Fehler)
+* Teste Limit-Parameter (Standard 10, andere Werte)
+* Teste Aufruf ohne brandName (liefert Default-Listing oder alle Brands)
+
+=== Phase 2: Red - Integration Tests schreiben (schlagen fehl)
+
+* WireMock für `/cmdm/brands` Endpoint
+* Teste Response-Mapping und OAuth2
+* Teste mit echtem Beispiel-Response (siehe 2025-12-28T222614.200.json, limit 10)
+* Teste Aufruf ohne brandName
+
+=== Phase 3: Green - Produktivcode implementieren
+
+* Service, Model und Controller/Tool-Annotation
+* API-Aufruf, Mapping, Fehlerbehandlung
+
+=== Phase 4: Refactoring
+
+* Code Cleanup, Logging, KDoc, Testabdeckung prüfen
+
+== API-Details
+
+* Endpoint: `/cmdm/brands`
+* Parameter: `brand_name` (query, optional), `limit` (default: 10)
+* Response: Liste von Brand-Objekten mit Feldern wie `uuid`, `brandName`, `brandDescription`, `teaserImageRef`
+
+== Beispiel-Response (limit 10)
+
+[source,json]
+----
+{
+  "brands": [
+    {
+      "uuid": "d74d6c90-b21f-3ce8-a1ec-0876d43191a4",
+      "brandName": "heute journal",
+      "brandDescription": "Nachrichtenmagazin des ZDF.",
+      "teaserImageRef": {
+        "layouts": {
+          "1280x720": "https://www.zdf.de/assets/heute-journal-100~1280x720.jpg"
+        }
+      }
+    }
+    // ... bis zu 10 Einträge ...
+  ]
+}
+----
+
+== Offene Fragen & Entscheidungen
+
+* Sollen nur "searchable" Brands zurückgegeben werden?
+(API-Filter?)
+* Wie mit Mehrsprachigkeit umgehen?
+(Standard: Deutsch)
+* Wie mit leeren/fehlenden Beschreibungen umgehen?
+* Was ist das gewünschte Verhalten, wenn brandName nicht gesetzt ist?
+(Default-Listing, alle Brands, oder Fehler?)
+
+== Success Criteria
+
+* Alle Tests grün (Unit + Integration)
+* Korrekte Abbildung der wichtigsten Felder (id, title, description, imageUrl)
+* Fehlerfälle und leere Ergebnisse werden sauber behandelt
+* Logging und KDoc vorhanden
