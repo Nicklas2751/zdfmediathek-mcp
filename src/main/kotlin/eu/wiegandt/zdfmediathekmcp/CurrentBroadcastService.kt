@@ -19,10 +19,12 @@ class CurrentBroadcastService(
 ) {
 
     private val logger = LoggerFactory.getLogger(CurrentBroadcastService::class.java)
-    private val TIME_WINDOW_PAST_HOURS = 3L
-    private val TIME_WINDOW_FUTURE_MINUTES = 15L
-    private val TIMEZONE = ZoneId.of("Europe/Berlin")
 
+    companion object {
+        private const val TIME_WINDOW_PAST_HOURS = 3L
+        private const val TIME_WINDOW_FUTURE_MINUTES = 15L
+        private val TIMEZONE: ZoneId = ZoneId.of("Europe/Berlin")
+    }
     /**
      * Retrieves the currently airing program on a specific ZDF channel.
      *
