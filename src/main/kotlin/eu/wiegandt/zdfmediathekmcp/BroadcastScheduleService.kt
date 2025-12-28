@@ -1,6 +1,7 @@
 package eu.wiegandt.zdfmediathekmcp
 
 import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcastScheduleResponse
+import org.slf4j.LoggerFactory
 import org.springaicommunity.mcp.annotation.McpTool
 import org.springframework.stereotype.Service
 import java.time.OffsetDateTime
@@ -15,6 +16,8 @@ import java.time.OffsetDateTime
 class BroadcastScheduleService(
     private val zdfMediathekService: ZdfMediathekService
 ) {
+
+    private val logger = LoggerFactory.getLogger(BroadcastScheduleService::class.java)
 
     /**
      * Retrieves the TV broadcast schedule for a specific time range and optional channel.
@@ -41,25 +44,53 @@ class BroadcastScheduleService(
         to: String,
         tvService: String? = null
     ): ZdfBroadcastScheduleResponse {
-        // Validate required parameters
-        require(from.isNotBlank()) {
-            "Parameter 'from' is required and must not be empty"
-        }
-        require(to.isNotBlank()) {
-            "Parameter 'to' is required and must not be empty"
-        }
+        logger.info(
+            "MCP Tool 'get_broadcast_schedule' called with from='{}', to='{}', tvService='{}'",
+            from, to, tvService ?: "all"
+        )
 
-        // Validate ISO 8601 format with timezone
-        val fromDateTime = parseIso8601OrThrow(from, "from")
-        val toDateTime = parseIso8601OrThrow(to, "to")
+        try {
+            // Validate required parameters
+            require(from.isNotBlank()) {
+                "Parameter 'from' is required and must not be empty"
+            }
+            require(to.isNotBlank()) {
+                "Parameter 'to' is required and must not be empty"
+            }
 
-        // Validate time range
-        require(fromDateTime.isBefore(toDateTime)) {
-            "Parameter 'from' must be before 'to'"
+            // Validate ISO 8601 format with timezone
+            logger.debug("Parsing and validating time parameters")
+            val fromDateTime = parseIso8601OrThrow(from, "from")
+            val toDateTime = parseIso8601OrThrow(to, "to")
+
+            // Validate time range
+            require(fromDateTime.isBefore(toDateTime)) {
+                "Parameter 'from' must be before 'to'"
+            }
+
+            logger.debug("Time range validated: from={}, to={}", fromDateTime, toDateTime)
+            logger.debug("Calling ZDF API to get broadcast schedule")
+
+            // Delegate to ZDF API service
+            val response = zdfMediathekService.getBroadcastSchedule(from, to, tvService)
+
+            logger.info(
+                "Successfully retrieved {} broadcasts for time range {} to {}",
+                response.broadcasts.size, from, to
+            )
+            logger.debug("Broadcast schedule response: {}", response)
+
+            return response
+        } catch (e: IllegalArgumentException) {
+            logger.error("Invalid parameter for get_broadcast_schedule: {}", e.message)
+            throw e
+        } catch (e: Exception) {
+            logger.error(
+                "Error executing get_broadcast_schedule for time range {} to {}: {}",
+                from, to, e.message, e
+            )
+            throw RuntimeException("Failed to get broadcast schedule: ${e.message}", e)
         }
-
-        // Delegate to ZDF API service
-        return zdfMediathekService.getBroadcastSchedule(from, to, tvService)
     }
 
     /**

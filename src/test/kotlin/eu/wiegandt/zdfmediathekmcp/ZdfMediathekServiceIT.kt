@@ -15,8 +15,8 @@ import java.time.OffsetDateTime
 
 @SpringBootTest(
     properties = [
-        "zdf.clientId=test-client",
-        "zdf.clientSecret=test-secret"
+        "zdf.client.id=test-client",
+        "zdf.client.secret=test-secret"
     ]
 )
 @EnableWireMock(
