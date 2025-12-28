@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService
 import org.wiremock.spring.ConfigureWireMock
 import org.wiremock.spring.EnableWireMock
 import java.time.OffsetDateTime
@@ -28,6 +29,9 @@ class ZdfMediathekServiceIT {
 
     @Autowired
     lateinit var zdfMediathekService: ZdfMediathekService
+
+    @Autowired
+    lateinit var authorizedClientService: ReactiveOAuth2AuthorizedClientService
 
     @Test
     fun searchDocuments_validQuery_returnsResults() {
@@ -108,6 +112,9 @@ class ZdfMediathekServiceIT {
 
     @Test
     fun searchDocuments_withOAuth2_sendsAuthorizationHeader() {
+        // Clear any cached OAuth2 token to ensure a fresh token request
+        authorizedClientService.removeAuthorizedClient("zdf", "anonymousUser").block()
+
         // given
         stubFor(
             post(urlPathEqualTo("/oauth/token"))
