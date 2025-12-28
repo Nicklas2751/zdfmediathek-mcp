@@ -145,7 +145,7 @@ This is non-negotiable unless explicitly stated otherwise by user.
 - **Logging:** SLF4J with Logback
 - **Testing:** JUnit 5, AssertJ, Spring Boot Test, WireMock
 - **Code Quality:** SonarQube Gradle Plugin (SonarCloud)
-- **Docker:** Eclipse Temurin JRE (Alpine)
+- **Container Images:** Spring Boot Buildpacks (Paketo)
 
 ### Key Dependencies
 
