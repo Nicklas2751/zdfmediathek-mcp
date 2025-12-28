@@ -2,7 +2,7 @@ name: Release
 
 on:
   release:
-    types: [published]
+    types: [ published ]
 
 jobs:
   build-and-publish:
@@ -15,40 +15,65 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
-      
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-      
+
       - name: Extract version from tag
         id: version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-      
+
       - name: Build JAR
         run: ./gradlew bootJar
-      
+
       - name: Upload JAR to Release
         uses: softprops/action-gh-release@v2
         with:
           files: build/libs/*.jar
-      
-      - name: Log in to GHCR
+
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Build and push container image
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value=latest
+
+      - name: Build container image with Buildpacks
         run: |
-          ./gradlew bootBuildImage \
-            --imageName=ghcr.io/${{ toLower(github.repository_owner) }}/zdfmediathek-mcp:${{ steps.version.outputs.VERSION }}
-          docker tag ghcr.io/${{ toLower(github.repository_owner) }}/zdfmediathek-mcp:${{ steps.version.outputs.VERSION }} \
-            ghcr.io/${{ toLower(github.repository_owner) }}/zdfmediathek-mcp:latest
-          docker push ghcr.io/${{ toLower(github.repository_owner) }}/zdfmediathek-mcp:${{ steps.version.outputs.VERSION }}
-          docker push ghcr.io/${{ toLower(github.repository_owner) }}/zdfmediathek-mcp:latest
+          # Get the first tag from metadata
+          PRIMARY_TAG=$(echo '${{ steps.meta.outputs.tags }}' | head -n1)
+          echo "Building image with tag: $PRIMARY_TAG"
+          
+          # Build with Spring Boot Buildpacks
+          ./gradlew bootBuildImage --imageName="$PRIMARY_TAG" --publishImage
+
+      - name: Push additional tags
+        run: |
+          PRIMARY_TAG=$(echo '${{ steps.meta.outputs.tags }}' | head -n1)
+          
+          # Tag and push all additional tags
+          echo '${{ steps.meta.outputs.tags }}' | tail -n +2 | while read -r tag; do
+            if [ -n "$tag" ]; then
+              echo "Tagging and pushing: $tag"
+              docker tag "$PRIMARY_TAG" "$tag"
+              docker push "$tag"
+            fi
+          done
+
