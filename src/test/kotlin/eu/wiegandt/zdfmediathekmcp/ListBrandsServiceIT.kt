@@ -62,7 +62,7 @@ class ListBrandsServiceIT {
         )
         val expected = listOf(
             BrandSummary(
-                uuid = "id1",
+                brandUuid = "id1",
                 brandName = "Terra X",
                 brandDescription = "Doku-Reihe"
             )
