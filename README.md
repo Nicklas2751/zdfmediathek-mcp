@@ -38,10 +38,9 @@ The server provides the following MCP tools:
 
 ### Phase 2 - Planned
 
-| Tool                  | Description                                     | Key Parameters                 |
-|-----------------------|-------------------------------------------------|--------------------------------|
-| `search_brands`       | Search for TV brands/series                     | `query` (string, required)     |
-| `get_content_details` | Get detailed information about specific content | `contentId` (string, required) |
+| Tool            | Description                 | Key Parameters             |
+|-----------------|-----------------------------|----------------------------|
+| `search_brands` | Search for TV brands/series | `query` (string, required) |
 
 ### Phase 3 - Future
 
