@@ -16,7 +16,8 @@ interface ZdfMediathekService {
     fun getBroadcastSchedule(
         @RequestParam("from") from: String,
         @RequestParam("to") to: String,
-        @RequestParam("tvService") tvService: String?
+        @RequestParam("tvService") tvService: String?,
+        @RequestParam("limit") limit: Int = 10
     ): ZdfBroadcastScheduleResponse
 
 }

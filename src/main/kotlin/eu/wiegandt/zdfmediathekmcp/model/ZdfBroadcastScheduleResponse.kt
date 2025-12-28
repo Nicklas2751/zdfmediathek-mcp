@@ -1,5 +1,7 @@
 package eu.wiegandt.zdfmediathekmcp.model
+
 import com.fasterxml.jackson.annotation.JsonProperty
+
 /**
  * Response wrapper for broadcast schedule queries.
  *
@@ -9,8 +11,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
  * @property nextArchive Link to next page (pagination)
  */
 data class ZdfBroadcastScheduleResponse(
-    @JsonProperty("http://zdf.de/rels/cmdm/broadcasts")
+    @field:JsonProperty("http://zdf.de/rels/cmdm/broadcasts")
     val broadcasts: List<ZdfBroadcast>,
-    @JsonProperty("next-archive")
+    @field:JsonProperty("next-archive")
     val nextArchive: String?
 )

@@ -35,6 +35,7 @@ class BroadcastScheduleService(
                 "- from: Start time in ISO 8601 format with timezone (e.g., 2025-12-27T00:00:00+01:00) " +
                 "- to: End time in ISO 8601 format with timezone (e.g., 2025-12-27T23:59:59+01:00) " +
                 "- tvService: Optional channel name (e.g., ZDF, ZDFneo, 3sat). If omitted, returns all channels. " +
+                "- limit: Maximum number of broadcasts to return (default: 10). " +
                 "Common channels: ZDF, ZDFneo, ZDFinfo, 3sat, PHOENIX, KIKA. " +
                 "Timezone: Use +01:00 (CET) or +02:00 (CEST) for German time. " +
                 "Returns a list of programs with title, time, description, and channel info."
@@ -42,11 +43,12 @@ class BroadcastScheduleService(
     fun getBroadcastSchedule(
         from: String,
         to: String,
-        tvService: String? = null
+        tvService: String? = null,
+        limit: Int = 10
     ): ZdfBroadcastScheduleResponse {
         logger.info(
-            "MCP Tool 'get_broadcast_schedule' called with from='{}', to='{}', tvService='{}'",
-            from, to, tvService ?: "all"
+            "MCP Tool 'get_broadcast_schedule' called with from='{}', to='{}', tvService='{}', limit={}",
+            from, to, tvService ?: "all", limit
         )
 
         try {
@@ -56,6 +58,9 @@ class BroadcastScheduleService(
             }
             require(to.isNotBlank()) {
                 "Parameter 'to' is required and must not be empty"
+            }
+            require(limit > 0) {
+                "Parameter 'limit' must be greater than 0"
             }
 
             // Validate ISO 8601 format with timezone
@@ -68,11 +73,11 @@ class BroadcastScheduleService(
                 "Parameter 'from' must be before 'to'"
             }
 
-            logger.debug("Time range validated: from={}, to={}", fromDateTime, toDateTime)
+            logger.debug("Time range validated: from={}, to={}, limit={}", fromDateTime, toDateTime, limit)
             logger.debug("Calling ZDF API to get broadcast schedule")
 
             // Delegate to ZDF API service
-            val response = zdfMediathekService.getBroadcastSchedule(from, to, tvService)
+            val response = zdfMediathekService.getBroadcastSchedule(from, to, tvService, limit)
 
             logger.info(
                 "Successfully retrieved {} broadcasts for time range {} to {}",
