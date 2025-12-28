@@ -20,9 +20,9 @@ Code, IntelliJ IDEA, and others.
 - 🔍 **Content Search**: Search ZDF Mediathek content by title, topic, or description
 - 📅 **Broadcast Schedules**: Retrieve TV program schedules for all ZDF channels
 - 📺 **Current Broadcasts**: Get currently airing programs on ZDF channels
-- 🔐 **OAuth2 Authentication**: Secure API access with OAuth2 client credentials flow
 - 🐳 **Docker Ready**: Pre-configured Docker images for easy deployment
 - 🔌 **MCP Compatible**: Works with all MCP-compatible AI clients
+- 📊 **Comprehensive Logging**: Detailed debug logging for OAuth2 and API requests
 
 ## MCP Tools Reference
 
@@ -30,16 +30,16 @@ The server provides the following MCP tools:
 
 ### Phase 1 (MVP) - Currently Available
 
-| Tool             | Description                         | Key Parameters                                                        |
-|------------------|-------------------------------------|-----------------------------------------------------------------------|
-| `search_content` | Search for content in ZDF Mediathek | `query` (string, required)<br/>`limit` (number, optional, default: 5) |
+| Tool                     | Description                                     | Key Parameters                                                                                                                                           |
+|--------------------------|-------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `search_content`         | Search for content in ZDF Mediathek             | `query` (string, required)<br/>`limit` (number, optional, default: 5)                                                                                    |
+| `get_broadcast_schedule` | Get TV schedule for a specific channel and date | `from` (string, required, ISO 8601)<br/>`to` (string, required, ISO 8601)<br/>`tvService` (string, optional)<br/>`limit` (number, optional, default: 10) |
 
 ### Phase 1 - Planned (Next)
 
-| Tool                     | Description                                     | Key Parameters                                                              |
-|--------------------------|-------------------------------------------------|-----------------------------------------------------------------------------|
-| `get_broadcast_schedule` | Get TV schedule for a specific channel and date | `channel` (string, required)<br/>`date` (string, ISO 8601 format, optional) |
-| `get_current_broadcast`  | Get currently airing program on a channel       | `channel` (string, required)                                                |
+| Tool                    | Description                               | Key Parameters               |
+|-------------------------|-------------------------------------------|------------------------------|
+| `get_current_broadcast` | Get currently airing program on a channel | `channel` (string, required) |
 
 ### Phase 2 - Planned
 
@@ -75,8 +75,10 @@ The server provides the following MCP tools:
 {
   "tool": "get_broadcast_schedule",
   "arguments": {
-    "channel": "ZDF",
-    "date": "2025-12-19"
+    "from": "2025-12-27T00:00:00+01:00",
+    "to": "2025-12-27T23:59:59+01:00",
+    "tvService": "ZDF",
+    "limit": 10
   }
 }
 ```

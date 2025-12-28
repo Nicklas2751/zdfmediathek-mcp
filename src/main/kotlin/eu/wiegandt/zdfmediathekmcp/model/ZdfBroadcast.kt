@@ -25,7 +25,7 @@ data class ZdfBroadcast(
     val title: String,
     val subtitle: String?,
     val text: String?,
-    @JsonProperty("http://zdf.de/rels/cmdm/programme-item")
+    @field:JsonProperty("http://zdf.de/rels/cmdm/programme-item")
     val programmeItem: String?
 )
 

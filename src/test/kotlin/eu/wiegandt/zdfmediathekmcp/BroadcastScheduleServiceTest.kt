@@ -35,14 +35,14 @@ class BroadcastScheduleServiceTest {
             nextArchive = null
         )
 
-        `when`(zdfMediathekService.getBroadcastSchedule(from, to, tvService)).thenReturn(mockResponse)
+        `when`(zdfMediathekService.getBroadcastSchedule(from, to, tvService, 10)).thenReturn(mockResponse)
 
         // when
         val result = broadcastScheduleService.getBroadcastSchedule(from, to, tvService)
 
         // then
         assertThat(result).isEqualTo(mockResponse)
-        verify(zdfMediathekService).getBroadcastSchedule(from, to, tvService)
+        verify(zdfMediathekService).getBroadcastSchedule(from, to, tvService, 10)
     }
 
     @Test
@@ -92,14 +92,14 @@ class BroadcastScheduleServiceTest {
         val to = "2025-12-27T23:59:59+01:00"
         val mockResponse = ZdfBroadcastScheduleResponse(broadcasts = emptyList(), nextArchive = null)
 
-        `when`(zdfMediathekService.getBroadcastSchedule(from, to, null)).thenReturn(mockResponse)
+        `when`(zdfMediathekService.getBroadcastSchedule(from, to, null, 10)).thenReturn(mockResponse)
 
         // when
         val result = broadcastScheduleService.getBroadcastSchedule(from, to, null)
 
         // then
         assertThat(result).isEqualTo(mockResponse)
-        verify(zdfMediathekService).getBroadcastSchedule(from, to, null)
+        verify(zdfMediathekService).getBroadcastSchedule(from, to, null, 10)
     }
 
     @Test
@@ -112,8 +112,41 @@ class BroadcastScheduleServiceTest {
                 "ZDF"
             )
         }
-        
+
         assertThat(exception.message).isEqualTo("Parameter 'from' must be before 'to'")
+    }
+
+    @Test
+    fun `getBroadcastSchedule with limit less than 1 throws exception`() {
+        // when / then
+        val exception = assertThrows<IllegalArgumentException> {
+            broadcastScheduleService.getBroadcastSchedule(
+                "2025-12-27T00:00:00+01:00",
+                "2025-12-27T23:59:59+01:00",
+                "ZDF",
+                0
+            )
+        }
+
+        assertThat(exception.message).isEqualTo("Parameter 'limit' must be greater than 0")
+    }
+
+    @Test
+    fun `getBroadcastSchedule with custom limit passes limit to service`() {
+        // given
+        val from = "2025-12-27T00:00:00+01:00"
+        val to = "2025-12-27T23:59:59+01:00"
+        val limit = 50
+        val mockResponse = ZdfBroadcastScheduleResponse(broadcasts = emptyList(), nextArchive = null)
+
+        `when`(zdfMediathekService.getBroadcastSchedule(from, to, null, limit)).thenReturn(mockResponse)
+
+        // when
+        val result = broadcastScheduleService.getBroadcastSchedule(from, to, null, limit)
+
+        // then
+        assertThat(result).isEqualTo(mockResponse)
+        verify(zdfMediathekService).getBroadcastSchedule(from, to, null, limit)
     }
 }
 
