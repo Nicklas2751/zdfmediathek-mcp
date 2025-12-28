@@ -34,12 +34,7 @@ The server provides the following MCP tools:
 |--------------------------|-------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `search_content`         | Search for content in ZDF Mediathek             | `query` (string, required)<br/>`limit` (number, optional, default: 5)                                                                                    |
 | `get_broadcast_schedule` | Get TV schedule for a specific channel and date | `from` (string, required, ISO 8601)<br/>`to` (string, required, ISO 8601)<br/>`tvService` (string, optional)<br/>`limit` (number, optional, default: 10) |
-
-### Phase 1 - Planned (Next)
-
-| Tool                    | Description                               | Key Parameters               |
-|-------------------------|-------------------------------------------|------------------------------|
-| `get_current_broadcast` | Get currently airing program on a channel | `channel` (string, required) |
+| `get_current_broadcast`  | Get currently airing program on a channel       | `tvService` (string, required)<br/>`limit` (number, optional, default: 10)                                                                               |
 
 ### Phase 2 - Planned
 
@@ -89,7 +84,8 @@ The server provides the following MCP tools:
 {
   "tool": "get_current_broadcast",
   "arguments": {
-    "channel": "ZDFneo"
+    "tvService": "ZDFneo",
+    "limit": 10
   }
 }
 ```
