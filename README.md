@@ -320,8 +320,8 @@ server:
 # ZDF API Configuration
 zdf:
   url: https://prod-api.zdf.de
-  clientId: ${ZDF_CLIENT_ID}
-  clientSecret: ${ZDF_CLIENT_SECRET}
+  client.id: ${ZDF_CLIENT_ID}
+  client.secret: ${ZDF_CLIENT_SECRET}
 
 # Logging
 logging:

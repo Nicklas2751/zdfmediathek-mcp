@@ -16,8 +16,8 @@ spring:
       client:
         registration:
           zdf:
-            client-id: ${zdf.clientId}
-            client-secret: ${zdf.clientSecret}
+            client-id: ${zdf.client.id}
+            client-secret: ${zdf.client.secret}
             client-authentication-method: client_secret_post
             authorization-grant-type: client_credentials
         provider:
@@ -26,5 +26,17 @@ spring:
 
 zdf:
   url: https://prod-api.zdf.de
-  clientId: mediathek-search
-  clientSecret: ZDFmediathekSearchClientSecret
+  client:
+    id: mediathek-search
+    secret: ZDFmediathekSearchClientSecret
+
+logging:
+  level:
+    root: INFO
+    eu.wiegandt.zdfmediathekmcp: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.web.reactive.function.client: DEBUG
+    org.springaicommunity.mcp: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%t] %-40.40logger{39} : %m%n%wEx"
+

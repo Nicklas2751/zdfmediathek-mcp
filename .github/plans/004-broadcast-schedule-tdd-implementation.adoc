@@ -477,8 +477,8 @@ import org.wiremock.spring.EnableWireMock
 
 @SpringBootTest(
     properties = [
-        "zdf.clientId=test-client",
-        "zdf.clientSecret=test-secret"
+        "zdf.client.id=test-client",
+        "zdf.client.secret=test-secret"
     ]
 )
 @EnableWireMock(
@@ -816,6 +816,7 @@ Remove `get_broadcast_schedule` from "Phase 1 - Planned (Next)" since it's now i
 - BroadcastScheduleServiceIT (full integration tests)
 
 4. **Run Tests** - All should FAIL (expected)
+
 [source,bash]
 ---- ./gradlew test ----
 
@@ -826,6 +827,7 @@ Remove `get_broadcast_schedule` from "Phase 1 - Planned (Next)" since it's now i
 - Implement minimal code to make tests pass
 
 7. **Run Tests Again** - Tests should PASS (GREEN phase)
+
 [source,bash]
 ---- ./gradlew test ----
 
@@ -834,6 +836,7 @@ Remove `get_broadcast_schedule` from "Phase 1 - Planned (Next)" since it's now i
 - Extract helper methods if needed
 
 9. **Verify Code Quality**
+
 [source,bash]
 ---- ./gradlew build ----
 

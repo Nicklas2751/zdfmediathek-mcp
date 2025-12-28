@@ -6,7 +6,7 @@ Mediathek Service, basierend auf dem fehlgeschlagenen Integrationstest.
 ## Status Quo
 
 - Integrationstest `searchDocuments_withOAuth2_sendsAuthorizationHeader` existiert und schlägt fehl (RED).
-- `ZdfProperties` Klasse für Konfiguration (clientId, clientSecret) existiert.
+- `ZdfProperties` Klasse für Konfiguration (client.id, client.secret) existiert.
 - `build.gradle.kts` enthält bereits `spring-boot-starter-oauth2-client`.
 
 ## Schritte zur Umsetzung (GREEN)
