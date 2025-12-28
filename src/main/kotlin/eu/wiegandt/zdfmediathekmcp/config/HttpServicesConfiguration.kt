@@ -89,7 +89,7 @@ class HttpServicesConfiguration {
 
     private fun logResponse(): ExchangeFilterFunction {
         return ExchangeFilterFunction.ofResponseProcessor { response ->
-            logger.debug("HTTP Response: {} {}", response.statusCode(), response.statusCode().value())
+            logger.debug("HTTP Response: {}", response.statusCode())
             logger.debug("Response headers: {}", response.headers().asHttpHeaders())
             Mono.just(response)
         }
