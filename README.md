@@ -35,14 +35,9 @@ The server provides the following MCP tools:
 | `search_content`         | Search for content in ZDF Mediathek             | `query` (string, required)<br/>`limit` (number, optional, default: 5)                                                                                    |
 | `get_broadcast_schedule` | Get TV schedule for a specific channel and date | `from` (string, required, ISO 8601)<br/>`to` (string, required, ISO 8601)<br/>`tvService` (string, optional)<br/>`limit` (number, optional, default: 10) |
 | `get_current_broadcast`  | Get currently airing program on a channel       | `tvService` (string, required)<br/>`limit` (number, optional, default: 10)                                                                               |
+| `list_brands`            | List all TV brands/series in the ZDF Mediathek  | `limit` (number, optional, default: 10)                                                                            |
 
 ### Phase 2 - Planned
-
-| Tool            | Description                 | Key Parameters             |
-|-----------------|-----------------------------|----------------------------|
-| `search_brands` | Search for TV brands/series | `query` (string, required) |
-
-### Phase 3 - Future
 
 | Tool                  | Description                                      | Key Parameters               |
 |-----------------------|--------------------------------------------------|------------------------------|
@@ -411,4 +406,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ZDF Mediathek](https://www.zdf.de/)
 - [Kotlin](https://kotlinlang.org/)
 - [Project Plans](.github/plans/)
-

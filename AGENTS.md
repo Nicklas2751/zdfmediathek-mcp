@@ -715,3 +715,39 @@ If anything is unclear:
 **Last Updated:** 2025-12-19  
 **Version:** 0.1.0-SNAPSHOT
 
+### MCP Tool: list_brands
+
+Lists all TV brands/series in the ZDF Mediathek.
+
+**Signature:**
+
+```kotlin
+@McpTool(
+    name = "list_brands",
+    description = "List all TV brands/series in the ZDF Mediathek. Returns a list of brands with uuid, brandName, and brandDescription. Parameter: limit (optional, default: 10)."
+)
+fun listBrands(limit: Int = 10): List<BrandSummary>
+```
+
+**Model:**
+
+```kotlin
+data class BrandSummary(
+    val uuid: String,
+    val brandName: String,
+    val brandDescription: String?
+)
+```
+
+**Example Call:**
+
+```json
+{
+  "tool": "list_brands",
+  "arguments": {
+    "limit": 5
+  }
+}
+```
+
+**Returns:** List of brands with uuid, brandName, brandDescription.

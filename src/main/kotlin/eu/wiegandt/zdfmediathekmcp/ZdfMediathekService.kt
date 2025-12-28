@@ -1,5 +1,6 @@
 package eu.wiegandt.zdfmediathekmcp
 
+import eu.wiegandt.zdfmediathekmcp.model.BrandApiResponse
 import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcastScheduleResponse
 import eu.wiegandt.zdfmediathekmcp.model.ZdfSearchResponse
 import org.springframework.stereotype.Service
@@ -20,5 +21,8 @@ interface ZdfMediathekService {
         @RequestParam("limit") limit: Int = 10
     ): ZdfBroadcastScheduleResponse
 
+    @GetExchange("/cmdm/brands")
+    fun listBrands(
+        @RequestParam("limit") limit: Int = 10
+    ): BrandApiResponse
 }
-
