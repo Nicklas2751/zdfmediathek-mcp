@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.GetExchange
 
 @Service
-interface ZdfMediathekService {
+interface ZdfMediathekClient {
 
     @GetExchange("/search/documents")
     fun searchDocuments(@RequestParam("q") q: String, @RequestParam("limit") limit: Int = 5): ZdfSearchResponse

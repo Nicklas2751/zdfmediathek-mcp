@@ -25,10 +25,10 @@ import java.time.OffsetDateTime
         baseUrlProperties = ["zdf.url"]
     )
 )
-class ZdfMediathekServiceIT {
+class ZdfMediathekClientIT {
 
     @Autowired
-    lateinit var zdfMediathekService: ZdfMediathekService
+    lateinit var zdfMediathekClient: ZdfMediathekClient
 
     @Autowired
     lateinit var authorizedClientService: ReactiveOAuth2AuthorizedClientService
@@ -104,7 +104,7 @@ class ZdfMediathekServiceIT {
 
 
         // when
-        val response = zdfMediathekService.searchDocuments("Tagesschau", 2)
+        val response = zdfMediathekClient.searchDocuments("Tagesschau", 2)
 
         // then
         assertThat(response).usingRecursiveComparison().isEqualTo(expectedResponse)
@@ -139,7 +139,7 @@ class ZdfMediathekServiceIT {
         )
 
         // when
-        val response = zdfMediathekService.searchDocuments(q = "Tagesschau", limit = 2)
+        val response = zdfMediathekClient.searchDocuments(q = "Tagesschau", limit = 2)
 
         // then
         assertThat(response.results).isNotEmpty

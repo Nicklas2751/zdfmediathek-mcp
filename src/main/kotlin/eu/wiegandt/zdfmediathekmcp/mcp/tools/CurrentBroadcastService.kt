@@ -1,5 +1,6 @@
-package eu.wiegandt.zdfmediathekmcp
+package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
+import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
 import eu.wiegandt.zdfmediathekmcp.model.CurrentBroadcastResponse
 import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcast
 import org.slf4j.LoggerFactory
@@ -15,9 +16,8 @@ import java.time.OffsetDateTime
  */
 @Service
 class CurrentBroadcastService(
-    private val zdfMediathekService: ZdfMediathekService
+    private val zdfMediathekClient: ZdfMediathekClient
 ) {
-
     private val logger = LoggerFactory.getLogger(CurrentBroadcastService::class.java)
 
     /**
@@ -29,12 +29,13 @@ class CurrentBroadcastService(
      */
     @McpTool(
         name = "get_current_broadcast",
-        description = "Get the currently airing program on a specific ZDF channel. " +
-                "Returns the broadcast that is currently on air at the time of the request. " +
-                "Parameters: " +
-                "- tvService: Channel name (required, e.g., ZDF, ZDFneo, 3sat, ZDFinfo, PHOENIX, KIKA). " +
-                "Common channels: ZDF, ZDFneo, ZDFinfo, 3sat, PHOENIX, KIKA. " +
-                "Returns the current program with title, time, description, and channel info."
+        description = """Get the currently airing program on a specific ZDF channel.
+                Returns the broadcast that is currently on air at the time of the request.
+                Parameters:
+                - tvService: Channel name (required, e.g., ZDF, ZDFneo, 3sat, ZDFinfo, PHOENIX, KIKA).
+                Common channels: ZDF, ZDFneo, ZDFinfo, 3sat, PHOENIX, KIKA.
+                Returns the current program with title, time, description, and channel info.
+                """
     )
     fun getCurrentBroadcast(tvService: String): CurrentBroadcastResponse {
         logger.info("MCP Tool 'get_current_broadcast' called with tvService='{}'", tvService)
@@ -46,7 +47,7 @@ class CurrentBroadcastService(
             }
 
             // Call ZDF API
-            val scheduleResponse = zdfMediathekService.getCurrentBroadcastSchedule(tvService)
+            val scheduleResponse = zdfMediathekClient.getCurrentBroadcastSchedule(tvService)
 
             logger.debug("Received {} broadcasts from API", scheduleResponse.broadcasts.size)
 
@@ -95,4 +96,3 @@ class CurrentBroadcastService(
         }
     }
 }
-

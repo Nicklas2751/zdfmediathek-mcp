@@ -1,5 +1,6 @@
-package eu.wiegandt.zdfmediathekmcp
+package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
+import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
 import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcastScheduleResponse
 import org.slf4j.LoggerFactory
 import org.springaicommunity.mcp.annotation.McpTool
@@ -14,7 +15,7 @@ import java.time.OffsetDateTime
  */
 @Service
 class BroadcastScheduleService(
-    private val zdfMediathekService: ZdfMediathekService
+    private val zdfMediathekClient: ZdfMediathekClient
 ) {
 
     private val logger = LoggerFactory.getLogger(BroadcastScheduleService::class.java)
@@ -30,15 +31,16 @@ class BroadcastScheduleService(
      */
     @McpTool(
         name = "get_broadcast_schedule",
-        description = "Get the TV broadcast schedule for ZDF channels within a specific time range. " +
-                "Parameters: " +
-                "- from: Start time in ISO 8601 format with timezone (e.g., 2025-12-27T00:00:00+01:00) " +
-                "- to: End time in ISO 8601 format with timezone (e.g., 2025-12-27T23:59:59+01:00) " +
-                "- tvService: Optional channel name (e.g., ZDF, ZDFneo, 3sat). If omitted, returns all channels. " +
-                "- limit: Maximum number of broadcasts to return (default: 10). " +
-                "Common channels: ZDF, ZDFneo, ZDFinfo, 3sat, PHOENIX, KIKA. " +
-                "Timezone: Use +01:00 (CET) or +02:00 (CEST) for German time. " +
-                "Returns a list of programs with title, time, description, and channel info."
+        description = """Get the TV broadcast schedule for ZDF channels within a specific time range. 
+            Parameters: 
+            - from: Start time in ISO 8601 format with timezone (e.g., 2025-12-27T00:00:00+01:00) 
+            - to: End time in ISO 8601 format with timezone (e.g., 2025-12-27T23:59:59+01:00) 
+            - tvService: Optional channel name (e.g., ZDF, ZDFneo, 3sat). If omitted, returns all channels. 
+            - limit: Maximum number of broadcasts to return (default: 10). 
+            Common channels: ZDF, ZDFneo, ZDFinfo, 3sat, PHOENIX, KIKA. 
+            Timezone: Use +01:00 (CET) or +02:00 (CEST) for German time. 
+            Returns a list of programs with title, time, description, and channel info.
+            """
     )
     fun getBroadcastSchedule(
         from: String,
@@ -77,7 +79,7 @@ class BroadcastScheduleService(
             logger.debug("Calling ZDF API to get broadcast schedule")
 
             // Delegate to ZDF API service
-            val response = zdfMediathekService.getBroadcastSchedule(from, to, tvService, limit)
+            val response = zdfMediathekClient.getBroadcastSchedule(from, to, tvService, limit)
 
             logger.info(
                 "Successfully retrieved {} broadcasts for time range {} to {}",
@@ -116,4 +118,3 @@ class BroadcastScheduleService(
         }
     }
 }
-
