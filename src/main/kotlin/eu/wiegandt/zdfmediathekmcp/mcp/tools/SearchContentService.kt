@@ -15,9 +15,7 @@ class SearchContentService(val zdfMediathekClient: ZdfMediathekClient) {
         name = "search_content",
         description = """Search for content in the ZDF Mediathek.
             Parameters: 
-            - from: Start time in ISO 8601 format with timezone (e.g., 2025-12-27T00:00:00+01:00) 
-            - to: End time in ISO 8601 format with timezone (e.g., 2025-12-27T23:59:59+01:00) 
-            - tvService: Optional channel name (e.g., ZDF, ZDFneo, 3sat). If omitted, returns all channels. 
+            - query: The search query string.
             - limit: Maximum number of broadcasts to return (default: 10). 
             The field 'webCanonical' in the response contains the URL to the content.
             Returns a list of documents.
