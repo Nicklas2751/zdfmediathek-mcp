@@ -1,0 +1,119 @@
+{
+  "totalResultsCount": 1567,
+  "next-archive": "/cmdm/brands?limit=10&page=2",
+  "profile": "http://zdf.de/rels/cmdm/resultpage-brands",
+  "http://zdf.de/rels/cmdm/brands": [
+    {
+      "brandUuid": "87b853d7-78ca-43a3-9c20-383774d1cbad",
+      "brandPrimaryBrandId": "87b853d7-78ca-43a3-9c20-383774d1cbad",
+      "brandName": "GIRLS",
+      "brandDescription": null,
+      "brandImdbId": null,
+      "isAllowModifyOfSeriesAndSeason": true,
+      "http://zdf.de/rels/cmdm/series": [],
+      "profile": "http://zdf.de/rels/cmdm/brand",
+      "self": "/cmdm/brands/87b853d7-78ca-43a3-9c20-383774d1cbad"
+    },
+    {
+      "brandUuid": "56eb6908-b786-4990-abba-393e6a78f9fe",
+      "brandPrimaryBrandId": "56eb6908-b786-4990-abba-393e6a78f9fe",
+      "brandName": "Der Geschichts-Check",
+      "brandDescription": null,
+      "brandImdbId": null,
+      "isAllowModifyOfSeriesAndSeason": true,
+      "http://zdf.de/rels/cmdm/series": [],
+      "profile": "http://zdf.de/rels/cmdm/brand",
+      "self": "/cmdm/brands/56eb6908-b786-4990-abba-393e6a78f9fe"
+    },
+    {
+      "brandUuid": "e775e35e-004c-4df2-a83b-44a13c077273",
+      "brandPrimaryBrandId": "e775e35e-004c-4df2-a83b-44a13c077273",
+      "brandName": "der-satirische-jahresrueckblick-2013",
+      "brandDescription": null,
+      "brandImdbId": null,
+      "isAllowModifyOfSeriesAndSeason": true,
+      "http://zdf.de/rels/cmdm/series": [],
+      "profile": "http://zdf.de/rels/cmdm/brand",
+      "self": "/cmdm/brands/e775e35e-004c-4df2-a83b-44a13c077273"
+    },
+    {
+      "brandUuid": "4d789834-7e6e-4bd1-ba7e-e096c7063f7a",
+      "brandPrimaryBrandId": "4d789834-7e6e-4bd1-ba7e-e096c7063f7a",
+      "brandName": "Und dann noch Paula",
+      "brandDescription": null,
+      "brandImdbId": null,
+      "isAllowModifyOfSeriesAndSeason": true,
+      "http://zdf.de/rels/cmdm/series": [],
+      "profile": "http://zdf.de/rels/cmdm/brand",
+      "self": "/cmdm/brands/4d789834-7e6e-4bd1-ba7e-e096c7063f7a"
+    },
+    {
+      "brandUuid": "3876f7c9-65f7-45cd-8ad1-e38678b30a47",
+      "brandPrimaryBrandId": "3876f7c9-65f7-45cd-8ad1-e38678b30a47",
+      "brandName": "astrid-lindgren",
+      "brandDescription": null,
+      "brandImdbId": null,
+      "isAllowModifyOfSeriesAndSeason": true,
+      "http://zdf.de/rels/cmdm/series": [],
+      "profile": "http://zdf.de/rels/cmdm/brand",
+      "self": "/cmdm/brands/3876f7c9-65f7-45cd-8ad1-e38678b30a47"
+    },
+    {
+      "brandUuid": "8a603cd4-1bec-4b16-817c-f614d1c649ef",
+      "brandPrimaryBrandId": "8a603cd4-1bec-4b16-817c-f614d1c649ef",
+      "brandName": "ZDF Wintersport",
+      "brandDescription": null,
+      "brandImdbId": null,
+      "isAllowModifyOfSeriesAndSeason": true,
+      "http://zdf.de/rels/cmdm/series": [],
+      "profile": "http://zdf.de/rels/cmdm/brand",
+      "self": "/cmdm/brands/8a603cd4-1bec-4b16-817c-f614d1c649ef"
+    },
+    {
+      "brandUuid": "e0649b80-8a17-4579-bd42-764241e84aa7",
+      "brandPrimaryBrandId": "e0649b80-8a17-4579-bd42-764241e84aa7",
+      "brandName": "der-kleine-drache-kokosnuss",
+      "brandDescription": null,
+      "brandImdbId": null,
+      "isAllowModifyOfSeriesAndSeason": true,
+      "http://zdf.de/rels/cmdm/series": [],
+      "profile": "http://zdf.de/rels/cmdm/brand",
+      "self": "/cmdm/brands/e0649b80-8a17-4579-bd42-764241e84aa7"
+    },
+    {
+      "brandUuid": "0349a7ad-4590-427d-8c77-956263e6b224",
+      "brandPrimaryBrandId": "0349a7ad-4590-427d-8c77-956263e6b224",
+      "brandName": "Udo Jürgens - Mitten im Leben",
+      "brandDescription": null,
+      "brandImdbId": null,
+      "isAllowModifyOfSeriesAndSeason": true,
+      "http://zdf.de/rels/cmdm/series": [],
+      "profile": "http://zdf.de/rels/cmdm/brand",
+      "self": "/cmdm/brands/0349a7ad-4590-427d-8c77-956263e6b224"
+    },
+    {
+      "brandUuid": "554e767c-010d-36a6-9be7-ceec661f1b5a",
+      "brandPrimaryBrandId": "554e767c-010d-36a6-9be7-ceec661f1b5a",
+      "brandName": "Missing Link",
+      "brandDescription": null,
+      "brandImdbId": null,
+      "isAllowModifyOfSeriesAndSeason": true,
+      "http://zdf.de/rels/cmdm/series": [],
+      "profile": "http://zdf.de/rels/cmdm/brand",
+      "self": "/cmdm/brands/554e767c-010d-36a6-9be7-ceec661f1b5a"
+    },
+    {
+      "brandUuid": "6cb9a8a5-3fea-4beb-bc6a-fa222536969f",
+      "brandPrimaryBrandId": "6cb9a8a5-3fea-4beb-bc6a-fa222536969f",
+      "brandName": "Ein Fall fürs All",
+      "brandDescription": null,
+      "brandImdbId": null,
+      "isAllowModifyOfSeriesAndSeason": true,
+      "http://zdf.de/rels/cmdm/series": [],
+      "profile": "http://zdf.de/rels/cmdm/brand",
+      "self": "/cmdm/brands/6cb9a8a5-3fea-4beb-bc6a-fa222536969f"
+    }
+  ],
+  "self": "/cmdm/brands?limit=10&page=1"
+}
+
