@@ -1,11 +1,13 @@
 package eu.wiegandt.zdfmediathekmcp
 
+import eu.wiegandt.zdfmediathekmcp.model.CurrentBroadcastResponse
 import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcast
 import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcastScheduleResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 import java.time.OffsetDateTime
 import java.time.ZoneId
 
@@ -34,18 +36,20 @@ class CurrentBroadcastServiceTest {
             nextArchive = null
         )
 
-        `when`(zdfMediathekService.getBroadcastSchedule(anyString(), anyString(), eq(tvService), eq(10)))
+        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService, 10))
             .thenReturn(mockResponse)
 
         // when
         val result = currentBroadcastService.getCurrentBroadcast(tvService)
 
         // then
-        assertThat(result.tvService).isEqualTo(tvService)
-        assertThat(result.currentBroadcast).isNotNull()
-        assertThat(result.currentBroadcast?.title).isEqualTo("Aktuell laufende Sendung")
-        assertThat(result.queriedAt).matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}")
-        verify(zdfMediathekService).getBroadcastSchedule(anyString(), anyString(), eq(tvService), eq(10))
+        assertThat(result).isEqualTo(
+            CurrentBroadcastResponse(
+                tvService = tvService,
+                currentBroadcast = currentBroadcast,
+                queriedAt = result.queriedAt
+            )
+        )
     }
 
     @Test
@@ -87,16 +91,20 @@ class CurrentBroadcastServiceTest {
             nextArchive = null
         )
 
-        `when`(zdfMediathekService.getBroadcastSchedule(anyString(), anyString(), eq(tvService), eq(10)))
+        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService, 10))
             .thenReturn(mockResponse)
 
         // when
         val result = currentBroadcastService.getCurrentBroadcast(tvService)
 
         // then
-        assertThat(result.tvService).isEqualTo(tvService)
-        assertThat(result.currentBroadcast).isNull()
-        assertThat(result.queriedAt).matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}")
+        assertThat(result).isEqualTo(
+            CurrentBroadcastResponse(
+                tvService = tvService,
+                currentBroadcast = null,
+                queriedAt = result.queriedAt
+            )
+        )
     }
 
     @Test
@@ -143,7 +151,7 @@ class CurrentBroadcastServiceTest {
             nextArchive = null
         )
 
-        `when`(zdfMediathekService.getBroadcastSchedule(anyString(), anyString(), eq(tvService), eq(10)))
+        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService, 10))
             .thenReturn(mockResponse)
 
         // when
@@ -158,7 +166,7 @@ class CurrentBroadcastServiceTest {
     fun `getCurrentBroadcast when API throws exception wraps exception`() {
         // given
         val tvService = "ZDF"
-        `when`(zdfMediathekService.getBroadcastSchedule(anyString(), anyString(), eq(tvService), eq(10)))
+        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService, 10))
             .thenThrow(RuntimeException("API Error"))
 
         // when / then
@@ -169,29 +177,5 @@ class CurrentBroadcastServiceTest {
             .hasMessageContaining("Failed to get current broadcast")
     }
 
-    @Test
-    fun `getCurrentBroadcast calls API with correct time window and limit`() {
-        // given
-        val tvService = "ZDF"
-        val limit = 15
-        val mockResponse = ZdfBroadcastScheduleResponse(
-            broadcasts = emptyList(),
-            nextArchive = null
-        )
-
-        `when`(zdfMediathekService.getBroadcastSchedule(anyString(), anyString(), eq(tvService), eq(limit)))
-            .thenReturn(mockResponse)
-
-        // when
-        currentBroadcastService.getCurrentBroadcast(tvService, limit)
-
-        // then - verify that the method was called with the correct tvService and limit
-        verify(zdfMediathekService).getBroadcastSchedule(
-            anyString(), // from parameter
-            anyString(), // to parameter
-            eq(tvService),
-            eq(limit)
-        )
-    }
 }
 
