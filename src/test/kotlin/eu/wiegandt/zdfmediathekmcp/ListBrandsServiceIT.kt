@@ -38,6 +38,7 @@ class ListBrandsServiceIT {
                         .withBody("""{"access_token":"test-token","token_type":"Bearer","expires_in":3600}""")
                 )
         )
+
         stubFor(
             get(urlPathEqualTo("/cmdm/brands"))
                 .withQueryParam("limit", equalTo("10"))
@@ -45,26 +46,59 @@ class ListBrandsServiceIT {
                     aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(
-                            """
-                            {
-                              "brands": [
-                                {
-                                  "uuid": "id1",
-                                  "brandName": "Terra X",
-                                  "brandDescription": "Doku-Reihe"
-                                }
-                              ]
-                            }
-                            """.trimIndent()
-                        )
+                        .withBodyFile("brands_real_example.json")
                 )
         )
         val expected = listOf(
             BrandSummary(
-                brandUuid = "id1",
-                brandName = "Terra X",
-                brandDescription = "Doku-Reihe"
+                brandUuid = "87b853d7-78ca-43a3-9c20-383774d1cbad",
+                brandName = "GIRLS",
+                brandDescription = null
+            ),
+            BrandSummary(
+                brandUuid = "56eb6908-b786-4990-abba-393e6a78f9fe",
+                brandName = "Der Geschichts-Check",
+                brandDescription = null
+            ),
+            BrandSummary(
+                brandUuid = "e775e35e-004c-4df2-a83b-44a13c077273",
+                brandName = "der-satirische-jahresrueckblick-2013",
+                brandDescription = null
+            ),
+            BrandSummary(
+                brandUuid = "4d789834-7e6e-4bd1-ba7e-e096c7063f7a",
+                brandName = "Und dann noch Paula",
+                brandDescription = null
+            ),
+            BrandSummary(
+                brandUuid = "3876f7c9-65f7-45cd-8ad1-e38678b30a47",
+                brandName = "astrid-lindgren",
+                brandDescription = null
+            ),
+            BrandSummary(
+                brandUuid = "8a603cd4-1bec-4b16-817c-f614d1c649ef",
+                brandName = "ZDF Wintersport",
+                brandDescription = null
+            ),
+            BrandSummary(
+                brandUuid = "e0649b80-8a17-4579-bd42-764241e84aa7",
+                brandName = "der-kleine-drache-kokosnuss",
+                brandDescription = null
+            ),
+            BrandSummary(
+                brandUuid = "0349a7ad-4590-427d-8c77-956263e6b224",
+                brandName = "Udo Jürgens - Mitten im Leben",
+                brandDescription = null
+            ),
+            BrandSummary(
+                brandUuid = "554e767c-010d-36a6-9be7-ceec661f1b5a",
+                brandName = "Missing Link",
+                brandDescription = null
+            ),
+            BrandSummary(
+                brandUuid = "6cb9a8a5-3fea-4beb-bc6a-fa222536969f",
+                brandName = "Ein Fall fürs All",
+                brandDescription = null
             )
         )
         // When: Service wird aufgerufen
