@@ -23,8 +23,7 @@ interface ZdfMediathekService {
 
     @GetExchange("/cmdm/epg/broadcasts/pf")
     fun getCurrentBroadcastSchedule(
-        @RequestParam("tvService") tvService: String?,
-        @RequestParam("limit") limit: Int = 10
+        @RequestParam("tvService") tvService: String?
     ): ZdfBroadcastScheduleResponse
 
     @GetExchange("/cmdm/brands")

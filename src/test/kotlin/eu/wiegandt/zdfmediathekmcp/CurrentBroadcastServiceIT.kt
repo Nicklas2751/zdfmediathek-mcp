@@ -63,7 +63,6 @@ class CurrentBroadcastServiceIT {
         stubFor(
             get(urlPathMatching("/cmdm/epg/broadcasts/pf"))
                 .withQueryParam("tvService", equalTo(tvService))
-                .withQueryParam("limit", equalTo("10"))
                 .willReturn(
                     aResponse()
                         .withStatus(200)
@@ -110,50 +109,6 @@ class CurrentBroadcastServiceIT {
                 )
             )
         assertThat(response.queriedAt.toString()).matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d+[+-]\\d{2}:\\d{2}")
-    }
-
-    @Test
-    fun `getCurrentBroadcast with custom limit calls API with correct limit`() {
-        // given
-        val tvService = "ZDFneo"
-        val limit = 20
-
-        // Mock OAuth token
-        stubFor(
-            post(urlPathEqualTo("/oauth/token"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("""{"access_token":"test-token","token_type":"Bearer","expires_in":3600}""")
-                )
-        )
-
-        // Mock broadcast schedule endpoint
-        stubFor(
-            get(urlPathEqualTo("/cmdm/epg/broadcasts/pf"))
-                .withQueryParam("tvService", equalTo(tvService))
-                .withQueryParam("limit", equalTo(limit.toString()))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(
-                            """
-                            {
-                              "http://zdf.de/rels/cmdm/broadcasts": [],
-                              "next-archive": null
-                            }
-                        """.trimIndent()
-                        )
-                )
-        )
-
-        // when
-        val response = currentBroadcastService.getCurrentBroadcast(tvService, limit)
-
-        // then
-        assertThat(response.tvService).isEqualTo(tvService)
     }
 
     @Test
