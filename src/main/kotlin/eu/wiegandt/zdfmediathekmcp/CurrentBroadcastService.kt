@@ -1,11 +1,11 @@
 package eu.wiegandt.zdfmediathekmcp
 
 import eu.wiegandt.zdfmediathekmcp.model.CurrentBroadcastResponse
+import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcast
 import org.slf4j.LoggerFactory
 import org.springaicommunity.mcp.annotation.McpTool
 import org.springframework.stereotype.Service
 import java.time.OffsetDateTime
-import java.time.ZoneId
 
 /**
  * MCP tool service for retrieving the currently airing program on ZDF channels.
@@ -20,11 +20,6 @@ class CurrentBroadcastService(
 
     private val logger = LoggerFactory.getLogger(CurrentBroadcastService::class.java)
 
-    companion object {
-        private const val TIME_WINDOW_PAST_HOURS = 3L
-        private const val TIME_WINDOW_FUTURE_MINUTES = 15L
-        private val TIMEZONE: ZoneId = ZoneId.of("Europe/Berlin")
-    }
     /**
      * Retrieves the currently airing program on a specific ZDF channel.
      *
@@ -58,26 +53,14 @@ class CurrentBroadcastService(
                 "Parameter 'limit' must be greater than 0"
             }
 
-            // Get current time
-            val now = OffsetDateTime.now(TIMEZONE)
-            val queriedAt = now.withNano(0).toString() // Remove nanoseconds for clean ISO 8601 format
-
-            // Calculate time window
-            val from = now.minusHours(TIME_WINDOW_PAST_HOURS).toString()
-            val to = now.plusMinutes(TIME_WINDOW_FUTURE_MINUTES).toString()
-
-            logger.debug(
-                "Searching for current broadcast: tvService={}, from={}, to={}, limit={}",
-                tvService, from, to, limit
-            )
-
             // Call ZDF API
-            val scheduleResponse = zdfMediathekService.getBroadcastSchedule(from, to, tvService, limit)
+            val scheduleResponse = zdfMediathekService.getCurrentBroadcastSchedule(tvService, limit)
 
             logger.debug("Received {} broadcasts from API", scheduleResponse.broadcasts.size)
 
             // Find the currently airing broadcast
-            val currentBroadcast = findCurrentBroadcast(scheduleResponse.broadcasts, now)
+            val currentBroadcast = findCurrentBroadcast(scheduleResponse.broadcasts)
+            val queriedAt = OffsetDateTime.now()
 
             if (currentBroadcast != null) {
                 logger.info(
@@ -109,13 +92,12 @@ class CurrentBroadcastService(
      * Finds the broadcast that is currently airing at the given time.
      *
      * @param broadcasts List of broadcasts to search through
-     * @param now Current time
      * @return The currently airing broadcast, or null if none found
      */
     private fun findCurrentBroadcast(
-        broadcasts: List<eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcast>,
-        now: OffsetDateTime
-    ): eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcast? {
+        broadcasts: List<ZdfBroadcast>
+    ): ZdfBroadcast? {
+        val now = OffsetDateTime.now()
         return broadcasts.firstOrNull { broadcast ->
             !broadcast.airtimeBegin.isAfter(now) && broadcast.airtimeEnd.isAfter(now)
         }

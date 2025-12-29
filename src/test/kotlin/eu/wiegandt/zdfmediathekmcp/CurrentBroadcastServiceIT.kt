@@ -61,7 +61,9 @@ class CurrentBroadcastServiceIT {
 
         // Mock broadcast schedule endpoint - match any query params since they include timestamps
         stubFor(
-            get(urlPathMatching("/cmdm/epg/broadcasts.*"))
+            get(urlPathMatching("/cmdm/epg/broadcasts/pf"))
+                .withQueryParam("tvService", equalTo(tvService))
+                .withQueryParam("limit", equalTo("10"))
                 .willReturn(
                     aResponse()
                         .withStatus(200)
@@ -104,17 +106,10 @@ class CurrentBroadcastServiceIT {
                 CurrentBroadcastResponse(
                     tvService = tvService,
                     currentBroadcast = currentBroadcast,
-                    queriedAt = "" // ignored
+                    queriedAt = null // ignored
                 )
             )
-        assertThat(response.queriedAt).matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}")
-
-        // Verify broadcast schedule was requested with correct tvService
-        verify(
-            getRequestedFor(urlPathMatching("/cmdm/epg/broadcasts.*"))
-                .withQueryParam("tvService", equalTo(tvService))
-                .withQueryParam("limit", equalTo("10"))
-        )
+        assertThat(response.queriedAt.toString()).matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d+[+-]\\d{2}:\\d{2}")
     }
 
     @Test
@@ -136,7 +131,7 @@ class CurrentBroadcastServiceIT {
 
         // Mock broadcast schedule endpoint
         stubFor(
-            get(urlPathEqualTo("/cmdm/epg/broadcasts"))
+            get(urlPathEqualTo("/cmdm/epg/broadcasts/pf"))
                 .withQueryParam("tvService", equalTo(tvService))
                 .withQueryParam("limit", equalTo(limit.toString()))
                 .willReturn(
@@ -159,12 +154,6 @@ class CurrentBroadcastServiceIT {
 
         // then
         assertThat(response.tvService).isEqualTo(tvService)
-
-        // Verify correct limit was used
-        verify(
-            getRequestedFor(urlPathEqualTo("/cmdm/epg/broadcasts"))
-                .withQueryParam("limit", equalTo(limit.toString()))
-        )
     }
 
     @Test
@@ -185,7 +174,7 @@ class CurrentBroadcastServiceIT {
 
         // Mock broadcast schedule endpoint - empty results
         stubFor(
-            get(urlPathEqualTo("/cmdm/epg/broadcasts"))
+            get(urlPathEqualTo("/cmdm/epg/broadcasts/pf"))
                 .withQueryParam("tvService", equalTo(tvService))
                 .willReturn(
                     aResponse()
@@ -212,10 +201,10 @@ class CurrentBroadcastServiceIT {
                 CurrentBroadcastResponse(
                     tvService = tvService,
                     currentBroadcast = null,
-                    queriedAt = "" // ignored
+                    queriedAt = null // ignored
                 )
             )
-        assertThat(response.queriedAt).isNotEmpty()
+        assertThat(response.queriedAt).isNotNull()
     }
 
     @Test
@@ -258,7 +247,7 @@ class CurrentBroadcastServiceIT {
 
         // Mock broadcast schedule endpoint - server error
         stubFor(
-            get(urlPathEqualTo("/cmdm/epg/broadcasts"))
+            get(urlPathEqualTo("/cmdm/epg/broadcasts/pf"))
                 .withQueryParam("tvService", equalTo(tvService))
                 .willReturn(
                     aResponse()

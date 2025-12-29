@@ -1,13 +1,12 @@
 package eu.wiegandt.zdfmediathekmcp
 
-import eu.wiegandt.zdfmediathekmcp.model.BrandSummary
 import eu.wiegandt.zdfmediathekmcp.model.BrandApiResponse
+import eu.wiegandt.zdfmediathekmcp.model.BrandSummary
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.springframework.web.reactive.function.client.WebClientResponseException
 
 class SearchBrandsServiceTest {
@@ -51,9 +50,18 @@ class SearchBrandsServiceTest {
     @Test
     fun `listBrands throws on API error`() {
         // Given
-        given(zdfMediathekService.listBrands(10)).willThrow(WebClientResponseException::class.java)
+        doThrow(
+            WebClientResponseException(
+                500,
+                "Server Error",
+                null,
+                null,
+                null
+            )
+        ).`when`(zdfMediathekService).listBrands(10)
         // When/Then
         assertThatThrownBy { searchBrandsService.listBrands() }
-            .isInstanceOf(WebClientResponseException::class.java)
+            .isInstanceOf(RuntimeException::class.java)
+            .hasMessage("Failed to list brands: 500 Server Error")
     }
 }
