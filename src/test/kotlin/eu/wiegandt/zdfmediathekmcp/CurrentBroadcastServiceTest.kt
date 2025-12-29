@@ -36,7 +36,7 @@ class CurrentBroadcastServiceTest {
             nextArchive = null
         )
 
-        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService, 10))
+        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService))
             .thenReturn(mockResponse)
 
         // when
@@ -73,16 +73,6 @@ class CurrentBroadcastServiceTest {
     }
 
     @Test
-    fun `getCurrentBroadcast with invalid limit throws exception`() {
-        // when / then
-        assertThatThrownBy {
-            currentBroadcastService.getCurrentBroadcast("ZDF", limit = 0)
-        }
-            .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("Parameter 'limit' must be greater than 0")
-    }
-
-    @Test
     fun `getCurrentBroadcast with no broadcast found returns null`() {
         // given
         val tvService = "ZDF"
@@ -91,7 +81,7 @@ class CurrentBroadcastServiceTest {
             nextArchive = null
         )
 
-        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService, 10))
+        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService))
             .thenReturn(mockResponse)
 
         // when
@@ -151,7 +141,7 @@ class CurrentBroadcastServiceTest {
             nextArchive = null
         )
 
-        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService, 10))
+        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService))
             .thenReturn(mockResponse)
 
         // when
@@ -166,7 +156,7 @@ class CurrentBroadcastServiceTest {
     fun `getCurrentBroadcast when API throws exception wraps exception`() {
         // given
         val tvService = "ZDF"
-        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService, 10))
+        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService))
             .thenThrow(RuntimeException("API Error"))
 
         // when / then

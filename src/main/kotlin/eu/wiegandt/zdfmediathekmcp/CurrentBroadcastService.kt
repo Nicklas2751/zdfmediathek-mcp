@@ -24,7 +24,6 @@ class CurrentBroadcastService(
      * Retrieves the currently airing program on a specific ZDF channel.
      *
      * @param tvService Channel name (required, e.g., "ZDF", "ZDFneo", "3sat")
-     * @param limit Maximum number of broadcasts to fetch from API (default: 10)
      * @return Response containing the current broadcast or null if none is airing
      * @throws IllegalArgumentException if parameters are invalid
      */
@@ -34,27 +33,20 @@ class CurrentBroadcastService(
                 "Returns the broadcast that is currently on air at the time of the request. " +
                 "Parameters: " +
                 "- tvService: Channel name (required, e.g., ZDF, ZDFneo, 3sat, ZDFinfo, PHOENIX, KIKA). " +
-                "- limit: Maximum number of broadcasts to return (default: 10). " +
                 "Common channels: ZDF, ZDFneo, ZDFinfo, 3sat, PHOENIX, KIKA. " +
                 "Returns the current program with title, time, description, and channel info."
     )
-    fun getCurrentBroadcast(tvService: String, limit: Int = 10): CurrentBroadcastResponse {
-        logger.info(
-            "MCP Tool 'get_current_broadcast' called with tvService='{}', limit={}",
-            tvService, limit
-        )
+    fun getCurrentBroadcast(tvService: String): CurrentBroadcastResponse {
+        logger.info("MCP Tool 'get_current_broadcast' called with tvService='{}'", tvService)
 
         try {
             // Validate required parameters
             require(tvService.isNotBlank()) {
                 "Parameter 'tvService' is required and must not be empty"
             }
-            require(limit > 0) {
-                "Parameter 'limit' must be greater than 0"
-            }
 
             // Call ZDF API
-            val scheduleResponse = zdfMediathekService.getCurrentBroadcastSchedule(tvService, limit)
+            val scheduleResponse = zdfMediathekService.getCurrentBroadcastSchedule(tvService)
 
             logger.debug("Received {} broadcasts from API", scheduleResponse.broadcasts.size)
 
