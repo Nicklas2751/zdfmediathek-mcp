@@ -1,9 +1,9 @@
-package eu.wiegandt.zdfmediathekmcp
+package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import io.modelcontextprotocol.client.McpAsyncClient
 import io.modelcontextprotocol.client.McpClient
 import io.modelcontextprotocol.client.transport.WebClientStreamableHttpTransport
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.web.reactive.function.client.WebClient
-
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -45,7 +44,7 @@ class SearchContentServiceIT {
     fun tearDown() {
         mcpClient.closeGracefully().block()
     }
-    
+
     @Test
     fun `search_content tool is available`() {
         // given
@@ -54,10 +53,6 @@ class SearchContentServiceIT {
         val availableTools = mcpClient.listTools().block()!!.tools()
 
         // then
-        assertThat(availableTools).anyMatch { tool -> tool.name == "search_content" }
+        Assertions.assertThat(availableTools).anyMatch { tool -> tool.name == "search_content" }
     }
 }
-
-
-
-

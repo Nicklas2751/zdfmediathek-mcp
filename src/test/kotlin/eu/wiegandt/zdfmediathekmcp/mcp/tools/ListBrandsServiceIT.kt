@@ -1,4 +1,4 @@
-package eu.wiegandt.zdfmediathekmcp
+package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import eu.wiegandt.zdfmediathekmcp.model.BrandSummary
@@ -24,7 +24,7 @@ import org.wiremock.spring.EnableWireMock
 class ListBrandsServiceIT {
 
     @Autowired
-    lateinit var searchBrandsService: SearchBrandsService
+    lateinit var listBrandsService: ListBrandsService
 
     @Test
     fun `listBrands returns mapped brands from API`() {
@@ -102,7 +102,7 @@ class ListBrandsServiceIT {
             )
         )
         // When: Service wird aufgerufen
-        val result = searchBrandsService.listBrands()
+        val result = listBrandsService.listBrands()
         // Then: Ergebnis entspricht Erwartung, Request wurde korrekt abgesetzt
         assertThat(result).usingRecursiveComparison().isEqualTo(expected)
         verify(
@@ -135,7 +135,7 @@ class ListBrandsServiceIT {
         )
         val expected = emptyList<BrandSummary>()
         // When
-        val result = searchBrandsService.listBrands(5)
+        val result = listBrandsService.listBrands(5)
         // Then
         assertThat(result).usingRecursiveComparison().isEqualTo(expected)
         verify(
@@ -158,7 +158,7 @@ class ListBrandsServiceIT {
         )
         // When/Then
         assertThatThrownBy {
-            searchBrandsService.listBrands()
+            listBrandsService.listBrands()
         }.isInstanceOf(RuntimeException::class.java)
     }
 
@@ -186,7 +186,7 @@ class ListBrandsServiceIT {
         )
         // When/Then
         assertThatThrownBy {
-            searchBrandsService.listBrands()
+            listBrandsService.listBrands()
         }.isInstanceOf(RuntimeException::class.java)
     }
 }

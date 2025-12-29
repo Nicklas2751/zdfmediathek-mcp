@@ -1,5 +1,6 @@
-package eu.wiegandt.zdfmediathekmcp
+package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
+import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
 import eu.wiegandt.zdfmediathekmcp.model.CurrentBroadcastResponse
 import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcast
 import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcastScheduleResponse
@@ -13,8 +14,8 @@ import java.time.ZoneId
 
 class CurrentBroadcastServiceTest {
 
-    private val zdfMediathekService: ZdfMediathekService = mock(ZdfMediathekService::class.java)
-    private val currentBroadcastService = CurrentBroadcastService(zdfMediathekService)
+    private val zdfMediathekClient: ZdfMediathekClient = mock(ZdfMediathekClient::class.java)
+    private val currentBroadcastService = CurrentBroadcastService(zdfMediathekClient)
 
     @Test
     fun `getCurrentBroadcast with valid channel returns current broadcast`() {
@@ -36,7 +37,7 @@ class CurrentBroadcastServiceTest {
             nextArchive = null
         )
 
-        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService))
+        `when`(zdfMediathekClient.getCurrentBroadcastSchedule(tvService))
             .thenReturn(mockResponse)
 
         // when
@@ -81,7 +82,7 @@ class CurrentBroadcastServiceTest {
             nextArchive = null
         )
 
-        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService))
+        `when`(zdfMediathekClient.getCurrentBroadcastSchedule(tvService))
             .thenReturn(mockResponse)
 
         // when
@@ -141,7 +142,7 @@ class CurrentBroadcastServiceTest {
             nextArchive = null
         )
 
-        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService))
+        `when`(zdfMediathekClient.getCurrentBroadcastSchedule(tvService))
             .thenReturn(mockResponse)
 
         // when
@@ -156,7 +157,7 @@ class CurrentBroadcastServiceTest {
     fun `getCurrentBroadcast when API throws exception wraps exception`() {
         // given
         val tvService = "ZDF"
-        `when`(zdfMediathekService.getCurrentBroadcastSchedule(tvService))
+        `when`(zdfMediathekClient.getCurrentBroadcastSchedule(tvService))
             .thenThrow(RuntimeException("API Error"))
 
         // when / then

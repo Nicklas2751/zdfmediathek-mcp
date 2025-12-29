@@ -1,18 +1,27 @@
-package eu.wiegandt.zdfmediathekmcp
+package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
+import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
 import eu.wiegandt.zdfmediathekmcp.model.ZdfSearchResponse
 import org.slf4j.LoggerFactory
 import org.springaicommunity.mcp.annotation.McpTool
 import org.springframework.stereotype.Service
 
 @Service
-class SearchContentService(val zdfMediathekService: ZdfMediathekService) {
+class SearchContentService(val zdfMediathekClient: ZdfMediathekClient) {
 
     private val logger = LoggerFactory.getLogger(SearchContentService::class.java)
 
     @McpTool(
         name = "search_content",
-        description = "Search for content in the ZDF Mediathek. The field 'webCanonical' in the response contains the URL to the content.",
+        description = """Search for content in the ZDF Mediathek.
+            Parameters: 
+            - from: Start time in ISO 8601 format with timezone (e.g., 2025-12-27T00:00:00+01:00) 
+            - to: End time in ISO 8601 format with timezone (e.g., 2025-12-27T23:59:59+01:00) 
+            - tvService: Optional channel name (e.g., ZDF, ZDFneo, 3sat). If omitted, returns all channels. 
+            - limit: Maximum number of broadcasts to return (default: 10). 
+            The field 'webCanonical' in the response contains the URL to the content.
+            Returns a list of documents.
+        """,
     )
     fun searchContent(query: String, limit: Int = 5): ZdfSearchResponse {
         logger.info("MCP Tool 'search_content' called with query='{}', limit={}", query, limit)
@@ -24,7 +33,7 @@ class SearchContentService(val zdfMediathekService: ZdfMediathekService) {
             }
 
             logger.debug("Calling ZDF API to search documents")
-            val response = zdfMediathekService.searchDocuments(query, limit)
+            val response = zdfMediathekClient.searchDocuments(query, limit)
 
             logger.info(
                 "Successfully retrieved {} search results for query '{}'",

@@ -1,4 +1,4 @@
-package eu.wiegandt.zdfmediathekmcp
+package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import eu.wiegandt.zdfmediathekmcp.model.CurrentBroadcastResponse

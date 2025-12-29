@@ -1,6 +1,6 @@
 package eu.wiegandt.zdfmediathekmcp.config
 
-import eu.wiegandt.zdfmediathekmcp.ZdfMediathekService
+import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -74,9 +74,9 @@ class HttpServicesConfiguration {
     }
 
     @Bean
-    fun zdfMediathekService(proxyFactory: HttpServiceProxyFactory): ZdfMediathekService {
+    fun zdfMediathekService(proxyFactory: HttpServiceProxyFactory): ZdfMediathekClient {
         logger.info("Creating ZDF Mediathek Service proxy")
-        return proxyFactory.createClient<ZdfMediathekService>()
+        return proxyFactory.createClient<ZdfMediathekClient>()
     }
 
     private fun logRequest(): ExchangeFilterFunction {

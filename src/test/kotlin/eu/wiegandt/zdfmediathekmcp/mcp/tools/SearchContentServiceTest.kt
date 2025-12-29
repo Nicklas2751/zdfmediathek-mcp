@@ -1,20 +1,20 @@
-package eu.wiegandt.zdfmediathekmcp
+package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
+import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
 import eu.wiegandt.zdfmediathekmcp.model.ZdfSearchResponse
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.doReturn
+import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 
 @ExtendWith(MockitoExtension::class)
 class SearchContentServiceTest {
 
     @Mock
-    private lateinit var zdfMediathekService: ZdfMediathekService
+    private lateinit var zdfMediathekClient: ZdfMediathekClient
 
     @InjectMocks
     private lateinit var searchContentService: SearchContentService
@@ -22,7 +22,7 @@ class SearchContentServiceTest {
     @Test
     fun searchContent_emptyQuery_throwsException() {
         // when & then
-        assertThatThrownBy {
+        Assertions.assertThatThrownBy {
             searchContentService.searchContent("")
         }
             .isInstanceOf(IllegalArgumentException::class.java)
@@ -33,7 +33,7 @@ class SearchContentServiceTest {
     @Test
     fun searchContent_blankQuery_throwsException() {
         // when & then
-        assertThatThrownBy {
+        Assertions.assertThatThrownBy {
             searchContentService.searchContent("   ")
         }
             .isInstanceOf(IllegalArgumentException::class.java)
@@ -44,13 +44,13 @@ class SearchContentServiceTest {
     fun searchContent_validQuery_returnsCorrectResult() {
         // given
         val zdfSearchResponse = ZdfSearchResponse()
-        doReturn(zdfSearchResponse).`when`(zdfMediathekService).searchDocuments("heute-show 19. Dezember", 5)
+        Mockito.doReturn(zdfSearchResponse).`when`(zdfMediathekClient).searchDocuments("heute-show 19. Dezember", 5)
 
         // when
         val results = searchContentService.searchContent("heute-show 19. Dezember")
 
         // then
-        assertThat(results).isEqualTo(zdfSearchResponse)
+        Assertions.assertThat(results).isEqualTo(zdfSearchResponse)
     }
 
 }
