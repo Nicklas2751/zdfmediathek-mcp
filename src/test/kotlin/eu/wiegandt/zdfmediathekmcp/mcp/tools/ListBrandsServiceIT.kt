@@ -67,7 +67,7 @@ class ListBrandsServiceIT {
 
     @Test
     fun `listBrands returns mapped brands from API`() {
-        // Given: OAuth und Brands-API werden gemockt
+        // given: OAuth und Brands-API werden gemockt
         stubFor(
             post(urlPathEqualTo("/oauth/token"))
                 .willReturn(
@@ -143,7 +143,7 @@ class ListBrandsServiceIT {
             )
         )
 
-        // When: Service wird aufgerufen
+        // when: Service wird aufgerufen
         val result = parseTextContent(
             mcpClient.callTool(
                 McpSchema.CallToolRequest(
@@ -155,7 +155,7 @@ class ListBrandsServiceIT {
             )
         )
 
-        // Then: Ergebnis entspricht Erwartung, Request wurde korrekt abgesetzt
+        // then: Ergebnis entspricht Erwartung, Request wurde korrekt abgesetzt
         assertThat(result).usingRecursiveComparison().isEqualTo(expected)
         verify(
             getRequestedFor(urlPathEqualTo("/cmdm/brands"))
@@ -165,7 +165,7 @@ class ListBrandsServiceIT {
 
     @Test
     fun `listBrands with limit parameter passes limit`() {
-        // Given
+        // given
         stubFor(
             post(urlPathEqualTo("/oauth/token"))
                 .willReturn(
@@ -187,7 +187,7 @@ class ListBrandsServiceIT {
         )
         val expected = BrandApiResponse(emptyList())
 
-        // When
+        // when
         val result = parseTextContent(
             mcpClient.callTool(
                 McpSchema.CallToolRequest(
@@ -199,7 +199,7 @@ class ListBrandsServiceIT {
             )
         )
 
-        // Then
+        // then
         assertThat(result).usingRecursiveComparison().isEqualTo(expected)
         verify(
             getRequestedFor(urlPathEqualTo("/cmdm/brands"))
@@ -209,7 +209,7 @@ class ListBrandsServiceIT {
 
     @Test
     fun `listBrands when API returns 401 throws exception`() {
-        // Given
+        // given
         stubFor(
             post(urlPathEqualTo("/oauth/token"))
                 .willReturn(
@@ -219,7 +219,7 @@ class ListBrandsServiceIT {
                         .withBody("""{"error":"invalid_client"}""")
                 )
         )
-        // When
+        // when
         val result = mcpClient.callTool(
             McpSchema.CallToolRequest(
                 "list_brands",
@@ -227,14 +227,14 @@ class ListBrandsServiceIT {
             )
         ).block()!!
 
-        // Then
+        // then
         assertThat(result.isError).isTrue()
         assertThat((result.content().first() as McpSchema.TextContent).text()).contains("404 Not Found from GET")
     }
 
     @Test
     fun `listBrands when API returns 500 throws exception`() {
-        // Given
+        // given
         stubFor(
             post(urlPathEqualTo("/oauth/token"))
                 .willReturn(
@@ -256,7 +256,7 @@ class ListBrandsServiceIT {
         )
 
 
-        // When
+        // when
         val result = mcpClient.callTool(
             McpSchema.CallToolRequest(
                 "list_brands",
@@ -264,7 +264,7 @@ class ListBrandsServiceIT {
             )
         ).block()!!
 
-        // Then
+        // then
         assertThat(result.isError).isTrue()
         assertThat(
             (result.content().first() as McpSchema.TextContent).text()

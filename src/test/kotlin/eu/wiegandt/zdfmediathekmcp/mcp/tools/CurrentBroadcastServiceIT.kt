@@ -1,21 +1,34 @@
 package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import eu.wiegandt.zdfmediathekmcp.model.CurrentBroadcastResponse
 import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcast
+import io.modelcontextprotocol.client.McpAsyncClient
+import io.modelcontextprotocol.client.McpClient
+import io.modelcontextprotocol.client.transport.WebClientStreamableHttpTransport
+import io.modelcontextprotocol.spec.McpSchema
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.web.reactive.function.client.WebClient
 import org.wiremock.spring.ConfigureWireMock
 import org.wiremock.spring.EnableWireMock
+import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 
 @SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = [
+        "spring.ai.mcp.client.enabled=true",
+        "spring.ai.mcp.client.type=async",
         "zdf.client.id=test-client",
         "zdf.client.secret=test-secret"
     ]
@@ -27,8 +40,33 @@ import java.time.ZoneOffset
 )
 class CurrentBroadcastServiceIT {
 
+    @LocalServerPort
+    private var port: Int = 0
+
     @Autowired
-    lateinit var currentBroadcastService: CurrentBroadcastService
+    private lateinit var objectMapper: ObjectMapper
+
+    @Autowired
+    private lateinit var webClientBuilder: WebClient.Builder
+
+    private lateinit var mcpClient: McpAsyncClient
+
+    @BeforeEach
+    fun setUp() {
+        val transport = WebClientStreamableHttpTransport.builder(
+            webClientBuilder.baseUrl("http://localhost:$port")
+        )
+            .endpoint("/")
+            .build()
+
+        mcpClient = McpClient.async(transport).build()
+        mcpClient.initialize().block()
+    }
+
+    @AfterEach
+    fun tearDown() {
+        mcpClient.closeGracefully().block()
+    }
 
     @Test
     fun `getCurrentBroadcast with real API returns current broadcast`() {
@@ -90,7 +128,16 @@ class CurrentBroadcastServiceIT {
         )
 
         // when
-        val response = currentBroadcastService.getCurrentBroadcast(tvService)
+        val response = parseTextContent(
+            mcpClient.callTool(
+                McpSchema.CallToolRequest(
+                    "get_current_broadcast",
+                    mapOf<String, String>(
+                        Pair("tvService", tvService)
+                    )
+                )
+            )
+        )
 
         // then
         assertThat(response).usingRecursiveComparison()
@@ -147,7 +194,16 @@ class CurrentBroadcastServiceIT {
         )
 
         // when
-        val response = currentBroadcastService.getCurrentBroadcast(tvService)
+        val response = parseTextContent(
+            mcpClient.callTool(
+                McpSchema.CallToolRequest(
+                    "get_current_broadcast",
+                    mapOf<String, String>(
+                        Pair("tvService", tvService)
+                    )
+                )
+            )
+        )
 
         // then
         assertThat(response).usingRecursiveComparison()
@@ -178,10 +234,21 @@ class CurrentBroadcastServiceIT {
                 )
         )
 
-        // when / then
-        assertThatThrownBy {
-            currentBroadcastService.getCurrentBroadcast(tvService)
-        }.isInstanceOf(RuntimeException::class.java)
+        // when
+        val response = mcpClient.callTool(
+            McpSchema.CallToolRequest(
+                "get_current_broadcast",
+                mapOf<String, String>(
+                    Pair("tvService", tvService)
+                )
+            )
+        ).block()!!
+
+        // then
+        assertThat(response.isError).isTrue()
+        assertThat(
+            (response.content().first() as McpSchema.TextContent).text()
+        ).contains("404 Not Found from GET")
     }
 
     @Test
@@ -212,12 +279,29 @@ class CurrentBroadcastServiceIT {
                 )
         )
 
-        // when / then
-        assertThatThrownBy {
-            currentBroadcastService.getCurrentBroadcast(tvService)
-        }
-            .isInstanceOf(RuntimeException::class.java)
-            .hasMessageContaining("Failed to get current broadcast")
+        // when
+        val response = mcpClient.callTool(
+            McpSchema.CallToolRequest(
+                "get_current_broadcast",
+                mapOf<String, String>(
+                    Pair("tvService", tvService)
+                )
+            )
+        ).block()!!
+
+        // then
+        assertThat(response.isError).isTrue()
+        assertThat(
+            (response.content().first() as McpSchema.TextContent).text()
+        ).contains("500 Internal Server Error from GET")
+    }
+
+    private fun parseTextContent(result: Mono<McpSchema.CallToolResult>): CurrentBroadcastResponse {
+        return objectMapper.readValue<CurrentBroadcastResponse>(
+            (result.block()!!
+                .content()
+                .first() as McpSchema.TextContent).text()
+        )
     }
 }
 
