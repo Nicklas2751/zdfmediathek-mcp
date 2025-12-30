@@ -46,11 +46,13 @@ class BroadcastScheduleService(
         from: String,
         to: String,
         tvService: String? = null,
-        limit: Int = 10
+        limit: Int? = 10
     ): ZdfBroadcastScheduleResponse {
+        // If the MCP framework passes null (no parameter supplied), fall back to default
+        val actualLimit = limit ?: 10
         logger.info(
             "MCP Tool 'get_broadcast_schedule' called with from='{}', to='{}', tvService='{}', limit={}",
-            from, to, tvService ?: "all", limit
+            from, to, tvService ?: "all", actualLimit
         )
 
         try {
@@ -61,7 +63,7 @@ class BroadcastScheduleService(
             require(to.isNotBlank()) {
                 "Parameter 'to' is required and must not be empty"
             }
-            require(limit > 0) {
+            require(actualLimit > 0) {
                 "Parameter 'limit' must be greater than 0"
             }
 
@@ -75,11 +77,11 @@ class BroadcastScheduleService(
                 "Parameter 'from' must be before 'to'"
             }
 
-            logger.debug("Time range validated: from={}, to={}, limit={}", fromDateTime, toDateTime, limit)
+            logger.debug("Time range validated: from={}, to={}, limit={}", fromDateTime, toDateTime, actualLimit)
             logger.debug("Calling ZDF API to get broadcast schedule")
 
             // Delegate to ZDF API service
-            val response = zdfMediathekClient.getBroadcastSchedule(from, to, tvService, limit)
+            val response = zdfMediathekClient.getBroadcastSchedule(from, to, tvService, actualLimit)
 
             logger.info(
                 "Successfully retrieved {} broadcasts for time range {} to {}",

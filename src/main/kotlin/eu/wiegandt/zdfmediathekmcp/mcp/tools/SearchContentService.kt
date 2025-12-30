@@ -21,8 +21,9 @@ class SearchContentService(val zdfMediathekClient: ZdfMediathekClient) {
             Returns a list of documents.
         """,
     )
-    fun searchContent(query: String, limit: Int = 5): ZdfSearchResponse {
-        logger.info("MCP Tool 'search_content' called with query='{}', limit={}", query, limit)
+    fun searchContent(query: String, limit: Int? = 5): ZdfSearchResponse {
+        val actualLimit = limit ?: 5
+        logger.info("MCP Tool 'search_content' called with query='{}', limit={}", query, actualLimit)
 
         try {
             // Validate parameters
@@ -31,7 +32,7 @@ class SearchContentService(val zdfMediathekClient: ZdfMediathekClient) {
             }
 
             logger.debug("Calling ZDF API to search documents")
-            val response = zdfMediathekClient.searchDocuments(query, limit)
+            val response = zdfMediathekClient.searchDocuments(query, actualLimit)
 
             logger.info(
                 "Successfully retrieved {} search results for query '{}'",
