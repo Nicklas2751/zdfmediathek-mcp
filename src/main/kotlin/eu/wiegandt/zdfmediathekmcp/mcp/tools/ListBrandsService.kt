@@ -1,7 +1,7 @@
 package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
-import eu.wiegandt.zdfmediathekmcp.model.BrandSummary
+import eu.wiegandt.zdfmediathekmcp.model.BrandApiResponse
 import org.slf4j.LoggerFactory
 import org.springaicommunity.mcp.annotation.McpTool
 import org.springframework.stereotype.Service
@@ -12,7 +12,7 @@ class ListBrandsService(private val zdfMediathekClient: ZdfMediathekClient) {
 
     /**
      * MCP Tool: List all TV brands/series in the ZDF Mediathek.
-     * @param limit Maximale Anzahl der Ergebnisse (default: 10)
+     * @param limit Maximale Anzahl der Ergebnisse (optional, default: 10)
      * @return Liste von BrandSummary-Objekten
      */
     @McpTool(
@@ -22,11 +22,13 @@ class ListBrandsService(private val zdfMediathekClient: ZdfMediathekClient) {
                 Returns a list of brands with uuid, brandName, and brandDescription. 
                 """
     )
-    fun listBrands(limit: Int = 10): List<BrandSummary> {
-        logger.info("MCP Tool 'list_brands' called with limit={}", limit)
+    fun listBrands(limit: Int? = 10): BrandApiResponse {
+        // If the MCP framework passes null (no parameter supplied), fall back to default
+        val actualLimit = limit ?: 10
+        logger.info("MCP Tool 'list_brands' called with limit={}", actualLimit)
         try {
-            val result = zdfMediathekClient.listBrands(limit).brands
-            logger.info("Successfully retrieved {} brands", result.size)
+            val result = zdfMediathekClient.listBrands(actualLimit)
+            logger.info("Successfully retrieved {} brands", result.brands.size)
             return result
         } catch (e: Exception) {
             logger.error("Error executing list_brands: {}", e.message, e)
