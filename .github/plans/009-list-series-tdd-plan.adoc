@@ -1,0 +1,87 @@
+= TDD-Plan: list_series Feature
+:toc: left
+:toclevels: 3
+:sectnums:
+
+== Überblick
+
+Implementierung des MCP-Tools `list_series`. Dieser Endpunkt liefert eine Liste aller verfügbaren Serien in der ZDF Mediathek.
+
+== Motivation
+
+* Nutzer und LLMs sollen eine Übersicht über vorhandene Serien erhalten.
+* Serien sind oft Einstiegspunkte für die Suche nach Episoden.
+* Bietet detailliertere Informationen als die reine Marken-Suche (`list_brands`).
+* Stellt direkte Links zur ZDF Mediathek und IMDb bereit.
+
+== API-Design
+
+=== MCP Tool Signatur
+
+[source,kotlin]
+----
+@Tool(
+    name = "list_series",
+    description = "List all series available in the ZDF Mediathek. Returns title, description, brand reference, and external links (ZDF, IMDb - if available). " +
+                 "Parameters: limit (optional, default: 4)."
+)
+fun listSeries(limit: Int = 4): List<SeriesSummary>
+----
+
+=== Parameter
+
+* `limit` (Int, optional, default: 4): Maximale Anzahl der Ergebnisse.
+
+=== Rückgabewert
+
+`SeriesSummary`:
+
+[source,kotlin]
+----
+data class SeriesSummary(
+    val seriesUuid: String,   // seriesUuid (essential for broadcast lookups)
+    val title: String,        // seriesTitle
+    val description: String?, // seriesDescription
+    val brandId: String?,     // references brandUuid
+    val imdbUrl: String?,     // seriesImdbId (nullable, not always present)
+    val url: String?          // derived from https://www.zdf.de/{seriesIndexPageId}
+)
+----
+
+== TDD-Phasen
+
+=== Phase 1: Red - Unit Tests schreiben (schlagen fehl)
+
+* `ListSeriesServiceTest` anlegen.
+* Teste `listSeries` Aufruf (Erfolg).
+* Teste Fehlerfälle der API.
+* Teste Limit-Parameter.
+
+=== Phase 2: Red - Integration Tests schreiben (schlagen fehl)
+
+* `ListSeriesServiceIT` anlegen.
+* WireMock für `/cmdm/series` Endpoint konfigurieren.
+* Nutzung von `searies_response.json` als Mock-Datenquelle.
+* Teste Response-Mapping (JSON zu Objekt).
+
+=== Phase 3: Green - Produktivcode implementieren
+
+* Modelle erstellen: `ZdfSeriesResponse` und interne DTOs.
+* `ZdfMediathekClient` um `listSeries` erweitern.
+* Service `ListSeriesService` und `@McpTool` implementieren.
+* Mapping-Logik umsetzen.
+
+=== Phase 4: Refactoring
+
+* Code Cleanup.
+* Logging prüfen.
+* KDoc hinzufügen.
+
+== API-Details
+
+* Endpoint: `/cmdm/series`
+* HTTP Method: `GET`
+* Response: Siehe `searies_response.json` (Liste von Series mit Details).
+    * Response: `seasons_respons.json` Struktur
+
+
