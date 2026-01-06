@@ -105,6 +105,7 @@ graph TB
 ### Code Quality Standards
 
 - **Quality:** No SonarQube issues - same standards as professional production code
+- **One Class per File:** Each top-level class, interface, or object must be in its own file. Do not combine multiple classes in a single file unless they are small private helper classes.
 - **Testability:** Code must be easily testable with clear boundaries
 - **Maintainability:** Code must be easy to maintain and modify
 - **Readability:** Code must be clear and self-documenting
@@ -664,7 +665,6 @@ class SearchContentServiceTest {
 
 - Semantic tag search
 - Content recommendations
-- Search suggestions/autocomplete
 
 ### Infrastructure
 
@@ -751,3 +751,43 @@ data class BrandSummary(
 ```
 
 **Returns:** List of brands with uuid, brandName, brandDescription.
+
+### MCP Tool: list_series
+
+Lists all series available in the ZDF Mediathek.
+
+**Signature:**
+
+```kotlin
+@McpTool(
+    name = "list_series",
+    description = "List all series available in the ZDF Mediathek. Returns title, description, brand reference, and external links (ZDF, IMDb - if available). Parameter: limit (optional, default: 4)."
+)
+fun listSeries(limit: Int = 4): List<SeriesSummary>
+```
+
+**Model:**
+
+```kotlin
+data class SeriesSummary(
+    val seriesUuid: String,
+    val title: String,
+    val description: String?,
+    val brandId: String?,
+    val imdbUrl: String?,
+    val url: String?
+)
+```
+
+**Example Call:**
+
+```json
+{
+  "tool": "list_series",
+  "arguments": {
+    "limit": 5
+  }
+}
+```
+
+**Returns:** List of SeriesSummary objects.
