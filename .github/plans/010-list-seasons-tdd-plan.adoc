@@ -1,0 +1,98 @@
+= TDD-Plan: list_seasons Feature
+:toc: left
+:toclevels: 3
+:sectnums:
+
+== Überblick
+
+Implementierung des MCP-Tools `list_seasons`. Dieser Endpunkt liefert eine Liste aller verfügbaren Staffeln in der ZDF Mediathek.
+
+== Motivation
+
+* Nutzer und LLMs müssen gezielt nach Staffeln suchen können.
+* Die Staffeln liefern wichtige Verknüpfungen zu Serien und Brands.
+* Enthält komplette Serien-Details, was separate Abfragen einspart.
+* Ergänzung zum `list_series` Tool.
+
+== API-Design
+
+=== MCP Tool Signatur
+
+[source,kotlin]
+----
+@Tool(
+    name = "list_seasons",
+    description = "List all seasons available in the ZDF Mediathek. Returns title, season number, and full series details. " +
+                 "Parameters: limit (optional, default: 10)."
+)
+fun listSeasons(limit: Int = 10): List<SeasonSummary>
+----
+
+=== Parameter
+
+* `limit` (Int, optional, default: 10): Maximale Anzahl der Ergebnisse.
+
+=== Rückgabewert
+
+`SeasonSummary`:
+
+[source,kotlin]
+----
+data class SeasonSummary(
+    val seasonUuid: String,   // seasonUuid (essential for broadcast lookups)
+    val seasonNumber: Int?,   // seasonNumber
+    val title: String,        // seasonTitle
+    val series: SeriesSummary?, // Embedded series details (see list_series)
+    val brandId: String?      // references brandUuid
+)
+----
+
+`SeriesSummary` (wiederverwendet aus `list_series`):
+
+[source,kotlin]
+----
+data class SeriesSummary(
+    val seriesUuid: String,   // seriesUuid (essential for broadcast lookups)
+    val title: String,        // seriesTitle
+    val description: String?, // seriesDescription
+    val brandId: String?,     // references brandUuid
+    val imdbUrl: String?,     // seriesImdbId (nullable, not always present)
+    val url: String?          // derived from https://www.zdf.de/{seriesIndexPageId}
+)
+----
+
+== TDD-Phasen
+
+=== Phase 1: Red - Unit Tests schreiben (schlagen fehl)
+
+* `ListSeasonsServiceTest` anlegen.
+* Teste `listSeasons` Aufruf (Erfolg).
+* Teste Fehlerfälle der API.
+* Teste Limit-Parameter.
+
+=== Phase 2: Red - Integration Tests schreiben (schlagen fehl)
+
+* `ListSeasonsServiceIT` anlegen.
+* WireMock für `/cmdm/seasons` Endpoint konfigurieren.
+* Nutzung von `seasons_respons.json` als Mock-Datenquelle.
+* Teste Response-Mapping (JSON zu Objekt).
+
+=== Phase 3: Green - Produktivcode implementieren
+
+* Modelle erstellen: `ZdfSeasonResponse` und interne DTOs.
+* `ZdfMediathekClient` um `listSeasons` erweitern.
+* Service `ListSeasonsService` und `@McpTool` implementieren.
+* Mapping-Logik umsetzen.
+
+=== Phase 4: Refactoring
+
+* Code Cleanup.
+* Logging prüfen.
+* KDoc hinzufügen.
+
+== API-Details
+
+* Endpoint: `/cmdm/seasons`
+* HTTP Method: `GET`
+* Response: Siehe `seasons_respons.json` (Liste von Seasons mit Referenzen).
+

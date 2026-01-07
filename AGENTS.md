@@ -791,3 +791,42 @@ data class SeriesSummary(
 ```
 
 **Returns:** List of SeriesSummary objects.
+
+### MCP Tool: list_seasons
+
+Lists all seasons available in the ZDF Mediathek.
+
+**Signature:**
+
+```kotlin
+@McpTool(
+    name = "list_seasons",
+    description = "List all seasons available in the ZDF Mediathek. Returns title, season number, and full series details. Parameter: limit (optional, default: 4)."
+)
+fun listSeasons(limit: Int = 4): List<SeasonSummary>
+```
+
+**Model:**
+
+```kotlin
+data class SeasonSummary(
+    val seasonUuid: String,
+    val seasonNumber: Int?,
+    val title: String,
+    val series: SeriesSummary?,
+    val brandId: String?
+)
+```
+
+**Example Call:**
+
+```json
+{
+  "tool": "list_seasons",
+  "arguments": {
+    "limit": 5
+  }
+}
+```
+
+**Returns:** List of SeasonSummary objects.
