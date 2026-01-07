@@ -37,12 +37,11 @@ The server provides the following MCP tools:
 | `get_current_broadcast`  | Get currently airing program on a channel       | `tvService` (string, required)<br/>`limit` (number, optional, default: 10)                                                                               |
 | `list_brands`            | List all TV brands/series in the ZDF Mediathek  | `limit` (number, optional, default: 10)                                                                            |
 | `list_series`            | List all series available in the ZDF Mediathek  | `limit` (number, optional, default: 4)                                                                            |
+| `list_seasons`           | List all seasons available in the ZDF Mediathek | `limit` (number, optional, default: 4)                                                                            |
 
 ### Phase 2 - Planned
 
-| Tool                  | Description                                      | Key Parameters               |
-|-----------------------|--------------------------------------------------|------------------------------|
-| `list_seasons`        | List all seasons available in the ZDF Mediathek  | `limit` (number, optional, default: 10)                                                                            |
+*None currently.*
 
 ### Example Tool Usage
 

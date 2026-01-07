@@ -31,16 +31,7 @@ class ListSeriesService(private val zdfMediathekClient: ZdfMediathekClient) {
             val response = zdfMediathekClient.listSeries(actualLimit)
             logger.info("Successfully retrieved {} series", response.series.size)
 
-            return response.series.map { zdfSeries ->
-                SeriesSummary(
-                    seriesUuid = zdfSeries.seriesUuid,
-                    title = zdfSeries.seriesTitle,
-                    description = zdfSeries.seriesDescription,
-                    brandId = zdfSeries.brand?.brandUuid,
-                    imdbUrl = zdfSeries.seriesImdbId,
-                    url = zdfSeries.seriesIndexPageId?.let { "https://www.zdf.de/$it" }
-                )
-            }
+            return response.series.map { SeriesSummary(it) }
         } catch (e: Exception) {
             logger.error("Error executing list_series: {}", e.message, e)
             throw RuntimeException("Failed to list series: ${e.message}", e)

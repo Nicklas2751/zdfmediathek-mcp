@@ -1,9 +1,6 @@
 package eu.wiegandt.zdfmediathekmcp
 
-import eu.wiegandt.zdfmediathekmcp.model.BrandApiResponse
-import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcastScheduleResponse
-import eu.wiegandt.zdfmediathekmcp.model.ZdfSearchResponse
-import eu.wiegandt.zdfmediathekmcp.model.ZdfSeriesResponse
+import eu.wiegandt.zdfmediathekmcp.model.*
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.GetExchange
@@ -36,4 +33,9 @@ interface ZdfMediathekClient {
     fun listSeries(
         @RequestParam("limit") limit: Int = 4
     ): ZdfSeriesResponse
+
+    @GetExchange("/cmdm/seasons")
+    fun listSeasons(
+        @RequestParam("limit") limit: Int = 4
+    ): ZdfSeasonResponse
 }
