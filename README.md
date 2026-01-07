@@ -38,9 +38,10 @@ The server provides the following MCP tools:
 | `search_content`         | Search for content in ZDF Mediathek             | `query` (string, required)<br/>`limit` (number, optional, default: 5)                                                                                    |
 | `get_broadcast_schedule` | Get TV schedule for a specific channel and date | `from` (string, required, ISO 8601)<br/>`to` (string, required, ISO 8601)<br/>`tvService` (string, optional)<br/>`limit` (number, optional, default: 10) |
 | `get_current_broadcast`  | Get currently airing program on a channel       | `tvService` (string, required)<br/>`limit` (number, optional, default: 10)                                                                               |
-| `list_brands`            | List all TV brands/series in the ZDF Mediathek  | `limit` (number, optional, default: 10)                                                                            |
-| `list_series`            | List all series available in the ZDF Mediathek  | `limit` (number, optional, default: 4)                                                                            |
-| `list_seasons`           | List all seasons available in the ZDF Mediathek | `limit` (number, optional, default: 4)                                                                            |
+| `list_brands`            | List all TV brands/series in the ZDF Mediathek  | `limit` (number, optional, default: 10)                                                                                                                  |
+| `list_series`            | List all series available in the ZDF Mediathek  | `limit` (number, optional, default: 4)                                                                                                                   |
+| `list_seasons`           | List all seasons available in the ZDF Mediathek | `limit` (number, optional, default: 4)                                                                                                                   |
+| `get_series_episodes`    | Get episodes for a specific series              | `seriesName` (string, required)<br/>`limit` (number, optional, default: 10)<br/>*Note: Season filtering not yet implemented*                            |
 
 ### Phase 2 - Planned
 
