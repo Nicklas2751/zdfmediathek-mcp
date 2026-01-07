@@ -1,0 +1,129 @@
+= Implementation Plan: Get Series Episodes Tool
+:sectnums:
+:toc:
+
+== Introduction
+
+This plan details the implementation of a new MCP tool `get_series_episodes`.
+This tool allows AI assistants to retrieve episodes for a specific series, optionally filtered by season, sorted, and limited.
+
+== User Requirements
+
+*   **Input**:
+    *   `series_name` (String, required): The name of the series (e.g., "heute-show", "Sketch History").
+    *   `season_number` (Integer, optional): The specific season number to fetch episodes from.
+    *   `limit` (Integer, optional, default: 10): The maximum number of episodes to return.
+    *   `sort_by` (String, optional): Sort order, e.g., "date_desc" (newest first), "date_asc" (oldest first). Default: "date_desc".
+
+*   **Output**:
+    *   List of episodes with details (title, episode number, season number, date, url).
+
+== Technical Analysis
+
+=== GraphQL Query Strategy
+
+We need to search for the series first, and then fetch episodes. We can use `searchDocuments` to find the `ISeriesSmartCollection`.
+
+Depending on whether `season_number` is provided, we query either the direct `episodes` connection of the series or go through the `seasons` connection filtered by `numberIn`.
+
+[source,graphql]
+----
+query GetSeriesEpisodes($query: String!, $withSeason: Boolean!, $seasonNumber: Int, $limit: Int, $sortDir: OrderByDirection) {
+  searchDocuments(query: $query, first: 1) {
+    results {
+      item {
+        ... on ISeriesSmartCollection {
+          title
+          id
+
+          # Case A: No Season specified - fetch episodes from series directly
+          episodes(first: $limit, sortBy: [{field: EDITORIAL_DATE, direction: $sortDir}]) @skip(if: $withSeason) {
+            nodes {
+              ...EpisodeData
+            }
+          }
+
+          # Case B: Season specified - fetch specific season and its episodes
+          seasons(filterBy: {numberIn: [$seasonNumber]}, first: 1) @include(if: $withSeason) {
+            nodes {
+              seasonNumber
+              episodes(first: $limit, sortBy: [{field: EDITORIAL_DATE, direction: $sortDir}]) {
+                nodes {
+                  ...EpisodeData
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment EpisodeData on Video {
+  title
+  editorialDate
+  sharingUrl
+  episodeInfo {
+    seasonNumber
+    episodeNumber
+  }
+}
+----
+
+*   `OrderByDirection` can be `ASC` or `DESC`.
+*   We use `EDITORIAL_DATE` for sorting generally.
+
+=== GraphQL Client Strategy
+
+Instead of manually crafting HTTP requests, we will use the **Spring GraphQL Client (`HttpGraphQlClient`)**.
+
+*   **Dependency**: `spring-boot-starter-graphql`
+*   **Endpoint**: `https://prod-api.zdf.de/graphql`
+*   **Authorization**: The client must use the same OAuth2 Bearer token mechanism as the REST client.
+
+=== Data Models
+
+We need a flexible response model to handle both paths.
+
+*   `SearchResultItem` (Interface)
+    *   `SeriesSmartCollection`
+        *   `episodes`: `EpisodeConnection?`
+        *   `seasons`: `SeasonConnection?`
+
+== Implementation Steps
+
+1.  **Dependencies**:
+    *   Add `implementation("org.springframework.boot:spring-boot-starter-graphql")` to `build.gradle.kts`.
+    *   Add `testImplementation("io.github.nilwurtz:wiremock-graphql-extension:0.9.0")` to `build.gradle.kts`.
+
+2.  **Create Test Fixture**:
+    *   `get_series_episodes_response.json`
+    *   Mock response for "heute-show" (no season) and "Sketch History" (season 1).
+
+3.  **Create Model Classes**:
+    *   Create separate files for `SearchResultItem`, `SeriesSmartCollection`, `VideoItem`, `SeasonConnection`, `EpisodeConnection`, etc. in `eu.wiegandt.zdfmediathekmcp.model`.
+    *   Ensure proper Json deserialization for the new query structure.
+
+4.  **Configure `HttpGraphQlClient`**:
+    *   Create a configuration bean (e.g., `ZdfGraphqlConfiguration`) that creates an `HttpGraphQlClient`.
+    *   Configure it to use the `https://prod-api.zdf.de/graphql` URL.
+    *   Inject the `ZdfAuthService` (or equivalent) to add the Authorization header (Bearer Token) to every request.
+
+5.  **Implement `list_series_episodes` (MCP Tool)**:
+    *   Create `GetSeriesEpisodesService.kt`.
+    *   Inject `HttpGraphQlClient`.
+    *   Map user inputs to GraphQL variables.
+    *   Execute query using the client.
+    *   Parse response:
+        *   Check if `seasons` has data (means we asked for season).
+        *   Else check `episodes`.
+    *   Return simplified list of episodes.
+
+6.  **Tests**:
+    *   `GetSeriesEpisodesServiceTest`
+    *   Integration test with WireMock using `wiremock-graphql-extension` to match requests semantically (e.g., verifying `operationName` and `variables`) rather than raw string matching.
+
+== Verification
+
+*   Run `./gradlew test` with new tests.

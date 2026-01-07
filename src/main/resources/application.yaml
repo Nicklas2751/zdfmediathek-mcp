@@ -49,6 +49,8 @@ management:
 
 zdf:
   url: https://prod-api.zdf.de
+  graphql:
+    url: ${zdf.url}/graphql
   client:
     id: mediathek-search
     secret: ZDFmediathekSearchClientSecret

@@ -32,7 +32,61 @@ graph TB
     Tools -->|Transform| Transformer[Response Transformer]
     Server -->|SLF4J| Logger[Logback]
     Auth -->|Auto Token Mgmt| TokenCache[Spring Security<br/>Token Cache]
+### MCP Tool: get_series_episodes
+
+Lists episodes for a specific series in the ZDF Mediathek.
+
+**Signature:**
+
+```kotlin
+@McpTool(
+    name = "get_series_episodes",
+    description = "Get episodes for a series. Parameters: seriesName (required), limit (optional, default: 10)."
+)
+fun getSeriesEpisodes(
+    seriesName: String,
+    seasonNumber: Int? = null,  // TODO: Not yet implemented
+    limit: Int? = 10,
+    sortBy: String? = "date_desc"  // TODO: Not yet implemented
+): List<EpisodeNode>
 ```
+
+**Model:**
+
+```kotlin
+data class EpisodeNode(
+    val title: String,
+    val editorialDate: String?,
+    val sharingUrl: String?,
+    val episodeInfo: EpisodeInfo?
+)
+
+data class EpisodeInfo(
+    val seasonNumber: Int?,
+    val episodeNumber: Int?
+)
+```
+
+**Example Call:**
+
+```json
+{
+  "tool": "get_series_episodes",
+  "arguments": {
+    "seriesName": "heute-show",
+    "limit": 10
+  }
+}
+```
+
+**Returns:** List of EpisodeNode objects.
+
+**Known Limitations:**
+- Season filtering (`seasonNumber` parameter) not yet implemented
+- Custom sorting (`sortBy` parameter) not yet implemented
+- Episodes are returned in default API order
+
+````
 
 ### Component Structure
 

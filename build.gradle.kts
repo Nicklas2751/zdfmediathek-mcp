@@ -38,6 +38,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework.ai:spring-ai-starter-mcp-server-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-graphql")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -50,8 +51,9 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testImplementation("org.assertj:assertj-core")
     testImplementation("org.wiremock.integrations:wiremock-spring-boot:4.0.8")
-
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("io.github.nilwurtz:wiremock-graphql-extension:0.9.0") {
+        exclude(group = "org.wiremock", module = "wiremock")
+    }
 }
 
 dependencyManagement {
