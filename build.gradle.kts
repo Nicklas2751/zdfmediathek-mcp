@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "eu.wiegandt"
-version = "0.0.1-SNAPSHOT"
+version = System.getenv("VERSION") ?: "0.0.1-SNAPSHOT"
 description = "zdfmediathek-mcp"
 
 java {
@@ -31,6 +31,7 @@ extra["springAiVersion"] = "1.1.2"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
@@ -88,3 +89,11 @@ tasks.jacocoTestReport {
     }
 }
 
+tasks.named<org.springframework.boot.gradle.tasks.bundling.BootBuildImage>("bootBuildImage") {
+    imageName.set("ghcr.io/nicklas2751/zdfmediathek-mcp:${project.version}")
+
+    environment.set(mapOf(
+        "BP_JVM_VERSION" to "21",
+        "BP_HEALTH_CHECKER_ENABLED" to "true"
+    ))
+}

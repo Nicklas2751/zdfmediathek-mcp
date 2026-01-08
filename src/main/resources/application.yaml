@@ -24,6 +24,24 @@ spring:
           zdf:
             token-uri: ${zdf.url}/oauth/token
 
+# Management endpoints for health checks (for container orchestration)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+
 zdf:
   url: https://prod-api.zdf.de
   client:
