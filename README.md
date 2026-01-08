@@ -15,6 +15,8 @@ German public broadcasting content from ZDF (Zweites Deutsches Fernsehen).
 This server can be used independently with any MCP-compatible AI client, including Claude Desktop, GitHub Copilot, VS
 Code, IntelliJ IDEA, and others.
 
+**Transport Support:** Currently supports Streamable HTTP. Stdio transport support is planned (see TDD plan in `.github/plans/TDD-STDIO-SUPPORT.md`).
+
 ### Key Features
 
 - 🔍 **Content Search**: Search ZDF Mediathek content by title, topic, or description
@@ -22,6 +24,7 @@ Code, IntelliJ IDEA, and others.
 - 📺 **Current Broadcasts**: Get currently airing programs on ZDF channels
 - 🐳 **Docker Ready**: Pre-configured Docker images for easy deployment
 - 🔌 **MCP Compatible**: Works with all MCP-compatible AI clients
+- 🌐 **Dual Transport**: Supports both Streamable HTTP (production) and Stdio (local development - planned)
 - 📊 **Comprehensive Logging**: Detailed debug logging for OAuth2 and API requests
 
 ## MCP Tools Reference
@@ -89,27 +92,94 @@ The server provides the following MCP tools:
 
 1. **ZDF API Credentials**: Obtain OAuth2 credentials
    from [ZDF Developer Portal](https://developer.zdf.de/limited-access)
-2. **Docker**: Install Docker on your system (or use native Kotlin build)
+2. **Docker**: Install Docker on your system
 
-### Docker Setup (General)
+### MCP Transport Types
 
-The MCP server runs on Spring Boot with Streamable HTTP transport.
+This server supports two MCP transport types:
 
-Pull and run the Docker image:
+#### 1. Streamable HTTP Transport (Recommended for Production)
 
-```bash
-docker pull <registry>/zdf-mediathek-mcp:<version>
-docker run -p 8080:8080 \
-  -e ZDF_CLIENT_ID=<your-client-id> \
-  -e ZDF_CLIENT_SECRET=<your-secret> \
-  <registry>/zdf-mediathek-mcp:<version>
+Best for: Remote access, multiple clients, production deployments
+
+**Setup:**
+
+1. Start the server via Docker:
+   ```bash
+   docker run -d --name zdf-mcp \
+     -p 8080:8080 \
+     --restart unless-stopped \
+     -e ZDF_CLIENT_ID=your-client-id \
+     -e ZDF_CLIENT_SECRET=your-secret \
+     ghcr.io/nicklas2751/zdfmediathek-mcp:latest
+   ```
+
+2. Configure your MCP client to connect via HTTP:
+   ```json
+   {
+     "mcpServers": {
+       "zdfmediathek-mcp": {
+         "type": "streamable-http",
+         "url": "http://localhost:8080"
+       }
+     }
+   }
+   ```
+
+**Advantages:**
+- Server runs independently
+- Multiple clients can connect simultaneously
+- Can be accessed remotely
+- Better for debugging (persistent logs)
+- Restart without affecting MCP client
+
+**Health Check Endpoints:**
+- Liveness: `http://localhost:8080/actuator/health/liveness`
+- Readiness: `http://localhost:8080/actuator/health/readiness`
+- General Health: `http://localhost:8080/actuator/health`
+
+#### 2. Stdio Transport (Recommended for Local Development)
+
+Best for: Local development, single user, IDE integrations
+
+The MCP client starts and manages the Docker container automatically. The container communicates via stdin/stdout.
+
+**Configuration:**
+```json
+{
+  "mcpServers": {
+    "zdfmediathek-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "ZDF_CLIENT_ID",
+        "-e",
+        "ZDF_CLIENT_SECRET",
+        "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
+      ],
+      "env": {
+        "ZDF_CLIENT_ID": "your-client-id",
+        "ZDF_CLIENT_SECRET": "your-secret"
+      }
+    }
+  }
+}
 ```
 
-**MCP Endpoint:** `http://localhost:8080/` (Streamable HTTP)
+**Advantages:**
+- No manual server management
+- Container lifecycle managed by MCP client
+- Simpler setup for single user
+- Automatic cleanup when client closes
 
-> **Note**: Container name, registry URL, and version numbers will be added after initial release.
+---
 
 ### Anthropic Claude Desktop
+
+**Transport:** Stdio (Docker managed by Claude Desktop)
 
 **Configuration File Location:**
 
@@ -122,18 +192,22 @@ docker run -p 8080:8080 \
 ```json
 {
   "mcpServers": {
-    "zdf-mediathek": {
+    "zdfmediathek-mcp": {
       "command": "docker",
       "args": [
         "run",
         "-i",
         "--rm",
         "-e",
-        "ZDF_CLIENT_ID=your-client-id",
+        "ZDF_CLIENT_ID",
         "-e",
-        "ZDF_CLIENT_SECRET=your-secret",
-        "<container-name>"
-      ]
+        "ZDF_CLIENT_SECRET",
+        "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
+      ],
+      "env": {
+        "ZDF_CLIENT_ID": "your-client-id",
+        "ZDF_CLIENT_SECRET": "your-secret"
+      }
     }
   }
 }
@@ -143,99 +217,248 @@ docker run -p 8080:8080 \
 
 1. Add the configuration to your `claude_desktop_config.json`
 2. Restart Claude Desktop
-3. Ask Claude: "Search for Tatort in ZDF Mediathek"
+3. Claude will automatically start the Docker container when needed
+4. Ask Claude: "Search for Tatort in ZDF Mediathek"
 
 ### GitHub Copilot CLI
 
-**Setup:**
+**Transport:** Stdio (Docker managed by Copilot CLI)
+
+**Prerequisites:**
 
 ```bash
 # Install GitHub Copilot CLI (if not already installed)
 gh extension install github/gh-copilot
-
-# Configure MCP server
-# TODO: Add Copilot CLI specific configuration
 ```
 
-**Usage:**
+**Setup:**
 
-```bash
-gh copilot suggest "What's on ZDF tonight?"
-```
-
-### VS Code with GitHub Copilot
-
-**Extension Requirements:**
-
-- GitHub Copilot extension
-- MCP support (TODO: Check if additional extension needed)
-
-**Configuration (settings.json):**
+Configure MCP server in `~/.config/github-copilot/mcp-servers.json`:
 
 ```json
 {
-  "github.copilot.advanced": {
-    "mcpServers": {
-      "zdf-mediathek": {
-        "command": "docker",
-        "args": [
-          "run",
-          "-i",
-          "--rm",
-          "-e",
-          "ZDF_CLIENT_ID=your-client-id",
-          "-e",
-          "ZDF_CLIENT_SECRET=your-secret",
-          "<container-name>"
-        ]
+  "mcpServers": {
+    "zdfmediathek-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "ZDF_CLIENT_ID",
+        "-e",
+        "ZDF_CLIENT_SECRET",
+        "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
+      ],
+      "env": {
+        "ZDF_CLIENT_ID": "your-client-id",
+        "ZDF_CLIENT_SECRET": "your-secret"
       }
     }
   }
 }
 ```
 
-### IntelliJ IDEA
+**Usage:**
 
-**Native MCP Support:**
+```bash
+copilot "What's on ZDF tonight?"
+copilot "Search for Tatort episodes"
+```
 
-IntelliJ IDEA has native MCP support (TODO: Verify version requirement).
+### VS Code with GitHub Copilot
 
-**Configuration:**
+**Transport:** Stdio (Docker managed by VS Code)
 
-1. Open Settings → Tools → MCP Servers
-2. Add new MCP server
-3. Configure Docker command or direct connection
-4. Add environment variables for OAuth2 credentials
+**Extension Requirements:**
 
-### IntelliJ with GitHub Copilot
+- GitHub Copilot extension
+- VS Code version 1.99 or later
+
+**Configuration (.vscode/mcp.json or global settings.json):**
+
+```json
+{
+  "servers": {
+    "zdfmediathek-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "ZDF_CLIENT_ID",
+        "-e",
+        "ZDF_CLIENT_SECRET",
+        "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
+      ],
+      "env": {
+        "ZDF_CLIENT_ID": "your-client-id",
+        "ZDF_CLIENT_SECRET": "your-secret"
+      }
+    }
+  }
+}
+```
+
+**Usage:**
+
+1. Open Copilot Chat in VS Code
+2. Select "Agent" mode
+3. Click the tools icon to view available MCP servers
+4. Ask: "Search for Tatort in ZDF Mediathek"
+
+### IntelliJ IDEA with GitHub Copilot
+
+**Transport:** Stdio (Docker managed by IntelliJ)
 
 **Plugin Requirements:**
 
 - GitHub Copilot plugin
+- IntelliJ IDEA 2024.3 or later
 
 **Configuration:**
 
-1. Install GitHub Copilot plugin from JetBrains Marketplace
-2. Configure MCP server in plugin settings (TODO: Add specific steps)
+1. In IntelliJ IDEA, open the GitHub Copilot Chat window
+2. Click **"+ Add more tools"** at the bottom of the chat window
+3. This opens the `mcp.json` configuration file (usually at `~/.config/github-copilot/intellij/mcp.json`)
+4. Add the ZDF Mediathek MCP server configuration:
 
-### Kilocode
+```json
+{
+  "servers": {
+    "zdfmediathek-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "ZDF_CLIENT_ID",
+        "-e",
+        "ZDF_CLIENT_SECRET",
+        "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
+      ],
+      "env": {
+        "ZDF_CLIENT_ID": "your-client-id",
+        "ZDF_CLIENT_SECRET": "your-secret"
+      }
+    }
+  }
+}
+```
+
+5. Save the file
+6. Restart the GitHub Copilot service in IntelliJ (if needed)
+
+**Usage:**
+
+1. Open GitHub Copilot Chat in IntelliJ
+2. The ZDF Mediathek tools should appear in the available tools list
+3. Ask: "Search for Tatort in ZDF Mediathek"
+
+### Kilo Code
+
+**Transport:** Stdio (Docker managed by Kilo Code)
 
 **Configuration:**
 
-```yaml
-# TODO: Add Kilocode specific configuration format
+You can configure in either global settings or project-level:
+
+**Option A: Global Configuration (mcp_settings.json):**
+
+1. Click the ⚙️ icon in the Kilo Code pane → "MCP Servers" tab
+2. Click "Edit Global MCP"
+3. Add configuration:
+
+```json
+{
+  "mcpServers": {
+    "zdfmediathek-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "ZDF_CLIENT_ID",
+        "-e",
+        "ZDF_CLIENT_SECRET",
+        "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
+      ],
+      "env": {
+        "ZDF_CLIENT_ID": "your-client-id",
+        "ZDF_CLIENT_SECRET": "your-secret"
+      },
+      "alwaysAllow": ["search_content", "get_broadcast_schedule", "get_current_broadcast", "list_brands", "list_series", "list_seasons"],
+      "disabled": false
+    }
+  }
+}
 ```
 
-### Generic MCP Client (Stdio Transport)
+**Option B: Project-level Configuration (.kilocode/mcp.json):**
 
-For any MCP-compatible client supporting stdio transport:
+Same configuration as above, saved in `.kilocode/mcp.json` in your project root.
 
-```bash
-docker run -i --rm \
-  -e ZDF_CLIENT_ID=your-client-id \
-  -e ZDF_CLIENT_SECRET=your-secret \
-  <container-name>
+**Usage:**
+
+1. Type your request in the Kilo Code chat interface
+2. Kilo Code will automatically detect and use the ZDF Mediathek MCP tools
+3. Ask: "What's currently on ZDF?"
+
+### Other MCP Clients
+
+For any MCP-compatible client:
+
+**Option 1: Stdio Transport (via Docker)**
+
+```json
+{
+  "mcpServers": {
+    "zdfmediathek-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "ZDF_CLIENT_ID",
+        "-e",
+        "ZDF_CLIENT_SECRET",
+        "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
+      ],
+      "env": {
+        "ZDF_CLIENT_ID": "your-client-id",
+        "ZDF_CLIENT_SECRET": "your-secret"
+      }
+    }
+  }
+}
 ```
+
+**Option 2: Streamable HTTP Transport**
+
+1. Start the server:
+   ```bash
+   docker run -d --name zdf-mcp \
+     -p 8080:8080 \
+     -e ZDF_CLIENT_ID=your-client-id \
+     -e ZDF_CLIENT_SECRET=your-secret \
+     ghcr.io/nicklas2751/zdfmediathek-mcp:latest
+   ```
+
+2. Configure your client:
+   ```json
+   {
+     "mcpServers": {
+       "zdfmediathek-mcp": {
+         "type": "streamable-http",
+         "url": "http://localhost:8080"
+       }
+     }
+   }
+   ```
 
 ## Development Setup
 
@@ -249,7 +472,7 @@ docker run -i --rm \
 
 ```bash
 # Clone repository
-git clone <repo-url>
+git clone https://github.com/Nicklas2751/zdfmediathek-mcp
 cd zdfmediathek-mcp
 
 # Build project
@@ -322,14 +545,9 @@ logging:
 
 **OAuth2 Setup:**
 
-1. Register for ZDF API access at: TODO (add URL)
+1. Register for ZDF API access at: https://developer.zdf.de/limited-access
 2. Obtain client credentials (Client ID and Secret)
 3. Set environment variables or pass via Docker
-
-**API Quota Information:**
-
-- TODO: Add quota limits
-- TODO: Add rate limiting information
 
 ## API Coverage
 
@@ -389,14 +607,6 @@ For detailed contribution guidelines, see [AGENTS.md](AGENTS.md).
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- **ZDF** for providing the Mediathek API
-- **Anthropic** for the Model Context Protocol specification
-- **Spring AI Team** for Spring AI MCP integration
-- **Spring Community** for excellent frameworks and tooling
-- **Kotlin Community** for the excellent language and ecosystem
 
 ## Links
 
