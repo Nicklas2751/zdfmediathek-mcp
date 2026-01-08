@@ -30,6 +30,8 @@ jobs:
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - name: Build JAR
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
         run: ./gradlew bootJar
 
       - name: Upload JAR to Release
@@ -56,6 +58,8 @@ jobs:
             type=raw,value=latest
 
       - name: Build container image with Buildpacks
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
         run: |
           # Get the first tag from metadata
           PRIMARY_TAG=$(echo '${{ steps.meta.outputs.tags }}' | head -n1)

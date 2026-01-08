@@ -14,7 +14,7 @@
 This is a standalone Model Context Protocol (MCP) server that enables AI assistants to interact with the ZDF Mediathek
 API. The server provides tools for content search, broadcast schedules, and live program information.
 
-**Parent Project:** mediathek-ai (will be separated into own repository)
+Respect the CONTRIBUTING.md content when contributing to this project.
 
 ---
 
@@ -57,6 +57,59 @@ graph TB
 6. **Security**: OAuth2 credentials via environment variables only
 
 ---
+
+## Commit Message Guidelines
+
+### Format
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Types
+
+- **feat**: New feature
+- **fix**: Bug fix
+- **docs**: Documentation changes
+- **style**: Code style changes (formatting, etc.)
+- **refactor**: Code refactoring
+- **test**: Adding or updating tests
+- **chore**: Maintenance tasks (dependencies, build, etc.)
+- **perf**: Performance improvements
+- **ci**: CI/CD changes
+
+### Examples
+
+```
+feat(tools): add list_brands tool for listing TV brands
+
+Implements a new MCP tool to list all TV brands/series available
+in the ZDF Mediathek. Includes full test coverage and integration
+with the ZDF API brands endpoint.
+
+Closes #42
+```
+
+```
+fix(oauth2): handle token expiration correctly
+
+The OAuth2 token was not being refreshed when expired, causing
+API calls to fail. This fix ensures tokens are automatically
+refreshed when needed.
+
+Fixes #87
+```
+
+```
+docs(readme): update Docker setup instructions
+
+Added health check endpoints and clarified container registry URL.
+```
+
 
 ## Communication and Documentation Rules
 
