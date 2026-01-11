@@ -82,7 +82,9 @@ spring:
 
 logging:
   file:
-    name: logs/zdfmediathek-mcp.log
+    # Use /tmp instead of logs/ to avoid permission issues in Docker
+    # /tmp is always writable in containers
+    name: /tmp/zdfmediathek-mcp.log
   level:
     root: INFO
     eu.wiegandt.zdfmediathekmcp: DEBUG

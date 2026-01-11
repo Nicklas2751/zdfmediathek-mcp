@@ -150,7 +150,7 @@ The MCP client starts and manages the Docker container automatically. The contai
 The `stdio` profile:
 - Enables stdio transport (`spring.ai.mcp.server.stdio=true`)
 - Disables console output (banner, logs) to keep stdin/stdout clean for MCP
-- Redirects logs to file (`logs/zdfmediathek-mcp.log`)
+- Redirects logs to file (`/tmp/zdfmediathek-mcp.log`)
 
 **Configuration:**
 ```json
@@ -175,6 +175,8 @@ The `stdio` profile:
   }
 }
 ```
+
+**Note:** The Docker image is pre-configured with buildpack settings that minimize startup output for clean stdio communication.
 
 **Advantages:**
 - No manual server management
