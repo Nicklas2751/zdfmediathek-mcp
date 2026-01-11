@@ -7,7 +7,12 @@ spring:
       server:
         enabled: true
         name: zdf-mediathek-mcp
+        # Transport modes: streamable (HTTP) or stdio (stdin/stdout)
+        # Note: Only one transport can be active at a time
+        # Default: streamable (HTTP on port 8080)
+        # Set SPRING_AI_MCP_SERVER_STDIO=true to use stdio transport
         protocol: streamable
+        stdio: false
         streamable-http:
           mcp-endpoint: /
 
@@ -58,3 +63,29 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%t] %-40.40logger{39} : %m%n%wEx"
 
+---
+# Stdio Profile
+# Activate with: -Dspring.profiles.active=stdio or SPRING_PROFILES_ACTIVE=stdio
+# This profile configures stdio transport and prevents any console output
+# which would interfere with MCP communication over stdin/stdout
+spring:
+  config:
+    activate:
+      on-profile: stdio
+  main:
+    banner-mode: off  # Disable Spring Boot banner
+  ai:
+    mcp:
+      server:
+        stdio: true  # Enable stdio transport
+        protocol: streamable  # Keep protocol as streamable (stdio uses it internally)
+
+logging:
+  file:
+    name: logs/zdfmediathek-mcp.log
+  level:
+    root: INFO
+    eu.wiegandt.zdfmediathekmcp: DEBUG
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%t] %-40.40logger{39} : %m%n%wEx"
+    # Note: No console pattern defined - console logging is disabled via logback-spring.xml
