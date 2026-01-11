@@ -1,0 +1,541 @@
+= TDD-Plan: Stdio Transport Support
+:toc: left
+:toclevels: 3
+:sectnums:
+
+== Überblick
+
+Implementierung von **Stdio Transport Support** für den ZDF Mediathek MCP Server. Der Server soll zwischen zwei MCP-Transports wechseln können: Streamable HTTP (default) und Stdio.
+
+== Motivation
+
+* Spring AI MCP WebFlux Server unterstützt beide Transports (aber nur einen zur Zeit)
+* Streamable HTTP für Produktion und Remote-Zugriff
+* Stdio für lokale Entwicklung und IDE-Integrationen
+* Transport-Wahl per Umgebungsvariable ohne Code-Änderungen
+
+== Technischer Hintergrund
+
+=== Spring AI MCP Server
+
+Laut https://docs.spring.io/spring-ai/reference/api/mcp/mcp-stdio-sse-server-boot-starter-docs.html[Spring AI Dokumentation]:
+
+[quote]
+____
+**SSE WebFlux Server**
+
+Full MCP Server feature support with SSE (Server-Sent Events) server transport based on Spring WebFlux and an optional STDIO transport.
+
+* **Optional STDIO transport (enabled by setting spring.ai.mcp.server.stdio=true)**
+____
+
+[IMPORTANT]
+====
+**Wichtige Erkenntnis aus Tests:**
+
+Entgegen der initialen Annahme können **Stdio und Streamable NICHT gleichzeitig** aktiv sein.
+Wenn `stdio: true` gesetzt wird, wird Streamable HTTP automatisch deaktiviert.
+
+**Lösung:**
+- Default: `stdio: false` (Streamable HTTP aktiv)
+- Via `SPRING_AI_MCP_SERVER_STDIO=true` kann auf Stdio umgeschaltet werden
+====
+
+=== Transport-Übersicht
+
+[cols="1,3,3", options="header"]
+|===
+|Transport |Beschreibung |Use Case
+
+|Streamable HTTP (Default)
+|HTTP-Endpunkt auf Port 8080. `stdio: false`
+|Produktion, Remote-Zugriff, mehrere Clients gleichzeitig, Standard
+
+|Stdio
+|stdin/stdout Kommunikation. `stdio: true`
+|Lokale Entwicklung, IDE-Integrationen, Docker mit `-i` Flag
+|===
+
+[WARNING]
+====
+**Nur ein Transport zur Zeit aktiv!**
+
+Wenn `stdio: true` gesetzt wird, wird Streamable HTTP automatisch deaktiviert.
+====
+
+=== Konfiguration
+
+**Aktivierung über application.yaml:**
+
+[source,yaml]
+----
+spring:
+  ai:
+    mcp:
+      server:
+        enabled: true
+        name: zdf-mediathek-mcp
+        # Default: stdio: false (Streamable HTTP active)
+        # Set SPRING_AI_MCP_SERVER_STDIO=true to switch to stdio
+        stdio: false
+        protocol: streamable
+        streamable-http:
+          mcp-endpoint: /
+----
+
+**Umschalten via Umgebungsvariable:**
+
+[source,bash]
+----
+# Default: Streamable HTTP
+docker run -p 8080:8080 ...
+
+# Stdio Transport
+docker run -i -e SPRING_AI_MCP_SERVER_STDIO=true ...
+----
+
+**Transport-Status:**
+
+* Default (`stdio: false`): Streamable HTTP auf `http://localhost:8080/`
+* Mit `SPRING_AI_MCP_SERVER_STDIO=true`: Stdio via stdin/stdout
+
+== TDD-Plan
+
+=== Phase 1: Research & Analysis (1-2 Stunden)
+
+==== 1.1 Spring AI MCP Stdio-Dokumentation analysieren
+
+[cols="1,3", options="header"]
+|===
+|Status |Aufgabe
+
+|✓
+|Spring AI Dokumentation gelesen: Stdio ist optional und läuft parallel zu HTTP
+
+|☐
+|MCP Client-Setup für Stdio in Tests recherchieren (`StdioServerTransport`)
+
+|☐
+|Prüfen: Wie wird Logging bei Stdio gehandhabt? (stdout für MCP, stderr für Logs?)
+
+|☐
+|Beispiel-Code für Stdio Integration Tests in Spring AI suchen
+|===
+
+**Erwartetes Ergebnis:** Verständnis, wie man einen MCP Client für Stdio-Tests aufsetzt.
+
+---
+
+=== Phase 2: Stdio aktivieren & testen (2-3 Stunden)
+
+==== 2.1 Stdio-Unterstützung in application.yaml konfigurieren
+
+**Datei:** `src/main/resources/application.yaml`
+
+[source,yaml]
+----
+spring:
+  ai:
+    mcp:
+      server:
+        enabled: true
+        name: zdf-mediathek-mcp
+        # Transport modes: streamable (HTTP) or stdio (stdin/stdout)
+        # Note: Only one transport can be active at a time
+        # Default: streamable (HTTP on port 8080)
+        # Set SPRING_AI_MCP_SERVER_STDIO=true to use stdio transport
+        protocol: streamable
+        stdio: false  # ← Default: Streamable HTTP aktiv
+        streamable-http:
+          mcp-endpoint: /
+----
+
+**Wichtig:**
+- Default bleibt `stdio: false` (Streamable HTTP)
+- Umschalten auf Stdio via `SPRING_AI_MCP_SERVER_STDIO=true`
+- Keine weiteren Code-Änderungen nötig
+
+==== 2.2 Bestehende Tests validieren
+
+**Validierung:** Alle bestehenden Integration Tests (die Streamable HTTP nutzen) müssen weiterhin erfolgreich laufen.
+
+[source,bash]
+----
+./gradlew test
+----
+
+[cols="1,3", options="header"]
+|===
+|Status |Ergebnis
+
+|✓ Green
+|Alle 54 Tests laufen erfolgreich - `stdio: false` (default) funktioniert korrekt
+|===
+
+==== 2.3 Stdio Transport Integration Test
+
+**Datei:** `src/test/kotlin/eu/wiegandt/zdfmediathekmcp/mcp/tools/SearchContentServiceStdioIT.kt`
+
+Kopiere `SearchContentServiceIT.kt` und passe für Stdio an:
+
+[source,kotlin]
+----
+package eu.wiegandt.zdfmediathekmcp.mcp.tools
+
+// ...existing imports from SearchContentServiceIT...
+
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,  // HTTP läuft weiter
+    properties = [
+        "spring.ai.mcp.client.enabled=true",
+        "spring.ai.mcp.client.type=async",
+        "spring.ai.mcp.server.stdio=true",  // ← Stdio aktivieren
+        "zdf.client.id=test-client",
+        "zdf.client.secret=test-secret"
+    ]
+)
+@EnableWireMock(
+    ConfigureWireMock(
+        name = "wiremock",
+        property = "zdf.url"
+    )
+)
+class SearchContentServiceStdioIT {
+
+    @Autowired
+    private lateinit var authorizedClientService: ReactiveOAuth2AuthorizedClientService
+
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
+
+    private lateinit var mcpClient: McpClient
+
+    @BeforeEach
+    fun setup() {
+        // Setup MCP Client mit Stdio Transport
+        // Nutze StdioServerTransport anstelle von WebClientStreamableHttpTransport
+        // Details aus Phase 1 Research
+    }
+
+    @Test
+    fun `should search content via stdio transport`() {
+        // given: WireMock stub für ZDF API
+        // when: Tool über Stdio aufrufen
+        // then: Ergebnis korrekt
+    }
+
+    @AfterEach
+    fun teardown() {
+        // MCP Client schließen
+    }
+}
+----
+
+[cols="1,3", options="header"]
+|===
+|Status |Beschreibung
+
+|Red
+|Test schlägt fehl, weil Stdio-Client-Setup noch fehlt
+
+|Green
+|Test läuft erfolgreich mit Stdio-Transport
+
+|Refactor
+|Test-Code aufräumen
+|===
+
+---
+
+=== Phase 3: Dokumentation (1 Stunde)
+
+==== 3.1 application.yaml kommentieren
+
+**Datei:** `src/main/resources/application.yaml`
+
+Kommentar hinzufügen:
+
+[source,yaml]
+----
+spring:
+  ai:
+    mcp:
+      server:
+        enabled: true
+        name: zdf-mediathek-mcp
+        # Enable stdio transport parallel to streamable-http
+        # Clients can connect via HTTP or stdin/stdout simultaneously
+        stdio: true
+        streamable-http:
+          mcp-endpoint: /
+----
+
+==== 3.2 README aktualisieren
+
+**Datei:** `README.md`
+
+**Änderungen:**
+
+1. Transport-Status von "Planned" zu "Available" ändern
+2. Klarstellen, dass **beide Transports parallel** laufen
+3. Docker-Beispiele müssen **nicht** geändert werden:
+   * Stdio funktioniert automatisch mit `docker run -i` wenn `stdio: true` in application.yaml
+   * Keine zusätzliche Umgebungsvariable nötig
+
+**Aktualisierung im Overview:**
+
+[source,markdown]
+----
+**Transport Support:** Supports both Streamable HTTP and Stdio transport simultaneously.
+
+### Key Features
+- 🌐 **Dual Transport**: Streamable HTTP (production) and Stdio (local dev) run in parallel
+----
+
+**Aktualisierung in "MCP Transport Types" Sektion:**
+
+[source,markdown]
+----
+### MCP Transport Types
+
+This server supports **both transports simultaneously**:
+
+#### 1. Streamable HTTP Transport
+Always active when server runs.
+...
+
+#### 2. Stdio Transport
+Also active - automatically used when Docker container runs with `-i` flag.
+...
+----
+
+[NOTE]
+====
+Die bestehenden Docker-Konfigurationen in der README sind bereits korrekt!
+Stdio funktioniert automatisch, da es jetzt in `application.yaml` aktiviert ist.
+====
+
+==== 3.3 AGENTS.md aktualisieren
+
+**Datei:** `AGENTS.md`
+
+Sektion "Architecture Decisions" ergänzen:
+
+[source,markdown]
+----
+### MCP Dual Transport Support
+
+**Decision:** Enable both Streamable HTTP and Stdio transports simultaneously
+
+**Rationale:**
+- Spring AI MCP WebFlux Server supports both transports in parallel
+- No need to choose - users can use HTTP or Stdio based on their use case
+- Streamable HTTP: Better for production, remote access, multiple clients
+- Stdio: Better for local development, IDE integrations, simpler Docker setup
+
+**Implementation:**
+- Set `spring.ai.mcp.server.stdio: true` in application.yaml
+- Both transports active by default
+- No code changes needed - Spring AI handles everything
+- Docker configurations unchanged - stdio works automatically with `-i` flag
+
+**Testing:**
+- Both transports tested via integration tests
+- `SearchContentServiceIT.kt` for Streamable HTTP
+- `SearchContentServiceStdioIT.kt` for Stdio
+
+**Benefits:**
+- Maximum flexibility for users
+- Backward compatible (HTTP still works as before)
+- Simpler than switching between transports
+----
+
+== Zusammenfassung der Änderungen
+
+[cols="2,4,1", options="header"]
+|===
+|Datei |Änderung |Komplexität
+
+|`application.yaml`
+|`stdio: true` hinzufügen
+|Trivial (1 Zeile)
+
+|`SearchContentServiceStdioIT.kt`
+|Neuer Integration Test
+|Mittel
+
+|`README.md`
+|Transport-Status aktualisieren
+|Niedrig
+
+|`AGENTS.md`
+|Architecture Decision dokumentieren
+|Niedrig
+|===
+
+[NOTE]
+====
+**Keine Änderungen nötig:**
+
+* Docker-Konfigurationen (funktionieren bereits mit Stdio)
+* Bestehende Integration Tests
+* MCP Tool-Implementierungen
+* Build-Konfiguration
+====
+
+== Test-Übersicht
+
+[cols="2,4,1", options="header"]
+|===
+|Test-Datei |Zweck |Phase
+
+|`SearchContentServiceStdioIT.kt`
+|Stdio Transport Integration Test
+|2.3
+|===
+
+[NOTE]
+====
+Nur ein zusätzlicher Integration Test nötig. Die bestehenden HTTP-Tests bleiben unverändert.
+====
+
+== Akzeptanzkriterien
+
+[cols="1,4", options="header"]
+|===
+|Status |Kriterium
+
+|✓
+|README dokumentiert beide Transport-Typen
+
+|✓
+|`spring.ai.mcp.server.stdio: false` in application.yaml (default) mit Kommentaren
+
+|✓
+|Integration Test `SearchContentServiceStdioIT.kt` läuft erfolgreich
+
+|✓
+|Alle bestehenden Tests (Streamable HTTP) laufen weiterhin durch (55 Tests)
+
+|✓
+|Beide Transports funktionieren (nur einer zur Zeit aktiv)
+
+|✓
+|Docker mit `SPRING_AI_MCP_SERVER_STDIO=true` aktiviert Stdio
+
+|✓
+|README aktualisiert: Transport-Status dokumentiert, nicht mehr "Planned"
+
+|✓
+|AGENTS.md mit Architecture Decision ergänzt
+
+|✓
+|Kommentare in application.yaml hinzugefügt
+|===
+
+== Offene Fragen (Phase 1)
+
+1. Wie wird der MCP Client für Stdio in Tests aufgesetzt? (`StdioServerTransport` Beispiele finden)
+2. Werden Logs bei Stdio anders behandelt? (stdout für MCP, stderr für Logs?)
+3. Gibt es Spring AI MCP Beispiel-Code für Stdio Integration Tests?
+
+== Risiken & Mitigationen
+
+[cols="3,1,1,3", options="header"]
+|===
+|Risiko |Wahrscheinlichkeit |Impact |Mitigation
+
+|MCP Client-Setup für Stdio in Tests unklar
+|Mittel
+|Mittel
+|Phase 1: Beispiele in Spring AI suchen
+
+|Logging-Konflikte (stdout)
+|Niedrig
+|Niedrig
+|Logging auf stderr umleiten
+
+|Bestehende Tests brechen
+|Sehr Niedrig
+|Hoch
+|Alle Tests nach Änderungen ausführen
+|===
+
+== Zeitschätzung
+
+[cols="1,2", options="header"]
+|===
+|Phase |Zeit
+
+|Phase 1 (Research)
+|1-2 Stunden
+
+|Phase 2 (Implementierung & Tests)
+|2-3 Stunden
+
+|Phase 3 (Dokumentation)
+|1 Stunde
+
+|**Gesamt**
+|**4-6 Stunden**
+|===
+
+[NOTE]
+====
+Drastisch reduziert durch parallele Transport-Unterstützung!
+Ursprüngliche Schätzung war 8-12 Stunden für sequenzielle Transports.
+====
+
+== Next Steps
+
+=== 1. Phase 1 starten: Research
+
+* Spring AI MCP Stdio-Client-Setup recherchieren
+* Wie funktioniert `StdioServerTransport` in Tests?
+* Gibt es Spring AI Beispiele für Stdio Integration Tests?
+
+=== 2. Phase 2 umsetzen: Implementation
+
+* `stdio: true` in application.yaml setzen
+* Alle Tests ausführen (sollten weiterhin laufen)
+* `SearchContentServiceStdioIT.kt` erstellen und zum Laufen bringen
+
+=== 3. Phase 3 abschließen: Dokumentation
+
+* README und AGENTS.md aktualisieren
+* Kommentare in application.yaml hinzufügen
+
+=== 4. Manueller Test
+
+* Docker mit `docker run -i` testen
+* Claude Desktop / VS Code / IntelliJ mit Stdio-Config testen
+
+== Vorteile dieser Lösung
+
+[cols="1,3", options="header"]
+|===
+|Vorteil |Beschreibung
+
+|✓ Drastisch einfacher
+|Keine Auswahl zwischen Transports, keine Umgebungsvariablen zum Umschalten, nur eine Property: `stdio: true`
+
+|✓ Maximale Flexibilität
+|HTTP-Clients funktionieren wie bisher, Stdio-Clients parallel, keine Breaking Changes
+
+|✓ Minimaler Aufwand
+|1 Zeile in application.yaml, 1 neuer Integration Test, Dokumentation, Fertig!
+
+|✓ Perfekt für alle Use Cases
+|Produktion (HTTP), Entwicklung (Stdio), beides gleichzeitig nutzbar
+|===
+
+[IMPORTANT]
+====
+**Killer-Features:**
+
+* 🎯 Zero Breaking Changes - HTTP funktioniert exakt wie bisher
+* 🎯 Maximum Flexibility - Beide Transports parallel nutzbar
+* 🎯 Minimal Effort - 1 Zeile Code + 1 Test + Doku
+* 🎯 Perfect für alle - Produktion (HTTP) + Entwicklung (Stdio) gleichzeitig
+====
+

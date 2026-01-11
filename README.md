@@ -15,7 +15,7 @@ German public broadcasting content from ZDF (Zweites Deutsches Fernsehen).
 This server can be used independently with any MCP-compatible AI client, including Claude Desktop, GitHub Copilot, VS
 Code, IntelliJ IDEA, and others.
 
-**Transport Support:** Currently supports Streamable HTTP. Stdio transport support is planned (see TDD plan in `.github/plans/TDD-STDIO-SUPPORT.md`).
+**Transport Support:** Supports both Streamable HTTP (default) and Stdio transport. Only one transport can be active at a time. Use the `stdio` Spring profile to enable stdio transport (sets `spring.ai.mcp.server.stdio=true` and disables console output).
 
 ### Key Features
 
@@ -24,7 +24,7 @@ Code, IntelliJ IDEA, and others.
 - 📺 **Current Broadcasts**: Get currently airing programs on ZDF channels
 - 🐳 **Docker Ready**: Pre-configured Docker images for easy deployment
 - 🔌 **MCP Compatible**: Works with all MCP-compatible AI clients
-- 🌐 **Dual Transport**: Supports both Streamable HTTP (production) and Stdio (local development - planned)
+- 🌐 **Flexible Transport**: Streamable HTTP (default/production) or Stdio (local development)
 - 📊 **Comprehensive Logging**: Detailed debug logging for OAuth2 and API requests
 
 ## MCP Tools Reference
@@ -96,53 +96,61 @@ The server provides the following MCP tools:
 
 ### MCP Transport Types
 
-This server supports two MCP transport types:
+This server supports **two transport modes** (only one active at a time):
 
-#### 1. Streamable HTTP Transport (Recommended for Production)
+#### 1. Streamable HTTP Transport (Default)
 
-Best for: Remote access, multiple clients, production deployments
+Best for: Production, remote access, multiple clients
 
-**Setup:**
+**Active by default.** The server runs with HTTP transport when started normally.
 
-1. Start the server via Docker:
-   ```bash
-   docker run -d --name zdf-mcp \
-     -p 8080:8080 \
-     --restart unless-stopped \
-     -e ZDF_CLIENT_ID=your-client-id \
-     -e ZDF_CLIENT_SECRET=your-secret \
-     ghcr.io/nicklas2751/zdfmediathek-mcp:latest
-   ```
+**Endpoint:** `http://localhost:8080/`
 
-2. Configure your MCP client to connect via HTTP:
-   ```json
-   {
-     "mcpServers": {
-       "zdfmediathek-mcp": {
-         "type": "streamable-http",
-         "url": "http://localhost:8080"
-       }
-     }
-   }
-   ```
+**Docker:**
+```bash
+docker run -d --name zdf-mcp \
+  -p 8080:8080 \
+  --restart unless-stopped \
+  -e ZDF_CLIENT_ID=your-client-id \
+  -e ZDF_CLIENT_SECRET=your-secret \
+  ghcr.io/nicklas2751/zdfmediathek-mcp:latest
+```
+
+**MCP Client Configuration:**
+```json
+{
+  "mcpServers": {
+    "zdfmediathek-mcp": {
+      "type": "streamable-http",
+      "url": "http://localhost:8080"
+    }
+  }
+}
+```
 
 **Advantages:**
 - Server runs independently
 - Multiple clients can connect simultaneously
 - Can be accessed remotely
 - Better for debugging (persistent logs)
-- Restart without affecting MCP client
 
 **Health Check Endpoints:**
 - Liveness: `http://localhost:8080/actuator/health/liveness`
 - Readiness: `http://localhost:8080/actuator/health/readiness`
 - General Health: `http://localhost:8080/actuator/health`
 
-#### 2. Stdio Transport (Recommended for Local Development)
+#### 2. Stdio Transport
 
 Best for: Local development, single user, IDE integrations
 
 The MCP client starts and manages the Docker container automatically. The container communicates via stdin/stdout.
+
+**Activate with:** Spring profile `stdio` (recommended) or `SPRING_AI_MCP_SERVER_STDIO=true`
+
+The `stdio` profile:
+- Enables stdio transport (`spring.ai.mcp.server.stdio=true`)
+- Disables console output (banner, logs) to keep stdin/stdout clean for MCP
+- Redirects logs to file (`logs/zdfmediathek-mcp.log`)
 
 **Configuration:**
 ```json
@@ -154,10 +162,9 @@ The MCP client starts and manages the Docker container automatically. The contai
         "run",
         "-i",
         "--rm",
-        "-e",
-        "ZDF_CLIENT_ID",
-        "-e",
-        "ZDF_CLIENT_SECRET",
+        "-e", "SPRING_PROFILES_ACTIVE=stdio",
+        "-e", "ZDF_CLIENT_ID",
+        "-e", "ZDF_CLIENT_SECRET",
         "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
       ],
       "env": {
@@ -174,6 +181,8 @@ The MCP client starts and manages the Docker container automatically. The contai
 - Container lifecycle managed by MCP client
 - Simpler setup for single user
 - Automatic cleanup when client closes
+
+> **Note:** When stdio is enabled, HTTP transport is automatically disabled. Only one transport can be active at a time.
 
 ---
 
@@ -198,10 +207,9 @@ The MCP client starts and manages the Docker container automatically. The contai
         "run",
         "-i",
         "--rm",
-        "-e",
-        "ZDF_CLIENT_ID",
-        "-e",
-        "ZDF_CLIENT_SECRET",
+        "-e", "SPRING_PROFILES_ACTIVE=stdio",
+        "-e", "ZDF_CLIENT_ID",
+        "-e", "ZDF_CLIENT_SECRET",
         "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
       ],
       "env": {
@@ -217,7 +225,7 @@ The MCP client starts and manages the Docker container automatically. The contai
 
 1. Add the configuration to your `claude_desktop_config.json`
 2. Restart Claude Desktop
-3. Claude will automatically start the Docker container when needed
+3. Claude will automatically start the Docker container when needed (stdio transport)
 4. Ask Claude: "Search for Tatort in ZDF Mediathek"
 
 ### GitHub Copilot CLI
@@ -244,10 +252,9 @@ Configure MCP server in `~/.config/github-copilot/mcp-servers.json`:
         "run",
         "-i",
         "--rm",
-        "-e",
-        "ZDF_CLIENT_ID",
-        "-e",
-        "ZDF_CLIENT_SECRET",
+        "-e", "SPRING_PROFILES_ACTIVE=stdio",
+        "-e", "ZDF_CLIENT_ID",
+        "-e", "ZDF_CLIENT_SECRET",
         "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
       ],
       "env": {
@@ -286,10 +293,9 @@ copilot "Search for Tatort episodes"
         "run",
         "-i",
         "--rm",
-        "-e",
-        "ZDF_CLIENT_ID",
-        "-e",
-        "ZDF_CLIENT_SECRET",
+        "-e", "SPRING_PROFILES_ACTIVE=stdio",
+        "-e", "ZDF_CLIENT_ID",
+        "-e", "ZDF_CLIENT_SECRET",
         "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
       ],
       "env": {
@@ -333,10 +339,9 @@ copilot "Search for Tatort episodes"
         "run",
         "-i",
         "--rm",
-        "-e",
-        "ZDF_CLIENT_ID",
-        "-e",
-        "ZDF_CLIENT_SECRET",
+        "-e", "SPRING_PROFILES_ACTIVE=stdio",
+        "-e", "ZDF_CLIENT_ID",
+        "-e", "ZDF_CLIENT_SECRET",
         "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
       ],
       "env": {
@@ -380,10 +385,9 @@ You can configure in either global settings or project-level:
         "run",
         "-i",
         "--rm",
-        "-e",
-        "ZDF_CLIENT_ID",
-        "-e",
-        "ZDF_CLIENT_SECRET",
+        "-e", "SPRING_PROFILES_ACTIVE=stdio",
+        "-e", "ZDF_CLIENT_ID",
+        "-e", "ZDF_CLIENT_SECRET",
         "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
       ],
       "env": {
@@ -422,10 +426,9 @@ For any MCP-compatible client:
         "run",
         "-i",
         "--rm",
-        "-e",
-        "ZDF_CLIENT_ID",
-        "-e",
-        "ZDF_CLIENT_SECRET",
+        "-e", "SPRING_PROFILES_ACTIVE=stdio",
+        "-e", "ZDF_CLIENT_ID",
+        "-e", "ZDF_CLIENT_SECRET",
         "ghcr.io/nicklas2751/zdfmediathek-mcp:latest"
       ],
       "env": {

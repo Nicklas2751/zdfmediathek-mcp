@@ -37,7 +37,10 @@ graph TB
 ### Component Structure
 
 - **Spring Boot Application**: Main application with Spring AI MCP auto-configuration
-- **MCP Server**: Automatically configured by Spring AI (Streamable HTTP transport on port 8080, root path `/`)
+- **MCP Server**: Automatically configured by Spring AI
+  - Default: Streamable HTTP transport (port 8080, root path `/`)
+  - Optional: Stdio transport (via `SPRING_AI_MCP_SERVER_STDIO=true`)
+  - Only one transport active at a time
 - **Tool Functions**: Spring beans with `@Tool` annotation
 - **WebClient**: Spring WebFlux HTTP client for ZDF API communication
 - **OAuth2 Client**: Spring Security OAuth2 for authentication and token management
@@ -55,6 +58,43 @@ graph TB
 4. **TDD**: Test-driven development is mandatory
 5. **KISS**: Keep it simple - avoid over-engineering and unnecessary abstractions
 6. **Security**: OAuth2 credentials via environment variables only
+
+---
+
+## Architecture Decisions
+
+### MCP Transport Support
+
+**Decision:** Support both Streamable HTTP and Stdio transports (mutually exclusive)
+
+**Rationale:**
+- Spring AI MCP WebFlux Server supports both transports, but only one can be active at a time
+- Streamable HTTP: Better for production, remote access, multiple clients
+- Stdio: Better for local development, IDE integrations, simpler Docker setup
+- Different use cases require different transports
+
+**Implementation:**
+- Default: `stdio: false` (Streamable HTTP active)
+- Configurable via `SPRING_AI_MCP_SERVER_STDIO=true` environment variable
+- No code changes needed - Spring Boot handles environment variable mapping
+- Docker configurations:
+  - Streamable HTTP: `-p 8080:8080` (port mapping, default)
+  - Stdio: `-i` (interactive mode) + `SPRING_AI_MCP_SERVER_STDIO=true`
+
+**Testing:**
+- Both transports tested via integration tests
+- `SearchContentServiceIT.kt` for Streamable HTTP (default)
+- `SearchContentServiceStdioIT.kt` for Stdio (context load test)
+
+**Benefits:**
+- Flexibility for users to choose based on use case
+- Backward compatible (HTTP is default)
+- Simple configuration (single environment variable)
+- No code changes required to switch
+
+**Important Note:**
+Contrary to initial documentation interpretation, stdio and streamable HTTP cannot run simultaneously. 
+When `stdio: true` is set, HTTP transport is automatically disabled.
 
 ---
 
