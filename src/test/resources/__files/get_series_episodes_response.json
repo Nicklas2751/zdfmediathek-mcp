@@ -1,0 +1,31 @@
+{
+  "data": {
+    "searchDocuments": {
+      "results": [
+        {
+          "item": {
+            "__typename": "DefaultNoSectionsSmartCollection",
+            "title": "heute-show",
+            "episodes": {
+              "nodes": [
+                {
+                  "title": "Episode 1",
+                  "editorialDate": "2023-10-27T20:00:00Z",
+                  "sharingUrl": "https://zdf.de/comedy/heute-show/videos/episode-1",
+                  "episodeInfo": {
+                    "seasonNumber": 2023,
+                    "episodeNumber": 1
+                  }
+                }
+              ]
+            },
+            "seasons": {
+              "nodes": []
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
