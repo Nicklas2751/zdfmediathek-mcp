@@ -3,20 +3,22 @@ package eu.wiegandt.zdfmediathekmcp.mcp.tools
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.client.WireMock.*
+import eu.wiegandt.zdfmediathekmcp.model.EpisodeInfo
 import eu.wiegandt.zdfmediathekmcp.model.EpisodeNode
 import io.modelcontextprotocol.client.McpAsyncClient
 import io.modelcontextprotocol.client.McpClient
 import io.modelcontextprotocol.client.transport.WebClientStreamableHttpTransport
 import io.modelcontextprotocol.spec.McpSchema
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.web.reactive.function.client.WebClient
 import org.wiremock.spring.ConfigureWireMock
 import org.wiremock.spring.EnableWireMock
-import reactor.core.publisher.Mono
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -73,8 +75,8 @@ class GetSeriesEpisodesServiceIT {
         mcpClient.closeGracefully().block()
     }
 
-    // TODO: Re-enable once proper GraphQL schema is implemented
-    /*
+    @Test
+    fun `get_series_episodes tool returns episodes for a series`() {
         // given
         stubFor(
             post(urlEqualTo("/graphql"))
@@ -92,70 +94,36 @@ class GetSeriesEpisodesServiceIT {
             title = "Episode 1",
             editorialDate = "2023-10-27T20:00:00Z",
             sharingUrl = "https://zdf.de/comedy/heute-show/videos/episode-1",
-            episodeInfo = eu.wiegandt.zdfmediathekmcp.model.EpisodeInfo(
+            episodeInfo = EpisodeInfo(
                 seasonNumber = 2023,
                 episodeNumber = 1
             )
         )
 
         // when
-        val result = parseTextContent(
-            mcpClient.callTool(
-                McpSchema.CallToolRequest(
-                    "get_series_episodes",
-                    mapOf<String, Any>(
-                        "seriesName" to "heute-show",
-                        "limit" to 10
-                    )
+        val callResult = mcpClient.callTool(
+            McpSchema.CallToolRequest(
+                "get_series_episodes",
+                mapOf<String, Any>(
+                    "seriesName" to "heute-show",
+                    "limit" to 10
                 )
             )
-        )
+        ).block()
+
+        assertThat(callResult).isNotNull
+        val result = parseTextContent(callResult!!)
 
         // then
-        assertThat(result.first())
-            .usingRecursiveComparison()
-            .isEqualTo(expectedEpisode)
+        assertThat(result)
+            .usingRecursiveFieldByFieldElementComparator()
+            .containsExactly(expectedEpisode)
     }
-    */
 
 
-    @Test
-    fun `get_series_episodes tool returns episodes filtered by season`() {
-        // given
-        stubFor(
-            post(urlEqualTo("/graphql"))
-                .withHeader("Authorization", equalTo("Bearer test-token"))
-                .withRequestBody(containing("Sketch History"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("get_series_episodes_by_season_response.json")
-                )
-        )
-    // @Test
-    // fun `get_series_episodes tool returns episodes filtered by season`() {
-    //     // Season filtering not yet implemented
-        // when
-        val result = parseTextContent(
-            mcpClient.callTool(
-                McpSchema.CallToolRequest(
-                    "get_series_episodes",
-                    mapOf<String, Any>(
-                        "seriesName" to "Sketch History",
-                        "seasonNumber" to 1,
-                        "limit" to 10
-                    )
-                )
-            )
-        )
-
-        // then
-        assertThat(result).isNotEmpty
-        assertThat(result.first().episodeInfo?.seasonNumber).isEqualTo(1)
-    }
-                .content()
-                .first() as McpSchema.TextContent).text()
+    private fun parseTextContent(result: McpSchema.CallToolResult): List<EpisodeNode> {
+        return objectMapper.readValue(
+            (result.content().first() as McpSchema.TextContent).text()
         )
     }
 }
