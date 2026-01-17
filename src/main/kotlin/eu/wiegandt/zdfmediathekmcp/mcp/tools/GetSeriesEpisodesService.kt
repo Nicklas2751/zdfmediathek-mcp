@@ -1,6 +1,7 @@
 package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import eu.wiegandt.zdfmediathekmcp.model.EpisodeNode
+import eu.wiegandt.zdfmediathekmcp.model.SearchDocumentsResult
 import eu.wiegandt.zdfmediathekmcp.model.SeriesSmartCollection
 import org.slf4j.LoggerFactory
 import org.springaicommunity.mcp.annotation.McpTool
@@ -13,15 +14,73 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
     private val logger = LoggerFactory.getLogger(GetSeriesEpisodesService::class.java)
 
     companion object {
-        // Minimal test query - using smartCollectionByCanonical which should always work
-            query TestQuery($canonical: String!) {
-            query GetSeriesEpisodes($query: String!, $limit: Int) {
-              searchDocuments(query: $query, first: 1) {
+        // Query for episodes with sorting support
+        // Note: Season filtering via GraphQL API doesn't work reliably across all series types
+        private fun buildQuery(sortField: String, sortDir: String) = """
+            query GetSeriesEpisodes(${'$'}query: String!, ${'$'}limit: Int) {
+              searchDocuments(query: ${'$'}query, first: 1) {
                  results {
                     item {
-                        ... on ISeriesSmartCollection {
+                        __typename
+                        ... on DefaultNoSectionsSmartCollection {
                             title
-                            episodes(first: $limit) {
+                            episodes(first: ${'$'}limit, sortBy: [{field: $sortField, direction: $sortDir}]) {
+                                nodes {
+                                    title
+                                    editorialDate
+                                    sharingUrl
+                                    episodeInfo {
+                                        seasonNumber
+                                        episodeNumber
+                                    }
+                                }
+                            }
+                        }
+                        ... on DefaultWithSectionsSmartCollection {
+                            title
+                            episodes(first: ${'$'}limit, sortBy: [{field: $sortField, direction: $sortDir}]) {
+                                nodes {
+                                    title
+                                    editorialDate
+                                    sharingUrl
+                                    episodeInfo {
+                                        seasonNumber
+                                        episodeNumber
+                                    }
+                                }
+                            }
+                        }
+                        ... on SeasonSeriesSmartCollection {
+                            title
+                            episodes(first: ${'$'}limit, sortBy: [{field: $sortField, direction: $sortDir}]) {
+                                nodes {
+                                    title
+                                    editorialDate
+                                    sharingUrl
+                                    episodeInfo {
+                                        seasonNumber
+                                        episodeNumber
+                                    }
+                                }
+                            }
+                        }
+                        ... on MiniSeriesSmartCollection {
+                            title
+                            episodes(first: ${'$'}limit, sortBy: [{field: $sortField, direction: $sortDir}]) {
+                                nodes {
+                                    title
+                                    editorialDate
+                                    sharingUrl
+                                    episodeInfo {
+                                        seasonNumber
+                                        episodeNumber
+                                    }
+                                }
+                            }
+                        }
+                        ... on EndlessSeriesSmartCollection {
+                            title
+                            episodes(first: ${'$'}limit, sortBy: [{field: $sortField, direction: $sortDir}]) {
                                 nodes {
                                     title
                                     editorialDate
@@ -35,6 +94,7 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
                         }
                     }
                  }
+              }
             }
         """
     }
@@ -42,54 +102,77 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
     @McpTool(
         name = "get_series_episodes",
         description = "Get episodes for a series. " +
-                "Parameters: seriesName (required), limit (optional, default: 10)."
+                "Parameters: " +
+                "- seriesName (required): Name of the series to search for. " +
+                "- limit (optional, default: 10): Maximum number of episodes to return. " +
+                "- sortBy (optional, default: 'date_desc'): Sort order. Valid values: " +
+                "'date_desc' (newest first), 'date_asc' (oldest first), " +
+                "'episode_desc' (highest episode number first), 'episode_asc' (lowest episode number first)."
     )
     fun getSeriesEpisodes(
         seriesName: String,
-        seasonNumber: Int? = null,
         limit: Int? = 10,
         sortBy: String? = "date_desc"
     ): List<EpisodeNode> {
-        logger.info("MCP Tool 'get_series_episodes' called with seriesName='{}', limit={}", seriesName, limit)
+        logger.info("MCP Tool 'get_series_episodes' called with seriesName='{}', limit={}, sortBy={}",
+            seriesName, limit, sortBy)
 
-        // TODO: Season filtering and sorting will be implemented once basic query works
-        if (seasonNumber != null) {
-            logger.warn("Season filtering not yet implemented, ignoring seasonNumber parameter")
-        }
-        if (sortBy != "date_desc") {
+        try {
+            val actualLimit = limit ?: 10
+
+            // Parse sortBy parameter: "date_desc", "date_asc", "episode_asc", "episode_desc"
+            val (sortField, sortDirection) = parseSortBy(sortBy ?: "date_desc")
+
+            logger.info("MCP Tool 'get_series_episodes' executing for series='{}', limit={}, sort={}:{}",
+                seriesName, actualLimit, sortField, sortDirection)
+
+            // Build query with sorting
+            val query = buildQuery(sortField, sortDirection)
+
+            val response = zdfGraphQlClient.document(query)
                 .variable("query", seriesName)
                 .variable("limit", actualLimit)
                 .retrieve("searchDocuments")
                 .toEntity(SearchDocumentsResult::class.java)
-        try {
-            val item = response.results.firstOrNull()?.item
+                .block()
 
-            if (item !is SeriesSmartCollection) {
-                logger.info("Item is not a series collection for query '{}'", seriesName)
+            if (response == null || response.results.isEmpty()) {
+                logger.info("No results found for series '{}'", seriesName)
                 return emptyList()
             }
 
+            val item = response.results.firstOrNull()?.item
+
+            if (item !is SeriesSmartCollection) {
+                logger.info("Item is not a series collection for query '{}', got type: {}", seriesName, item?.javaClass?.simpleName)
+                return emptyList()
+            }
+
+            // Get episodes directly from series
             val episodes = item.episodes?.nodes.orEmpty()
 
             logger.info("Successfully retrieved {} episodes for series '{}'", episodes.size, seriesName)
             return episodes
 
-            logger.info("GraphQL Response received: {}", response)
-
-            if (response == null) {
-                logger.info("No result found for canonical '{}'", canonical)
-                return emptyList()
-            }
-
-            // For now, return empty list as this is just a test query
-            // TODO: Implement proper episode fetching once we know the correct GraphQL schema
-            logger.warn("Minimal test query successful, but episode fetching not yet implemented")
-            logger.warn("Found collection: id={}, title={}", response.id, response.title)
-            return emptyList()
-
+        } catch (e: org.springframework.graphql.client.GraphQlClientException) {
+            logger.error("GraphQL error executing get_series_episodes for series '{}': {}", seriesName, e.message, e)
+            throw RuntimeException("Failed to get series episodes: ${e.message}", e)
         } catch (e: Exception) {
             logger.error("Error executing get_series_episodes for series '{}': {}", seriesName, e.message, e)
             throw RuntimeException("Failed to get series episodes: ${e.message}", e)
+        }
+    }
+
+    private fun parseSortBy(sortBy: String): Pair<String, String> {
+        return when (sortBy.lowercase()) {
+            "date_desc" -> Pair("EDITORIAL_DATE", "DESC")
+            "date_asc" -> Pair("EDITORIAL_DATE", "ASC")
+            "episode_desc" -> Pair("EPISODE_NUMBER", "DESC")
+            "episode_asc" -> Pair("EPISODE_NUMBER", "ASC")
+            else -> {
+                logger.warn("Unknown sortBy value '{}', defaulting to date_desc", sortBy)
+                Pair("EDITORIAL_DATE", "DESC")
+            }
         }
     }
 }

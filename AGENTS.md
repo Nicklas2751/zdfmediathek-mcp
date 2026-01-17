@@ -41,13 +41,18 @@ Lists episodes for a specific series in the ZDF Mediathek.
 ```kotlin
 @McpTool(
     name = "get_series_episodes",
-    description = "Get episodes for a series. Parameters: seriesName (required), limit (optional, default: 10)."
+    description = "Get episodes for a series. " +
+                "Parameters: " +
+                "- seriesName (required): Name of the series to search for. " +
+                "- limit (optional, default: 10): Maximum number of episodes to return. " +
+                "- sortBy (optional, default: 'date_desc'): Sort order. Valid values: " +
+                "'date_desc' (newest first), 'date_asc' (oldest first), " +
+                "'episode_desc' (highest episode number first), 'episode_asc' (lowest episode number first)."
 )
 fun getSeriesEpisodes(
     seriesName: String,
-    seasonNumber: Int? = null,  // TODO: Not yet implemented
     limit: Int? = 10,
-    sortBy: String? = "date_desc"  // TODO: Not yet implemented
+    sortBy: String? = "date_desc"
 ): List<EpisodeNode>
 ```
 
@@ -67,7 +72,16 @@ data class EpisodeInfo(
 )
 ```
 
-**Example Call:**
+**Sorting Options:**
+
+| Value | Description |
+|-------|-------------|
+| `date_desc` | Sort by editorial date, newest first (default) |
+| `date_asc` | Sort by editorial date, oldest first |
+| `episode_desc` | Sort by episode number, highest first |
+| `episode_asc` | Sort by episode number, lowest first |
+
+**Example Calls:**
 
 ```json
 {
@@ -79,12 +93,22 @@ data class EpisodeInfo(
 }
 ```
 
+```json
+{
+  "tool": "get_series_episodes",
+  "arguments": {
+    "seriesName": "heute-show",
+    "limit": 20,
+    "sortBy": "date_asc"
+  }
+}
+```
+
 **Returns:** List of EpisodeNode objects.
 
 **Known Limitations:**
-- Season filtering (`seasonNumber` parameter) not yet implemented
-- Custom sorting (`sortBy` parameter) not yet implemented
-- Episodes are returned in default API order
+- Season filtering not supported due to ZDF GraphQL API limitations across different series types
+- Episodes are returned with sorting support (by date or episode number)
 
 ````
 
@@ -285,6 +309,132 @@ This is non-negotiable unless explicitly stated otherwise by user.
 - **Language:** Kotlin 1.9+
 - **JVM:** Java 21 (LTS)
 - **Build Tool:** Gradle 8+ with Kotlin DSL
+
+### Kotlin Best Practices & Important Syntax Rules
+
+#### ⚠️ CRITICAL: GraphQL Query String Templates
+
+**ALWAYS use `$$"""` (double dollar sign) for GraphQL queries with variables!**
+
+This is Kotlin's Raw String Template syntax that prevents the need to escape every `$` in GraphQL variable references.
+
+**✅ CORRECT:**
+```kotlin
+companion object {
+    private const val QUERY = $$"""
+        query GetSeriesEpisodes($query: String!, $limit: Int) {
+          searchDocuments(query: $query, first: 1) {
+            results {
+              item {
+                ... on ISeriesSmartCollection {
+                  title
+                  episodes(first: $limit) {
+                    nodes {
+                      title
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+    """
+}
+```
+
+**❌ WRONG - DO NOT DO THIS:**
+```kotlin
+// This forces you to escape EVERY single $ in the query
+private const val QUERY = """
+    query GetSeriesEpisodes(${'$'}query: String!, ${'$'}limit: Int) {
+      searchDocuments(query: ${'$'}query, first: 1) {
+        // ... very tedious and error-prone!
+      }
+    }
+"""
+```
+
+**Why `$$"""`?**
+- GraphQL queries contain many `$` characters for variables
+- Without `$$"""`, Kotlin tries to interpret `$variable` as a Kotlin string template
+- `$$"""` tells Kotlin: "This is a raw string, don't interpret `$` as template markers"
+- This makes GraphQL queries much more readable and maintainable
+
+**Remember:** Any time you write a GraphQL query with variables (which is almost always), use `$$"""`!
+
+#### ⚠️ CRITICAL: ZDF GraphQL API Limitations
+
+**The ZDF GraphQL API does NOT support interface fragments on union types!**
+
+When querying the `searchDocuments` endpoint which returns a `SearchDocument` union type, you **CANNOT** use interface fragments like `... on ISeriesSmartCollection`. Instead, you must use concrete type fragments for each possible type.
+
+**✅ CORRECT - Use concrete types:**
+```kotlin
+private const val QUERY = $$"""
+    query GetSeriesEpisodes($query: String!, $limit: Int) {
+      searchDocuments(query: $query, first: 1) {
+         results {
+            item {
+                __typename
+                ... on DefaultNoSectionsSmartCollection {
+                    title
+                    episodes(first: $limit) { nodes { title } }
+                }
+                ... on DefaultWithSectionsSmartCollection {
+                    title
+                    episodes(first: $limit) { nodes { title } }
+                }
+                ... on SeasonSeriesSmartCollection {
+                    title
+                    episodes(first: $limit) { nodes { title } }
+                }
+                ... on MiniSeriesSmartCollection {
+                    title
+                    episodes(first: $limit) { nodes { title } }
+                }
+                ... on EndlessSeriesSmartCollection {
+                    title
+                    episodes(first: $limit) { nodes { title } }
+                }
+            }
+         }
+      }
+    }
+"""
+```
+
+**❌ WRONG - Interface fragments will cause 400 Bad Request:**
+```kotlin
+private const val QUERY = $$"""
+    query GetSeriesEpisodes($query: String!, $limit: Int) {
+      searchDocuments(query: $query, first: 1) {
+         results {
+            item {
+                ... on ISeriesSmartCollection {
+                    title
+                    episodes(first: $limit) { nodes { title } }
+                }
+            }
+         }
+      }
+    }
+"""
+// This will fail with: "Failed to create a gateway request. 
+// The request must contain at least one operation."
+```
+
+**Why this limitation?**
+- The ZDF API uses a custom GraphQL gateway that doesn't support interface fragments on union types
+- Even though `ISeriesSmartCollection` is a valid interface and all series types implement it
+- You must explicitly list each concrete type in separate fragments
+- Always include `__typename` field to help with debugging and type resolution
+
+**Series Types in ZDF API:**
+- `DefaultNoSectionsSmartCollection`
+- `DefaultWithSectionsSmartCollection`
+- `SeasonSeriesSmartCollection`
+- `MiniSeriesSmartCollection`
+- `EndlessSeriesSmartCollection`
 - **Framework:** Spring Boot 3.5+ with WebFlux
 - **MCP:** Spring AI MCP Server
 - **HTTP Client:** Spring WebFlux WebClient
@@ -732,6 +882,76 @@ class SearchContentServiceTest {
     }
 }
 ```
+
+### ⚠️ BEST PRACTICE: AssertJ Assertions
+
+**ALWAYS prefer `containsExactly()` over multiple individual assertions!**
+
+This makes tests more readable, maintainable, and provides better error messages.
+
+**✅ CORRECT - Single, clear assertion:**
+```kotlin
+@Test
+fun `test returns episodes`() {
+    // given, when...
+    val result = service.getEpisodes("series-name")
+    
+    // then
+    assertThat(result).containsExactly(
+        EpisodeNode(
+            title = "Episode 1",
+            editorialDate = "2024-01-01T22:30:00Z",
+            sharingUrl = "https://example.com/episode-1",
+            episodeInfo = EpisodeInfo(
+                seasonNumber = 1,
+                episodeNumber = 1
+            )
+        )
+    )
+}
+```
+
+**✅ CORRECT - For recursive field comparison:**
+```kotlin
+assertThat(result)
+    .usingRecursiveFieldByFieldElementComparator()
+    .containsExactly(expectedEpisode)
+```
+
+**✅ CORRECT - When you don't need exact count, but want to verify object structure:**
+```kotlin
+assertThat(result)
+    .usingRecursiveFieldByFieldElementComparator()
+    .contains(expectedEpisode)
+// This checks that the expectedEpisode is IN the result list with all fields matching
+// Better than just checking one property!
+```
+
+**✅ CORRECT - For property matching (use sparingly):**
+```kotlin
+assertThat(result)
+    .isNotEmpty
+    .allMatch { it.episodeInfo?.seasonNumber == 1 }
+// Only use this when you specifically just care about one property
+```
+
+**❌ WRONG - Multiple separate assertions:**
+```kotlin
+// DON'T DO THIS - harder to read and maintain
+assertThat(result).hasSize(1)
+assertThat(result[0].title).isEqualTo("Episode 1")
+assertThat(result[0].editorialDate).isEqualTo("2024-01-01T22:30:00Z")
+assertThat(result[0].sharingUrl).isEqualTo("https://example.com/episode-1")
+assertThat(result[0].episodeInfo?.seasonNumber).isEqualTo(1)
+assertThat(result[0].episodeInfo?.episodeNumber).isEqualTo(1)
+```
+
+**Why `containsExactly()` is better:**
+- Single point of truth for expected result
+- Better error messages (shows full diff)
+- More readable test code
+- Easier to update when data changes
+- Validates size and content in one assertion
 
 ### Running Tests
 
