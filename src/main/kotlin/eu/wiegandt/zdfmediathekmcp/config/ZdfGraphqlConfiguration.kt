@@ -7,8 +7,10 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.graphql.client.HttpGraphQlClient
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction
+import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 private const val OAUTH2_CLIENT_REGISTRATION_ID = "zdf"
 
@@ -39,7 +41,7 @@ class ZdfGraphqlConfiguration {
     private fun logGraphQlRequest(): ExchangeFilterFunction {
         return ExchangeFilterFunction.ofRequestProcessor { request ->
             logger.debug("GraphQL Request: {} {}", request.method(), request.url())
-            request.headers().forEach { name, values ->
+            request.headers().forEach { (name, values) ->
                 if (name.equals("Authorization", ignoreCase = true)) {
                     logger.debug("  Header: {} = [REDACTED]", name)
                 } else {
@@ -57,11 +59,15 @@ class ZdfGraphqlConfiguration {
     private fun logGraphQlResponse(): ExchangeFilterFunction {
         return ExchangeFilterFunction.ofResponseProcessor { response ->
             logger.debug("GraphQL Response: {}", response.statusCode())
-            response.headers().asHttpHeaders().forEach { name, values ->
-                logger.debug("  Header: {} = {}", name, values)
+            response.headers().asHttpHeaders().forEach { (name, values) ->
             }
             if (response.statusCode().isError) {
-                logger.error("GraphQL Error Response: Status {}", response.statusCode())
+                // Read body as String, log it, and recreate ClientResponse so downstream code can still read it
+                return@ofResponseProcessor response.bodyToMono<String>().defaultIfEmpty("").flatMap { body ->
+                    logger.error("GraphQL Error Response: Status {} Body: {}", response.statusCode(), body)
+                    val mutated = ClientResponse.from(response).body(body).build()
+                    Mono.just(mutated)
+                }
             }
             Mono.just(response)
         }

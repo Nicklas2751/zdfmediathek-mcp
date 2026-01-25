@@ -49,7 +49,8 @@ class GetSeriesEpisodesServiceTest {
                                         episodeNumber = 1
                                     )
                                 )
-                            )
+                            ),
+                            pageInfo = null
                         ),
                         seasons = null
                     )
@@ -66,7 +67,7 @@ class GetSeriesEpisodesServiceTest {
         val result = getSeriesEpisodesService.getSeriesEpisodes(seriesName, 10, "date_desc")
 
         // then
-        assertThat(result).containsExactly(EpisodeNode(
+        assertThat(result.resources).containsExactly(EpisodeNode(
             title = "heute-show vom 1. Januar",
             editorialDate = "2024-01-01T22:30:00Z",
             sharingUrl = "https://www.zdf.de/comedy/heute-show/heute-show-vom-1-januar-2024-100.html",
@@ -75,6 +76,7 @@ class GetSeriesEpisodesServiceTest {
                 episodeNumber = 1
             )
         ))
+        assertThat(result.nextCursor).isNull()
     }
 
     @Test
@@ -91,7 +93,8 @@ class GetSeriesEpisodesServiceTest {
         val result = getSeriesEpisodesService.getSeriesEpisodes("unknown-series", 10, "date_desc")
 
         // then
-        assertThat(result).isEmpty()
+        assertThat(result.resources).isEmpty()
+        assertThat(result.nextCursor).isNull()
     }
 
     @Test
@@ -119,7 +122,8 @@ class GetSeriesEpisodesServiceTest {
         val result = getSeriesEpisodesService.getSeriesEpisodes("some-video", 10, "date_desc")
 
         // then
-        assertThat(result).isEmpty()
+        assertThat(result.resources).isEmpty()
+        assertThat(result.nextCursor).isNull()
     }
 
     @Test

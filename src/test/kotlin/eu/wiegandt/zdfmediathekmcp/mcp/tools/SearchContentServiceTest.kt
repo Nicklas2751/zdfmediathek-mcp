@@ -47,10 +47,11 @@ class SearchContentServiceTest {
         Mockito.doReturn(zdfSearchResponse).`when`(zdfMediathekClient).searchDocuments("heute-show 19. Dezember", 5)
 
         // when
-        val results = searchContentService.searchContent("heute-show 19. Dezember")
+        val result = searchContentService.searchContent("heute-show 19. Dezember")
 
         // then
-        Assertions.assertThat(results).isEqualTo(zdfSearchResponse)
+        Assertions.assertThat(result.resources).isEqualTo(zdfSearchResponse.results)
+        Assertions.assertThat(result.nextCursor).isNull()
     }
 
 }

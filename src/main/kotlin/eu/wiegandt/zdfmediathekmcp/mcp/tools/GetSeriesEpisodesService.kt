@@ -1,8 +1,6 @@
 package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
-import eu.wiegandt.zdfmediathekmcp.model.EpisodeNode
-import eu.wiegandt.zdfmediathekmcp.model.SearchDocumentsResult
-import eu.wiegandt.zdfmediathekmcp.model.SeriesSmartCollection
+import eu.wiegandt.zdfmediathekmcp.model.*
 import org.slf4j.LoggerFactory
 import org.springaicommunity.mcp.annotation.McpTool
 import org.springframework.graphql.client.GraphQlClientException
@@ -15,17 +13,21 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
     private val logger = LoggerFactory.getLogger(GetSeriesEpisodesService::class.java)
 
     companion object {
-        // Query for episodes with sorting support
-        // Note: Season filtering via GraphQL API doesn't work reliably across all series types
-        private fun buildQuery(sortField: String, sortDir: String) = """
-            query GetSeriesEpisodes(${'$'}query: String!, ${'$'}limit: Int) {
-              searchDocuments(query: ${'$'}query, first: 1) {
+        // Query for episodes with sorting support and pageInfo. We request pageInfo for episodes and also for season-embedded episodes.
+        // Build a GraphQL query that uses a variable for the sort direction (OrderByDirection).
+        // We keep the sort field inline (EDITORIAL_DATE or EPISODE_NUMBER) because the server expects enum tokens.
+        // Use a full input variable for sortBy so enums can be passed via JSON variables.
+        // We reuse the VideosConnectionSortByInput input type here since episodes return Video nodes.
+        private fun buildQuery(includeSort: Boolean) = if (includeSort) {
+            """
+            query GetSeriesEpisodes(${'$'}query: String!, ${'$'}first: Int, ${'$'}after: Cursor, ${'$'}sortBy: [VideosConnectionSortByInput!]) {
+              searchDocuments(query: ${'$'}query, first: ${'$'}first) {
                  results {
                     item {
                         __typename
                         ... on DefaultNoSectionsSmartCollection {
                             title
-                            episodes(first: ${'$'}limit, sortBy: [{field: $sortField, direction: $sortDir}]) {
+                            episodes(first: ${'$'}first, after: ${'$'}after, sortBy: ${'$'}sortBy) {
                                 nodes {
                                     title
                                     editorialDate
@@ -35,11 +37,12 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
                                         episodeNumber
                                     }
                                 }
+                                pageInfo { hasNextPage endCursor }
                             }
                         }
                         ... on DefaultWithSectionsSmartCollection {
                             title
-                            episodes(first: ${'$'}limit, sortBy: [{field: $sortField, direction: $sortDir}]) {
+                            episodes(first: ${'$'}first, after: ${'$'}after, sortBy: ${'$'}sortBy) {
                                 nodes {
                                     title
                                     editorialDate
@@ -49,25 +52,31 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
                                         episodeNumber
                                     }
                                 }
+                                pageInfo { hasNextPage endCursor }
                             }
                         }
                         ... on SeasonSeriesSmartCollection {
                             title
-                            episodes(first: ${'$'}limit, sortBy: [{field: $sortField, direction: $sortDir}]) {
+                            seasons {
                                 nodes {
-                                    title
-                                    editorialDate
-                                    sharingUrl
-                                    episodeInfo {
-                                        seasonNumber
-                                        episodeNumber
+                                    episodes(first: ${'$'}first, after: ${'$'}after, sortBy: ${'$'}sortBy) {
+                                        nodes {
+                                            title
+                                            editorialDate
+                                            sharingUrl
+                                            episodeInfo {
+                                                seasonNumber
+                                                episodeNumber
+                                            }
+                                        }
+                                        pageInfo { hasNextPage endCursor }
                                     }
                                 }
                             }
                         }
                         ... on MiniSeriesSmartCollection {
                             title
-                            episodes(first: ${'$'}limit, sortBy: [{field: $sortField, direction: $sortDir}]) {
+                            episodes(first: ${'$'}first, after: ${'$'}after, sortBy: ${'$'}sortBy) {
                                 nodes {
                                     title
                                     editorialDate
@@ -77,11 +86,12 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
                                         episodeNumber
                                     }
                                 }
+                                pageInfo { hasNextPage endCursor }
                             }
                         }
                         ... on EndlessSeriesSmartCollection {
                             title
-                            episodes(first: ${'$'}limit, sortBy: [{field: $sortField, direction: $sortDir}]) {
+                            episodes(first: ${'$'}first, after: ${'$'}after, sortBy: ${'$'}sortBy) {
                                 nodes {
                                     title
                                     editorialDate
@@ -91,6 +101,7 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
                                         episodeNumber
                                     }
                                 }
+                                pageInfo { hasNextPage endCursor }
                             }
                         }
                     }
@@ -98,6 +109,98 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
               }
             }
         """
+        } else {
+            """
+            query GetSeriesEpisodes(${'$'}query: String!, ${'$'}first: Int, ${'$'}after: Cursor) {
+              searchDocuments(query: ${'$'}query, first: ${'$'}first) {
+                 results {
+                    item {
+                        __typename
+                        ... on DefaultNoSectionsSmartCollection {
+                            title
+                            episodes(first: ${'$'}first, after: ${'$'}after) {
+                                nodes {
+                                    title
+                                    editorialDate
+                                    sharingUrl
+                                    episodeInfo {
+                                        seasonNumber
+                                        episodeNumber
+                                    }
+                                }
+                                pageInfo { hasNextPage endCursor }
+                            }
+                        }
+                        ... on DefaultWithSectionsSmartCollection {
+                            title
+                            episodes(first: ${'$'}first, after: ${'$'}after) {
+                                nodes {
+                                    title
+                                    editorialDate
+                                    sharingUrl
+                                    episodeInfo {
+                                        seasonNumber
+                                        episodeNumber
+                                    }
+                                }
+                                pageInfo { hasNextPage endCursor }
+                            }
+                        }
+                        ... on SeasonSeriesSmartCollection {
+                            title
+                            seasons {
+                                nodes {
+                                    episodes(first: ${'$'}first, after: ${'$'}after) {
+                                        nodes {
+                                            title
+                                            editorialDate
+                                            sharingUrl
+                                            episodeInfo {
+                                                seasonNumber
+                                                episodeNumber
+                                            }
+                                        }
+                                        pageInfo { hasNextPage endCursor }
+                                    }
+                                }
+                            }
+                        }
+                        ... on MiniSeriesSmartCollection {
+                            title
+                            episodes(first: ${'$'}first, after: ${'$'}after) {
+                                nodes {
+                                    title
+                                    editorialDate
+                                    sharingUrl
+                                    episodeInfo {
+                                        seasonNumber
+                                        episodeNumber
+                                    }
+                                }
+                                pageInfo { hasNextPage endCursor }
+                            }
+                        }
+                        ... on EndlessSeriesSmartCollection {
+                            title
+                            episodes(first: ${'$'}first, after: ${'$'}after) {
+                                nodes {
+                                    title
+                                    editorialDate
+                                    sharingUrl
+                                    episodeInfo {
+                                        seasonNumber
+                                        episodeNumber
+                                    }
+                                }
+                                pageInfo { hasNextPage endCursor }
+                            }
+                        }
+                    }
+                 }
+              }
+            }
+        """
+        }
     }
 
     @McpTool(
@@ -113,47 +216,89 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
     fun getSeriesEpisodes(
         seriesName: String,
         limit: Int? = 10,
-        sortBy: String? = "date_desc"
-    ): List<EpisodeNode> {
-        logger.info("MCP Tool 'get_series_episodes' called with seriesName='{}', limit={}, sortBy={}",
-            seriesName, limit, sortBy)
+        sortBy: String? = "date_desc",
+        cursor: String? = null
+    ): McpPagedResult<EpisodeNode> {
+        logger.info("MCP Tool 'get_series_episodes' called with seriesName='{}', limit={}, sortBy={}, cursorPresent={}",
+            seriesName, limit, sortBy, !cursor.isNullOrBlank())
 
         try {
             val actualLimit = limit ?: 10
 
-            // Parse sortBy parameter: "date_desc", "date_asc", "episode_asc", "episode_desc"
-            val (sortField, sortDirection) = parseSortBy(sortBy ?: "date_desc")
+            // Determine whether to include sortBy in the GraphQL query. Only include if user provided a non-blank value.
+            val includeSort = !sortBy.isNullOrBlank()
+            val (sortField, sortDirection) = if (includeSort) {
+                parseSortBy(sortBy)
+            } else {
+                // placeholders (not used when includeSort==false)
+                Pair("EDITORIAL_DATE", "DESC")
+            }
 
-            logger.info("MCP Tool 'get_series_episodes' executing for series='{}', limit={}, sort={}:{}",
-                seriesName, actualLimit, sortField, sortDirection)
+            logger.info("MCP Tool 'get_series_episodes' executing for series='{}', limit={}, includeSort={}",
+                seriesName, actualLimit, includeSort)
 
-            // Build query with sorting
-            val query = buildQuery(sortField, sortDirection)
+            val query = buildQuery(includeSort)
 
-            val response = zdfGraphQlClient.document(query)
+            var request = zdfGraphQlClient.document(query)
                 .variable("query", seriesName)
-                .variable("limit", actualLimit)
+                .variable("first", actualLimit)
+
+            if (includeSort) {
+                // pass sort direction as GraphQL variable (OrderByDirection enum)
+                request = request.variable("sortBy", listOf(mapOf("field" to sortField, "direction" to sortDirection)))
+            }
+
+             if (!cursor.isNullOrBlank()) {
+                 // Treat provided cursor as opaque GraphQL 'after' cursor
+                 request = request.variable("after", cursor)
+             }
+
+            val response = request
                 .retrieve("searchDocuments")
                 .toEntity(SearchDocumentsResult::class.java)
                 .block()
 
             if (response == null || response.results.isEmpty()) {
                 logger.info("No results found for series '{}'", seriesName)
-                return emptyList()
+                return McpPagedResult(resources = emptyList(), nextCursor = null)
             }
 
             val item = response.results.firstOrNull()?.item
 
             if (item !is SeriesSmartCollection) {
                 logger.info("Item is not a series collection for query '{}', got type: {}", seriesName, item?.javaClass?.simpleName)
-                return emptyList()
+                return McpPagedResult(resources = emptyList(), nextCursor = null)
             }
 
-            // Get episodes directly from series
-            val episodes = item.episodes?.nodes.orEmpty()
+            // Prefer direct episodes if present
+            val episodesConn: EpisodeConnection? = item.episodes
+            val episodes = episodesConn?.nodes.orEmpty()
+            val pageInfo: PageInfo? = episodesConn?.pageInfo
 
-            logger.info("Successfully retrieved {} episodes for series '{}'", episodes.size, seriesName)
-            return episodes
+            // If no direct episodes, try seasons -> first season with episodes
+            var finalEpisodes = episodes
+            var finalPageInfo = pageInfo
+            if (finalEpisodes.isEmpty()) {
+                val seasonNodes = item.seasons?.nodes.orEmpty()
+                if (seasonNodes.size == 1) {
+                    val seasonEpisodes = seasonNodes.first().episodes
+                    finalEpisodes = seasonEpisodes?.nodes.orEmpty()
+                    finalPageInfo = seasonEpisodes?.pageInfo
+                } else if (seasonNodes.size > 1) {
+                    // Multiple seasons: aggregate episodes but we cannot reliably page across seasons -> no nextCursor
+                    finalEpisodes = seasonNodes.flatMap { it.episodes?.nodes.orEmpty() }
+                    finalPageInfo = null
+                }
+            }
+
+            val nextCursor = if (finalPageInfo != null && finalPageInfo.hasNextPage) {
+                finalPageInfo.endCursor
+            } else {
+                null
+            }
+
+            logger.info("Successfully retrieved {} episodes for series '{}'", finalEpisodes.size, seriesName)
+            return McpPagedResult(resources = finalEpisodes, nextCursor = nextCursor)
 
         } catch (e: GraphQlClientException) {
             logger.error("GraphQL error executing get_series_episodes for series '{}': {}", seriesName, e.message, e)
@@ -164,8 +309,9 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
         }
     }
 
-    internal fun parseSortBy(sortBy: String): Pair<String, String> {
-        return when (sortBy.lowercase()) {
+    internal fun parseSortBy(sortBy: String?): Pair<String, String> {
+        val s = sortBy?.lowercase() ?: "date_desc"
+        return when (s) {
             "date_desc" -> Pair("EDITORIAL_DATE", "DESC")
             "date_asc" -> Pair("EDITORIAL_DATE", "ASC")
             "episode_desc" -> Pair("EPISODE_NUMBER", "DESC")
