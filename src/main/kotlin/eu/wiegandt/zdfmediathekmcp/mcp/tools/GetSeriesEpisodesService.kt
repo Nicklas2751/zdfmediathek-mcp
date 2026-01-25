@@ -5,6 +5,7 @@ import eu.wiegandt.zdfmediathekmcp.model.SearchDocumentsResult
 import eu.wiegandt.zdfmediathekmcp.model.SeriesSmartCollection
 import org.slf4j.LoggerFactory
 import org.springaicommunity.mcp.annotation.McpTool
+import org.springframework.graphql.client.GraphQlClientException
 import org.springframework.graphql.client.HttpGraphQlClient
 import org.springframework.stereotype.Service
 
@@ -154,7 +155,7 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
             logger.info("Successfully retrieved {} episodes for series '{}'", episodes.size, seriesName)
             return episodes
 
-        } catch (e: org.springframework.graphql.client.GraphQlClientException) {
+        } catch (e: GraphQlClientException) {
             logger.error("GraphQL error executing get_series_episodes for series '{}': {}", seriesName, e.message, e)
             throw RuntimeException("Failed to get series episodes: ${e.message}", e)
         } catch (e: Exception) {
@@ -163,7 +164,7 @@ class GetSeriesEpisodesService(private val zdfGraphQlClient: HttpGraphQlClient) 
         }
     }
 
-    private fun parseSortBy(sortBy: String): Pair<String, String> {
+    internal fun parseSortBy(sortBy: String): Pair<String, String> {
         return when (sortBy.lowercase()) {
             "date_desc" -> Pair("EDITORIAL_DATE", "DESC")
             "date_asc" -> Pair("EDITORIAL_DATE", "ASC")
