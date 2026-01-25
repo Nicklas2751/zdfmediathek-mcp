@@ -38,6 +38,7 @@ interface ZdfMediathekClient {
 
     @GetExchange("/cmdm/seasons")
     fun listSeasons(
-        @RequestParam("limit") limit: Int = 4
+        @RequestParam("limit") limit: Int = 4,
+        @RequestParam("page") page: Int = 1
     ): ZdfSeasonResponse
 }
