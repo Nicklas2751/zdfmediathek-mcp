@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import eu.wiegandt.zdfmediathekmcp.model.EpisodeInfo
 import eu.wiegandt.zdfmediathekmcp.model.EpisodeNode
+import eu.wiegandt.zdfmediathekmcp.model.McpPagedResult
 import io.modelcontextprotocol.client.McpAsyncClient
 import io.modelcontextprotocol.client.McpClient
 import io.modelcontextprotocol.client.transport.WebClientStreamableHttpTransport
@@ -115,13 +116,13 @@ class GetSeriesEpisodesServiceIT {
         val result = parseTextContent(callResult!!)
 
         // then
-        assertThat(result)
+        assertThat(result.resources)
             .usingRecursiveFieldByFieldElementComparator()
             .containsExactly(expectedEpisode)
     }
 
 
-    private fun parseTextContent(result: McpSchema.CallToolResult): List<EpisodeNode> {
+    private fun parseTextContent(result: McpSchema.CallToolResult): McpPagedResult<EpisodeNode> {
         return objectMapper.readValue(
             (result.content().first() as McpSchema.TextContent).text()
         )
