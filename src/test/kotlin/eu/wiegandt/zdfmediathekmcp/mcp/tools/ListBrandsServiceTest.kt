@@ -1,6 +1,7 @@
 package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
+import eu.wiegandt.zdfmediathekmcp.mcp.pagination.McpPaginationPayloadHandler
 import eu.wiegandt.zdfmediathekmcp.model.BrandApiResponse
 import eu.wiegandt.zdfmediathekmcp.model.BrandSummary
 import eu.wiegandt.zdfmediathekmcp.model.McpPagedResult
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import java.util.*
 
 class ListBrandsServiceTest {
     private val zdfMediathekClient = Mockito.mock(ZdfMediathekClient::class.java)
@@ -81,8 +81,7 @@ class ListBrandsServiceTest {
     @Test
     fun `listBrands with cursor decodes and calls client with correct page`() {
         // given: cursor encodes page=2 and limit=5
-        val payload = "{\"page\":2,\"limit\":5}"
-        val cursor = Base64.getEncoder().encodeToString(payload.toByteArray())
+        val cursor = McpPaginationPayloadHandler.encode(2, 5)
         doReturn(BrandApiResponse()).`when`(zdfMediathekClient).listBrands(5, 2)
 
         // when

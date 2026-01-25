@@ -1,6 +1,7 @@
 package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
+import eu.wiegandt.zdfmediathekmcp.mcp.pagination.McpPaginationPayloadHandler
 import eu.wiegandt.zdfmediathekmcp.model.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -9,7 +10,6 @@ import org.mockito.Mockito
 import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.doThrow
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import java.util.*
 
 class ListSeriesServiceTest {
     private val zdfMediathekClient = Mockito.mock(ZdfMediathekClient::class.java)
@@ -128,8 +128,7 @@ class ListSeriesServiceTest {
     @Test
     fun `listSeries with cursor decodes and calls client with correct page`() {
         // given: cursor encodes page=2 and limit=3
-        val payload = "{\"page\":2,\"limit\":3}"
-        val cursor = Base64.getEncoder().encodeToString(payload.toByteArray())
+        val cursor = McpPaginationPayloadHandler.encode(2, 3)
         val apiResponse = ZdfSeriesResponse()
         doReturn(apiResponse).`when`(zdfMediathekClient).listSeries(3, 2)
 

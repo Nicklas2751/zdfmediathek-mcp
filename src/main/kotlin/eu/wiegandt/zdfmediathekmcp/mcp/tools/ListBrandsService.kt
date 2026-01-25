@@ -1,22 +1,17 @@
 package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
+import eu.wiegandt.zdfmediathekmcp.mcp.pagination.McpPaginationPayloadHandler
 import eu.wiegandt.zdfmediathekmcp.model.BrandApiResponse
 import eu.wiegandt.zdfmediathekmcp.model.BrandSummary
 import eu.wiegandt.zdfmediathekmcp.model.McpPagedResult
 import org.slf4j.LoggerFactory
 import org.springaicommunity.mcp.annotation.McpTool
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class ListBrandsService(private val zdfMediathekClient: ZdfMediathekClient) {
     private val logger = LoggerFactory.getLogger(ListBrandsService::class.java)
-    private val objectMapper = jacksonObjectMapper()
-
-    data class CursorPayload(val page: Int = 1, val limit: Int? = null)
 
     /**
      * MCP Tool: List all TV brands/series in the ZDF Mediathek.
@@ -37,13 +32,12 @@ class ListBrandsService(private val zdfMediathekClient: ZdfMediathekClient) {
 
         if (!cursor.isNullOrBlank()) {
             try {
-                val decoded = String(Base64.getDecoder().decode(cursor))
-                val payload = objectMapper.readValue<CursorPayload>(decoded)
+                val payload = McpPaginationPayloadHandler.decode(cursor)
                 page = payload.page
                 payload.limit?.let { actualLimit = it }
-            } catch (e: Exception) {
+            } catch (e: IllegalArgumentException) {
                 logger.warn("Invalid pagination cursor provided for list_brands: {}", e.message)
-                throw IllegalArgumentException("Invalid cursor")
+                throw e
             }
         }
 

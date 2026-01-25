@@ -1,22 +1,17 @@
 package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
+import eu.wiegandt.zdfmediathekmcp.mcp.pagination.McpPaginationPayloadHandler
 import eu.wiegandt.zdfmediathekmcp.model.McpPagedResult
 import eu.wiegandt.zdfmediathekmcp.model.SeriesSummary
 import eu.wiegandt.zdfmediathekmcp.model.ZdfSeriesResponse
 import org.slf4j.LoggerFactory
 import org.springaicommunity.mcp.annotation.McpTool
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class ListSeriesService(private val zdfMediathekClient: ZdfMediathekClient) {
     private val logger = LoggerFactory.getLogger(ListSeriesService::class.java)
-    private val objectMapper = jacksonObjectMapper()
-
-    data class CursorPayload(val page: Int = 1, val limit: Int? = null)
 
     /**
      * MCP Tool: List all series available in the ZDF Mediathek.
@@ -36,14 +31,12 @@ class ListSeriesService(private val zdfMediathekClient: ZdfMediathekClient) {
 
         if (!cursor.isNullOrBlank()) {
             try {
-                val decoded = String(Base64.getDecoder().decode(cursor))
-                val payload = objectMapper.readValue<CursorPayload>(decoded)
+                val payload = McpPaginationPayloadHandler.decode(cursor)
                 page = payload.page
                 payload.limit?.let { actualLimit = it }
-            } catch (e: Exception) {
+            } catch (e: IllegalArgumentException) {
                 logger.warn("Invalid pagination cursor provided for list_series: {}", e.message)
-                // Per MCP spec, invalid cursor -> invalid params; service throws IllegalArgumentException and framework should map
-                throw IllegalArgumentException("Invalid cursor")
+                throw e
             }
         }
 
@@ -56,9 +49,7 @@ class ListSeriesService(private val zdfMediathekClient: ZdfMediathekClient) {
 
             // Determine nextCursor: if we received as many items as requested, assume there may be a next page
             val nextCursor = if (response.series.size >= actualLimit) {
-                val nextPayload = CursorPayload(page = page + 1, limit = actualLimit)
-                val json = objectMapper.writeValueAsString(nextPayload)
-                Base64.getEncoder().encodeToString(json.toByteArray())
+                McpPaginationPayloadHandler.encode(page + 1, actualLimit)
             } else {
                 null
             }
