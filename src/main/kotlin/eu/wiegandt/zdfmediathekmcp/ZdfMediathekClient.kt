@@ -32,7 +32,8 @@ interface ZdfMediathekClient {
 
     @GetExchange("/cmdm/series")
     fun listSeries(
-        @RequestParam("limit") limit: Int = 4
+        @RequestParam("limit") limit: Int = 4,
+        @RequestParam("page") page: Int = 1
     ): ZdfSeriesResponse
 
     @GetExchange("/cmdm/seasons")

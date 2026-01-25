@@ -3,6 +3,7 @@ package eu.wiegandt.zdfmediathekmcp.mcp.tools
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.client.WireMock.*
+import eu.wiegandt.zdfmediathekmcp.model.McpPagedResult
 import eu.wiegandt.zdfmediathekmcp.model.SeriesSummary
 import io.modelcontextprotocol.client.McpAsyncClient
 import io.modelcontextprotocol.client.McpClient
@@ -110,13 +111,13 @@ class ListSeriesServiceIT {
         )
 
         // then
-        assertThat(result).isNotEmpty
-        assertThat(result.first())
+        assertThat(result.resources).isNotEmpty
+        assertThat(result.resources.first())
             .usingRecursiveComparison()
             .isEqualTo(expectedSeries)
     }
 
-    private fun parseTextContent(result: Mono<McpSchema.CallToolResult>): List<SeriesSummary> {
+    private fun parseTextContent(result: Mono<McpSchema.CallToolResult>): McpPagedResult<SeriesSummary> {
         return objectMapper.readValue(
             (result.block()!!
                 .content()
