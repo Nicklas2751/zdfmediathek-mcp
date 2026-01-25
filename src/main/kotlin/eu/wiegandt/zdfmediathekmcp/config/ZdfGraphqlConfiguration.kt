@@ -40,7 +40,11 @@ class ZdfGraphqlConfiguration {
         return ExchangeFilterFunction.ofRequestProcessor { request ->
             logger.debug("GraphQL Request: {} {}", request.method(), request.url())
             request.headers().forEach { name, values ->
-                logger.debug("  Header: {} = {}", name, values)
+                if (name.equals("Authorization", ignoreCase = true)) {
+                    logger.debug("  Header: {} = [REDACTED]", name)
+                } else {
+                    logger.debug("  Header: {} = {}", name, values)
+                }
             }
             // Log request body if available
             request.body()?.let { body ->
