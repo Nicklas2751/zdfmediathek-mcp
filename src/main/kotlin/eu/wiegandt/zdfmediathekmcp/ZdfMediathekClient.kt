@@ -26,7 +26,8 @@ interface ZdfMediathekClient {
 
     @GetExchange("/cmdm/brands")
     fun listBrands(
-        @RequestParam("limit") limit: Int = 10
+        @RequestParam("limit") limit: Int = 10,
+        @RequestParam("page") page: Int = 1
     ): BrandApiResponse
 
     @GetExchange("/cmdm/series")
