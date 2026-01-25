@@ -2,6 +2,7 @@ package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import eu.wiegandt.zdfmediathekmcp.model.*
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -9,6 +10,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.graphql.client.GraphQlClient
+import org.springframework.graphql.client.GraphQlClientException
 import org.springframework.graphql.client.HttpGraphQlClient
 import reactor.core.publisher.Mono
 
@@ -118,5 +120,67 @@ class GetSeriesEpisodesServiceTest {
 
         // then
         assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `parseSortBy date_desc returns editorial_date_desc`() {
+        val p = getSeriesEpisodesService.parseSortBy("date_desc")
+        assertThat(p).isEqualTo(Pair("EDITORIAL_DATE", "DESC"))
+    }
+
+    @Test
+    fun `parseSortBy date_asc returns editorial_date_asc`() {
+        val p = getSeriesEpisodesService.parseSortBy("date_asc")
+        assertThat(p).isEqualTo(Pair("EDITORIAL_DATE", "ASC"))
+    }
+
+    @Test
+    fun `parseSortBy episode_desc returns episode_number_desc`() {
+        val p = getSeriesEpisodesService.parseSortBy("episode_desc")
+        assertThat(p).isEqualTo(Pair("EPISODE_NUMBER", "DESC"))
+    }
+
+    @Test
+    fun `parseSortBy episode_asc returns episode_number_asc`() {
+        val p = getSeriesEpisodesService.parseSortBy("episode_asc")
+        assertThat(p).isEqualTo(Pair("EPISODE_NUMBER", "ASC"))
+    }
+
+    @Test
+    fun `parseSortBy unknown defaults to date_desc`() {
+        val p = getSeriesEpisodesService.parseSortBy("something_else")
+        assertThat(p).isEqualTo(Pair("EDITORIAL_DATE", "DESC"))
+    }
+
+    @Test
+    fun `getSeriesEpisodes wraps GraphQlClientException into RuntimeException`() {
+        // given
+        `when`(zdfGraphQlClient.document(anyString())).thenReturn(requestSpec)
+        `when`(requestSpec.variable(anyString(), any())).thenReturn(requestSpec)
+        `when`(requestSpec.retrieve(anyString())).thenReturn(retrieveSpec)
+        val gqlEx = mock(GraphQlClientException::class.java)
+        `when`(retrieveSpec.toEntity(SearchDocumentsResult::class.java)).thenReturn(Mono.error(gqlEx))
+
+        // when / then
+        val ex = assertThrows(RuntimeException::class.java) {
+            getSeriesEpisodesService.getSeriesEpisodes("some-series", 5, "date_desc")
+        }
+
+        assertThat(ex.message).contains("Failed to get series episodes")
+        assertThat(ex.cause).isInstanceOf(GraphQlClientException::class.java)
+    }
+
+    @Test
+    fun `getSeriesEpisodes wraps generic Exception into RuntimeException`() {
+        // given: make the client throw a non-GraphQlClientException
+        doThrow(IllegalStateException("connection lost")).`when`(zdfGraphQlClient).document(anyString())
+
+        // when / then
+        val ex = assertThrows(RuntimeException::class.java) {
+            getSeriesEpisodesService.getSeriesEpisodes("some-series", 5, "date_desc")
+        }
+
+        assertThat(ex.message).contains("Failed to get series episodes")
+        assertThat(ex.cause).isInstanceOf(IllegalStateException::class.java)
     }
 }
