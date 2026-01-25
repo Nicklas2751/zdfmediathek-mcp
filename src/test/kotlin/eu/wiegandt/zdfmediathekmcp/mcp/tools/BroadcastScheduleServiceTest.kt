@@ -36,14 +36,15 @@ class BroadcastScheduleServiceTest {
             nextArchive = null
         )
 
-        `when`(zdfMediathekClient.getBroadcastSchedule(from, to, tvService, 10)).thenReturn(mockResponse)
+        `when`(zdfMediathekClient.getBroadcastSchedule(from, to, tvService, 10, 1)).thenReturn(mockResponse)
 
         // when
         val result = broadcastScheduleService.getBroadcastSchedule(from, to, tvService)
 
         // then
-        assertThat(result).isEqualTo(mockResponse)
-        verify(zdfMediathekClient).getBroadcastSchedule(from, to, tvService, 10)
+        assertThat(result.resources).isEqualTo(mockResponse.broadcasts)
+        assertThat(result.nextCursor).isNull()
+        verify(zdfMediathekClient).getBroadcastSchedule(from, to, tvService, 10, 1)
     }
 
     @Test
@@ -93,14 +94,15 @@ class BroadcastScheduleServiceTest {
         val to = "2025-12-27T23:59:59+01:00"
         val mockResponse = ZdfBroadcastScheduleResponse(broadcasts = emptyList(), nextArchive = null)
 
-        `when`(zdfMediathekClient.getBroadcastSchedule(from, to, null, 10)).thenReturn(mockResponse)
+        `when`(zdfMediathekClient.getBroadcastSchedule(from, to, null, 10, 1)).thenReturn(mockResponse)
 
         // when
         val result = broadcastScheduleService.getBroadcastSchedule(from, to, null)
 
         // then
-        assertThat(result).isEqualTo(mockResponse)
-        verify(zdfMediathekClient).getBroadcastSchedule(from, to, null, 10)
+        assertThat(result.resources).isEqualTo(mockResponse.broadcasts)
+        assertThat(result.nextCursor).isNull()
+        verify(zdfMediathekClient).getBroadcastSchedule(from, to, null, 10, 1)
     }
 
     @Test
@@ -140,14 +142,14 @@ class BroadcastScheduleServiceTest {
         val limit = 50
         val mockResponse = ZdfBroadcastScheduleResponse(broadcasts = emptyList(), nextArchive = null)
 
-        `when`(zdfMediathekClient.getBroadcastSchedule(from, to, null, limit)).thenReturn(mockResponse)
+        `when`(zdfMediathekClient.getBroadcastSchedule(from, to, null, limit, 1)).thenReturn(mockResponse)
 
         // when
         val result = broadcastScheduleService.getBroadcastSchedule(from, to, null, limit)
 
         // then
-        assertThat(result).isEqualTo(mockResponse)
-        verify(zdfMediathekClient).getBroadcastSchedule(from, to, null, limit)
+        assertThat(result.resources).isEqualTo(mockResponse.broadcasts)
+        assertThat(result.nextCursor).isNull()
+        verify(zdfMediathekClient).getBroadcastSchedule(from, to, null, limit, 1)
     }
 }
-

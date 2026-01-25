@@ -3,8 +3,8 @@ package eu.wiegandt.zdfmediathekmcp.mcp.tools
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.client.WireMock.*
+import eu.wiegandt.zdfmediathekmcp.model.McpPagedResult
 import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcast
-import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcastScheduleResponse
 import io.modelcontextprotocol.client.McpAsyncClient
 import io.modelcontextprotocol.client.McpClient
 import io.modelcontextprotocol.client.transport.WebClientStreamableHttpTransport
@@ -107,12 +107,13 @@ class BroadcastScheduleServiceIT {
                 )
         )
 
-        // Mock broadcast schedule endpoint
+        // Mock broadcast schedule endpoint (now expects page=1)
         stubFor(
             get(urlPathEqualTo("/cmdm/epg/broadcasts"))
                 .withQueryParam("from", equalTo(from))
                 .withQueryParam("to", equalTo(to))
                 .withQueryParam("tvService", equalTo(tvService))
+                .withQueryParam("page", equalTo("1"))
                 .willReturn(
                     aResponse()
                         .withStatus(200)
@@ -122,7 +123,7 @@ class BroadcastScheduleServiceIT {
         )
 
         // when
-        val response = parseTextContent(
+        val response = parsePagedResult(
             mcpClient.callTool(
                 McpSchema.CallToolRequest(
                     "get_broadcast_schedule",
@@ -136,7 +137,7 @@ class BroadcastScheduleServiceIT {
         )
 
         // then
-        assertThat(response.broadcasts).usingRecursiveComparison()
+        assertThat(response.resources).usingRecursiveComparison()
             .isEqualTo(expectedBroadcasts)
     }
 
@@ -161,12 +162,11 @@ class BroadcastScheduleServiceIT {
         ).contains("ISO 8601")
     }
 
-    private fun parseTextContent(result: Mono<McpSchema.CallToolResult>): ZdfBroadcastScheduleResponse {
-        return objectMapper.readValue<ZdfBroadcastScheduleResponse>(
+    private fun parsePagedResult(result: Mono<McpSchema.CallToolResult>): McpPagedResult<ZdfBroadcast> {
+        return objectMapper.readValue(
             (result.block()!!
                 .content()
                 .first() as McpSchema.TextContent).text()
         )
     }
 }
-

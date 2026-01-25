@@ -1,6 +1,9 @@
 package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
+import eu.wiegandt.zdfmediathekmcp.mcp.pagination.McpPaginationPayloadHandler
+import eu.wiegandt.zdfmediathekmcp.model.McpPagedResult
+import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcast
 import eu.wiegandt.zdfmediathekmcp.model.ZdfBroadcastScheduleResponse
 import org.slf4j.LoggerFactory
 import org.springaicommunity.mcp.annotation.McpTool
@@ -37,59 +40,61 @@ class BroadcastScheduleService(
             - to: End time in ISO 8601 format with timezone (e.g., 2025-12-27T23:59:59+01:00) 
             - tvService: Optional channel name (e.g., ZDF, ZDFneo, 3sat). If omitted, returns all channels. 
             - limit: Maximum number of broadcasts to return (default: 10). 
-            Common channels: ZDF, ZDFneo, ZDFinfo, 3sat, PHOENIX, KIKA. 
-            Timezone: Use +01:00 (CET) or +02:00 (CEST) for German time. 
-            Returns a list of programs with title, time, description, and channel info.
+            - cursor: Optional MCP pagination cursor (Base64-encoded JSON {"page":X,"limit":Y})
+            Returns a paged result with broadcasts and an optional nextCursor.
             """
     )
     fun getBroadcastSchedule(
         from: String,
         to: String,
         tvService: String? = null,
-        limit: Int? = 10
-    ): ZdfBroadcastScheduleResponse {
-        // If the MCP framework passes null (no parameter supplied), fall back to default
+        limit: Int? = 10,
+        cursor: String? = null
+    ): McpPagedResult<ZdfBroadcast> {
         val actualLimit = limit ?: 10
+        var page = 1
+
         logger.info(
-            "MCP Tool 'get_broadcast_schedule' called with from='{}', to='{}', tvService='{}', limit={}",
-            from, to, tvService ?: "all", actualLimit
+            "MCP Tool 'get_broadcast_schedule' called with from='{}', to='{}', tvService='{}', limit={}, cursorPresent={}",
+            from, to, tvService ?: "all", actualLimit, !cursor.isNullOrBlank()
         )
 
         try {
             // Validate required parameters
-            require(from.isNotBlank()) {
-                "Parameter 'from' is required and must not be empty"
-            }
-            require(to.isNotBlank()) {
-                "Parameter 'to' is required and must not be empty"
-            }
-            require(actualLimit > 0) {
-                "Parameter 'limit' must be greater than 0"
-            }
+            require(from.isNotBlank()) { "Parameter 'from' is required and must not be empty" }
+            require(to.isNotBlank()) { "Parameter 'to' is required and must not be empty" }
+            require(actualLimit > 0) { "Parameter 'limit' must be greater than 0" }
 
-            // Validate ISO 8601 format with timezone
-            logger.debug("Parsing and validating time parameters")
             val fromDateTime = parseIso8601OrThrow(from, "from")
             val toDateTime = parseIso8601OrThrow(to, "to")
 
-            // Validate time range
-            require(fromDateTime.isBefore(toDateTime)) {
-                "Parameter 'from' must be before 'to'"
+            require(fromDateTime.isBefore(toDateTime)) { "Parameter 'from' must be before 'to'" }
+
+            if (!cursor.isNullOrBlank()) {
+                try {
+                    val payload = McpPaginationPayloadHandler.decode(cursor)
+                    page = payload.page
+                } catch (e: IllegalArgumentException) {
+                    logger.warn("Invalid pagination cursor provided for get_broadcast_schedule: {}", e.message)
+                    throw e
+                }
             }
 
-            logger.debug("Time range validated: from={}, to={}, limit={}", fromDateTime, toDateTime, actualLimit)
-            logger.debug("Calling ZDF API to get broadcast schedule")
-
-            // Delegate to ZDF API service
-            val response = zdfMediathekClient.getBroadcastSchedule(from, to, tvService, actualLimit)
+            logger.debug("Calling ZDF API to get broadcast schedule (limit={}, page={})", actualLimit, page)
+            val response: ZdfBroadcastScheduleResponse = zdfMediathekClient.getBroadcastSchedule(from, to, tvService, actualLimit, page)
 
             logger.info(
                 "Successfully retrieved {} broadcasts for time range {} to {}",
                 response.broadcasts.size, from, to
             )
-            logger.debug("Broadcast schedule response: {}", response)
 
-            return response
+            val nextCursor = if (response.broadcasts.size >= actualLimit) {
+                McpPaginationPayloadHandler.encode(page + 1, actualLimit)
+            } else {
+                null
+            }
+
+            return McpPagedResult(resources = response.broadcasts, nextCursor = nextCursor)
         } catch (e: IllegalArgumentException) {
             logger.error("Invalid parameter for get_broadcast_schedule: {}", e.message)
             throw e

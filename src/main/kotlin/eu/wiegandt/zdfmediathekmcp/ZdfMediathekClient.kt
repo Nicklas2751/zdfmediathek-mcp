@@ -20,7 +20,8 @@ interface ZdfMediathekClient {
         @RequestParam("from") from: String,
         @RequestParam("to") to: String,
         @RequestParam("tvService") tvService: String?,
-        @RequestParam("limit") limit: Int = 10
+        @RequestParam("limit") limit: Int = 10,
+        @RequestParam("page") page: Int = 1
     ): ZdfBroadcastScheduleResponse
 
     @GetExchange("/cmdm/epg/broadcasts/pf")
