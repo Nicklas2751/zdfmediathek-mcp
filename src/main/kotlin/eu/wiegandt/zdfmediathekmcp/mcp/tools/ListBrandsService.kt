@@ -48,9 +48,17 @@ class ListBrandsService(private val zdfMediathekClient: ZdfMediathekClient) {
 
             val resources = result.brands
 
-            // The /cmdm/brands endpoint does not reliably support retrieving further pages
-            // (no total/hasNext information). Per project plan, do not set a nextCursor for this endpoint.
-            return McpPagedResult(resources = resources, nextCursor = null)
+            // If API returns an explicit next-archive link, we don't need to parse it — just advance page by 1
+            val nextCursor = if (!result.nextArchive.isNullOrBlank()) {
+                McpPaginationPayloadHandler.encode(page + 1, actualLimit)
+            } else if (resources.size >= actualLimit) {
+                // Fallback heuristic: if we got a full page, assume there may be a next page
+                McpPaginationPayloadHandler.encode(page + 1, actualLimit)
+            } else {
+                null
+            }
+
+            return McpPagedResult(resources = resources, nextCursor = nextCursor)
         } catch (e: Exception) {
             logger.error("Error executing list_brands: {}", e.message, e)
             throw RuntimeException("Failed to list brands: ${e.message}", e)

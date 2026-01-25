@@ -158,7 +158,12 @@ class ListBrandsServiceIT {
 
         // then: Ergebnis entspricht Erwartung, Request wurde korrekt abgesetzt
         assertThat(result.resources).usingRecursiveComparison().isEqualTo(expected.brands)
-        assertThat(result.nextCursor).isNull()
+        // If the API returned a full page (10 items), we expect a nextCursor to be provided
+        assertThat(result.nextCursor).isNotNull()
+        // Verify the cursor decodes to page=2 and limit=10
+        val decoded = eu.wiegandt.zdfmediathekmcp.mcp.pagination.McpPaginationPayloadHandler.decode(result.nextCursor!!)
+        assertThat(decoded.page).isEqualTo(2)
+        assertThat(decoded.limit).isEqualTo(10)
         verify(
             getRequestedFor(urlPathEqualTo("/cmdm/brands"))
                 .withQueryParam("limit", equalTo("10"))
