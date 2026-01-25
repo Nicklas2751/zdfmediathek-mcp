@@ -9,7 +9,11 @@ import org.springframework.web.service.annotation.GetExchange
 interface ZdfMediathekClient {
 
     @GetExchange("/search/documents")
-    fun searchDocuments(@RequestParam("q") q: String, @RequestParam("limit") limit: Int = 5): ZdfSearchResponse
+    fun searchDocuments(
+        @RequestParam("q") q: String,
+        @RequestParam("limit") limit: Int = 5,
+        @RequestParam("page") page: Int = 1
+    ): ZdfSearchResponse
 
     @GetExchange("/cmdm/epg/broadcasts")
     fun getBroadcastSchedule(
