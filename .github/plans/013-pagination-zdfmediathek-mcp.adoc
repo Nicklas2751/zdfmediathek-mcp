@@ -1,0 +1,169 @@
+= Pagination für ZDF Mediathek MCP Tools
+:toc:
+:toc-title: Inhaltsverzeichnis
+
+[IMPORTANT]
+====
+Alle Regeln und Vorgaben aus @AGENTS.md und @CONTRIBUTING.md sind zwingend einzuhalten!
+====
+
+== Einleitung
+
+Das Ziel dieses Plans ist es, alle MCP Tools der ZDF Mediathek so zu erweitern, dass sie Pagination vollständig und MCP-konform unterstützen.
+Die verwendeten ZDF-REST-APIs benutzen unterschiedliche Pagination-Mechanismen (meist page/size, tw. offset/limit),
+während das MCP-Protokoll einen Paging-Cursor (`nextCursor`) erwartet (siehe https://modelcontextprotocol.io/specification/2025-03-26/server/utilities/pagination).
+
+Für jedes MCP Tool gibt es zwei Phasen (TDD):
+Phase 1: Testfallerweiterung für Pagination
+Phase 2: Implementation der Pagination nach MCP-Schema
+
+== Übersicht MCP Tools & Endpunkte
+
+[cols="2,2,2,3", options="header"]
+|===
+| MCP Tool              | API-Typ   | API-Endpunkt                   | Paginationmechanik
+| search_content        | REST      | /search/documents              | page/limit, offset/limit (beides möglich)
+| get_broadcast_schedule| REST      | /cmdm/epg/broadcasts           | page/limit
+| get_current_broadcast | REST      | /cmdm/epg/broadcasts/pf        | Kein Paging (liefert nur aktuellen & nächsten Eintrag)
+| list_brands           | REST      | /cmdm/brands                   | page/limit
+| list_series           | REST      | /cmdm/series                   | page/limit
+| list_seasons          | REST      | /cmdm/seasons                  | page/limit
+| get_series_episodes   | GraphQL   | searchDocuments/episodes       | GraphQL-Cursor (first/after)
+|===
+
+== MCP-Pagination-Modell
+
+- `nextCursor` ist ein String, der signalisiert, wie der Client weitere Seiten abfragen kann
+- nextCursor codiert IMMER sowohl page als auch limit gemeinsam (z.B. als Base64-JSON: {"page":2,"limit":20})
+- Ist keine weitere Seite verfügbar, bleibt `nextCursor` leer/fehlt
+- Server muss explizit das Modell der ZDF-API (z.B. page/offset) auf die MCP-Anforderung mappen (z.B. aktuelle page+limit als nextCursor zurückgeben)
+- Details: https://modelcontextprotocol.io/specification/2025-03-26/server/utilities/pagination
+
+== MCP Pagination: Offizielle Spezifikation (2025-03-26)
+
+Die Implementierung muss exakt folgende Anforderungen der offiziellen MCP-Spezifikation erfüllen:
+
+- Cursor-basiert: Pagination erfolgt über einen undurchsichtigen (opaque) Cursor-String, nicht über Seitenzahlen.
+- Die Page-Größe wird vom Server bestimmt, Clients dürfen keine feste Größe annehmen.
+- Response-Format: Die Antwort enthält das aktuelle Ergebnis-Array und optional ein Feld nextCursor, falls weitere Ergebnisse existieren:
+
+  ```json
+  {
+    "jsonrpc": "2.0",
+    "id": "123",
+    "result": {
+      "resources": [...],
+      "nextCursor": "eyJwYWdlIjogM30="
+    }
+  }
+  ```
+- Request-Format: Für Folgeseiten sendet der Client den Cursor im params-Objekt:
+
+  ```json
+  {
+    "jsonrpc": "2.0",
+    "method": "resources/list",
+    "params": {
+      "cursor": "eyJwYWdlIjogMn0="
+    }
+  }
+  ```
+- nextCursor fehlt → keine weiteren Ergebnisse.
+- Cursors sind undurchsichtig und dürfen nicht interpretiert oder verändert werden.
+- Fehlerhafte Cursors führen zu Fehlercode -32602 (Invalid params).
+
+Siehe: https://modelcontextprotocol.io/specification/2025-03-26/server/utilities/pagination
+
+== Endpoint-Pagination-Analysen
+
+Die individuellen Analyse-Markdowns zu jedem REST- und GraphQL-Endpunkt liegen unter:
+- .github/plans/api-pagination-list_brands.md
+- .github/plans/api-pagination-list_series.md
+- .github/plans/api-pagination-list_seasons.md
+- .github/plans/api-pagination-get_broadcast_schedule.md
+- .github/plans/api-pagination-get_current_broadcast.md
+- .github/plans/api-pagination-get_series_episodes.md
+// (search_content: Datei ergänzen, sobald Endpunkt/Analyse vorliegt)
+
+== Analyse der REST-Endpunkte
+
+Eine Analyse der OpenAPI-Definition sowie der Endpunkte ergibt folgendes Bild (Stand: 17.01.2026):
+
+- Die REST-API der ZDF Mediathek enthält klassische Listen-Endpunkte wie:
+  - `/cmdm/brands` (nur parameterisiertes Limit, keine Pagination)
+  - `/cmdm/series` (nur Limit, keine Pagination mittels Offset/Page)
+  - `/cmdm/seasons` (nur Limit, keine Pagination mittels Offset/Page)
+  - `/cmdm/epg/broadcasts` (Paging mit `limit` und `page`, vollständige Seitennavigation möglich)
+- Bei vielen Listen-(GET)-Endpunkten wird ausschließlich ein `limit`-Parameter zur Begrenzung verwendet. Es gibt kein Offset/Page-Feld, d.h. es gibt keine Möglichkeit, weitere Teile des Gesamtergebnisses abzurufen.
+- Für den Endpunkt `/cmdm/epg/broadcasts` (TV-Schedule) existiert jedoch eine klassische Pagination mit `limit` und `page` (und optional weiteren Filtern). Hier kann die MCP-Cursor-Logik analog page/limit→Cursor umgesetzt werden.
+- Der GraphQL-Endpunkt für Episoden (`searchDocuments/episodes`) unterstützt Cursor-basiertes Paging (`first`, `after`/`endCursor`, `hasNextPage`), was ideal mit MCP-Cursor-Pagination gemappt werden kann.
+- Endpunkte wie `/cmdm/brands`, `/cmdm/series`, `/cmdm/seasons` sind auf _eine_ Seite limitiert; Next-Cursor ist hier stets leer/fehlt.
+- Die Komplettübersicht und Details zu Feldnamen und Limitationen ist immer den Einzelanalysen in `.github/plans/api-pagination-*.md` zu entnehmen.
+
+.Primäre Einschränkung:
+* **Keine** vollständige MCP-Pagination bei brands/series/seasons möglich – _immer nur eine Seite!_
+* **Volle Pagination** bei `get_broadcast_schedule` (Schedule) und GraphQL-Episoden.
+
+== Plan: Umsetzung pro MCP Tool
+
+=== list_brands
+
+==== Phase 1: Tests für Pagination erweitern (TDD)
+- Test Initialseite (page=1, nextCursor gesetzt/leer nach Datenlage)
+- Test: User gibt nextCursor zurück → Ergebnis wie Seite 2
+- Test: Letzte Seite → kein nextCursor vorhanden
+- Test: Ungültiger nextCursor (z.B. zu große page) → Fehlerhandling/Empty
+
+==== Phase 2: Implementation der Pagination
+- Mapping MCP nextCursor <-> API page
+- Response-Adaptierung (nextCursor setzen)
+- Fehlerbehandlung & Edgecases
+- MCP-Kompatibilitätscheck
+
+=== list_series
+
+==== Phase 1: Tests für Pagination erweitern (TDD)
+- (Analog zu list_brands)
+==== Phase 2: Implementation
+- (Analog zu list_brands)
+
+=== list_seasons
+==== Phase 1: Tests (TDD)
+- (Analog zu list_brands)
+==== Phase 2: Implementation
+
+=== search_content
+==== Phase 1: Tests
+- Test Suchanfrage mit Limit/nextCursor über mehrere Seiten
+- Test: Letzte Seite → kein nextCursor
+==== Phase 2: Implementation
+- nextCursor → page/offset/limit-Mapping
+- Randfälle (API-limits, Leerseiten, ...)
+
+=== get_broadcast_schedule
+==== Phase 1: Tests für Pagination
+- Paging von Programmplan
+==== Phase 2: Implementation
+
+=== get_current_broadcast
+==== Analyse: 
+- Prüfen, ob Paging notwendig (üblicherweise nicht)
+- Falls ja, analog zu anderen Endpunkten. Falls nein: als nicht-paginierbar kennzeichnen
+
+=== get_series_episodes (GraphQL)
+==== API- und Code-Analyse
+- Prüfen, ob bei Episode-Listen Paging nötig ist (GraphQL: first/after oder andere Cursor)
+==== Phase 1: Tests, falls relevant
+==== Phase 2: Implementation, falls nötig
+
+== Zentrale Edge Cases und Besonderheiten
+
+- Max Page Size/Limits der API
+- Base64-Encoding für nextCursor, falls Opazität/Länge nötig
+- Kompatibilität, Fehlerhandling, Boundary Cases
+
+== Quellen und Verweise
+
+- MCP Spec: https://modelcontextprotocol.io/specification/2025-03-26/server/utilities/pagination
+- ZDF OpenAPI/GraphQL-Spec (siehe .github/plans/api-pagination-*.md)
+- Projekt-Doku: README.md, AGENTS.md, CONTRIBUTING.md
