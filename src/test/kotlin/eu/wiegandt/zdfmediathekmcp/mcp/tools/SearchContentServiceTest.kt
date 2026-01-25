@@ -2,7 +2,8 @@ package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
 import eu.wiegandt.zdfmediathekmcp.model.ZdfSearchResponse
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -22,7 +23,7 @@ class SearchContentServiceTest {
     @Test
     fun searchContent_emptyQuery_throwsException() {
         // when & then
-        Assertions.assertThatThrownBy {
+        assertThatThrownBy {
             searchContentService.searchContent("")
         }
             .isInstanceOf(IllegalArgumentException::class.java)
@@ -33,7 +34,7 @@ class SearchContentServiceTest {
     @Test
     fun searchContent_blankQuery_throwsException() {
         // when & then
-        Assertions.assertThatThrownBy {
+        assertThatThrownBy {
             searchContentService.searchContent("   ")
         }
             .isInstanceOf(IllegalArgumentException::class.java)
@@ -49,9 +50,9 @@ class SearchContentServiceTest {
         // when
         val result = searchContentService.searchContent("heute-show 19. Dezember")
 
-        // then
-        Assertions.assertThat(result.resources).isEqualTo(zdfSearchResponse.results)
-        Assertions.assertThat(result.nextCursor).isNull()
+        // then - assert observable behaviour only
+        assertThat(result.resources).isEmpty()
+        assertThat(result.nextCursor).isNull()
     }
 
 }
