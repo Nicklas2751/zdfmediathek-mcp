@@ -1,13 +1,13 @@
 package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
+import eu.wiegandt.zdfmediathekmcp.mcp.pagination.McpPaginationPayloadHandler
 import eu.wiegandt.zdfmediathekmcp.model.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
-import org.mockito.Mockito.doReturn
-import org.mockito.Mockito.doThrow
+import org.mockito.Mockito.*
 import org.springframework.web.reactive.function.client.WebClientResponseException
 
 class ListSeasonsServiceTest {
@@ -97,7 +97,7 @@ class ListSeasonsServiceTest {
         listSeasonsService.listSeasons(5)
 
         // then
-        Mockito.verify(zdfMediathekClient).listSeasons(5, 1)
+        verify(zdfMediathekClient).listSeasons(5, 1)
     }
 
     @Test
@@ -116,5 +116,64 @@ class ListSeasonsServiceTest {
         // when/then
         assertThatThrownBy { listSeasonsService.listSeasons() }
             .isInstanceOf(RuntimeException::class.java)
+    }
+
+    @Test
+    fun `listSeasons with null cursor uses default page and limit`() {
+        // given
+        doReturn(ZdfSeasonResponse()).`when`(zdfMediathekClient).listSeasons(4, 1)
+
+        // when
+        listSeasonsService.listSeasons(cursor = null)
+
+        // then
+        verify(zdfMediathekClient).listSeasons(4, 1)
+    }
+
+    @Test
+    fun `listSeasons with empty cursor uses default page and limit`() {
+        // given
+        doReturn(ZdfSeasonResponse()).`when`(zdfMediathekClient).listSeasons(4, 1)
+
+        // when
+        listSeasonsService.listSeasons(cursor = "")
+
+        // then
+        verify(zdfMediathekClient).listSeasons(4, 1)
+    }
+
+    @Test
+    fun `listSeasons with blank cursor uses default page and limit`() {
+        // given
+        doReturn(ZdfSeasonResponse()).`when`(zdfMediathekClient).listSeasons(4, 1)
+
+        // when
+        listSeasonsService.listSeasons(cursor = "   ")
+
+        // then
+        verify(zdfMediathekClient).listSeasons(4, 1)
+    }
+
+    @Test
+    fun `listSeasons with valid cursor updates page and limit`() {
+        // given
+        val cursor = McpPaginationPayloadHandler.encode(2, 10)
+        doReturn(ZdfSeasonResponse()).`when`(zdfMediathekClient).listSeasons(10, 2)
+
+        // when
+        listSeasonsService.listSeasons(cursor = cursor)
+
+        // then
+        verify(zdfMediathekClient).listSeasons(10, 2)
+    }
+
+    @Test
+    fun `listSeasons with invalid cursor throws exception`() {
+        // given
+        val invalidCursor = "invalid-base64"
+
+        // when/then
+        assertThatThrownBy { listSeasonsService.listSeasons(cursor = invalidCursor) }
+            .isInstanceOf(IllegalArgumentException::class.java)
     }
 }
