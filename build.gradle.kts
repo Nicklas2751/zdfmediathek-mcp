@@ -89,6 +89,13 @@ tasks.jacocoTestReport {
     reports {
         xml.required = true
     }
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) {
+                exclude("**/ZdfMediathekClient*", "**/ZdfMediathekClient$*")
+            }
+        })
+    )
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootBuildImage>("bootBuildImage") {
