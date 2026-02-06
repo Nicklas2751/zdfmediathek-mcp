@@ -50,7 +50,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testImplementation("org.assertj:assertj-core")
-    testImplementation("org.wiremock.integrations:wiremock-spring-boot:4.0.9")
+    testImplementation("org.wiremock.integrations:wiremock-spring-boot:4.1.0")
     testImplementation("io.github.nilwurtz:wiremock-graphql-extension:0.9.0") {
         exclude(group = "org.wiremock", module = "wiremock")
     }
