@@ -4,7 +4,7 @@
 
 **Project Name:** zdfmediathek-mcp  
 **Type:** Standalone MCP server for ZDF Mediathek API  
-**Language:** Kotlin 1.9+  
+**Language:** Kotlin 2.3+  
 **Build System:** Gradle with Kotlin DSL  
 **JVM Target:** 21  
 **Purpose:** Provide MCP tools for searching and retrieving ZDF Mediathek content to AI assistants
@@ -32,6 +32,8 @@ graph TB
     Tools -->|Transform| Transformer[Response Transformer]
     Server -->|SLF4J| Logger[Logback]
     Auth -->|Auto Token Mgmt| TokenCache[Spring Security<br/>Token Cache]
+```
+
 ### MCP Tool: get_series_episodes
 
 Lists episodes for a specific series in the ZDF Mediathek.
