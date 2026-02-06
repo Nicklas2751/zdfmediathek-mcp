@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Kotlin](https://img.shields.io/badge/kotlin-2.3+-blue.svg?logo=kotlin)](http://kotlinlang.org)
-[![Status](https://img.shields.io/badge/status-development-orange.svg)]()
+[![Status](https://img.shields.io/badge/status-stable-green.svg)]()
 [![MCP](https://img.shields.io/badge/MCP-1.0-purple.svg)]()
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Nicklas2751_zdfmediathek-mcp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Nicklas2751_zdfmediathek-mcp)
 
@@ -31,8 +31,6 @@ Code, IntelliJ IDEA, and others.
 
 The server provides the following MCP tools:
 
-### Phase 1 (MVP) - Currently Available
-
 | Tool                     | Description                                     | Key Parameters                                                                                                                                           |
 |--------------------------|-------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `search_content`         | Search for content in ZDF Mediathek             | `query` (string, required)<br/>`limit` (number, optional, default: 5)                                                                                    |
@@ -42,10 +40,6 @@ The server provides the following MCP tools:
 | `list_series`            | List all series available in the ZDF Mediathek  | `limit` (number, optional, default: 4)                                                                                                                   |
 | `list_seasons`           | List all seasons available in the ZDF Mediathek | `limit` (number, optional, default: 4)                                                                                                                   |
 | `get_series_episodes`    | Get episodes for a specific series              | `seriesName` (string, required)<br/>`limit` (number, optional, default: 10)<br/>*Note: Season filtering not yet implemented*                            |
-
-### Phase 2 - Planned
-
-*None currently.*
 
 ### Example Tool Usage
 
