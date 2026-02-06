@@ -3,6 +3,7 @@ package eu.wiegandt.zdfmediathekmcp.mcp.tools
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.client.WireMock.*
+import eu.wiegandt.zdfmediathekmcp.model.McpPagedResult
 import eu.wiegandt.zdfmediathekmcp.model.SeasonSummary
 import eu.wiegandt.zdfmediathekmcp.model.SeriesSummary
 import io.modelcontextprotocol.client.McpAsyncClient
@@ -82,6 +83,7 @@ class ListSeasonsServiceIT {
         stubFor(
             get(urlPathEqualTo("/cmdm/seasons"))
                 .withQueryParam("limit", equalTo("4"))
+                .withQueryParam("page", equalTo("1"))
                 .willReturn(
                     aResponse()
                         .withStatus(200)
@@ -106,7 +108,7 @@ class ListSeasonsServiceIT {
         )
 
         // when
-        val result = parseTextContent(
+        val result = parsePagedResult(
             mcpClient.callTool(
                 McpSchema.CallToolRequest(
                     "list_seasons",
@@ -116,12 +118,12 @@ class ListSeasonsServiceIT {
         )
 
         // then
-        assertThat(result.first())
+        assertThat(result.resources.first())
             .usingRecursiveComparison()
             .isEqualTo(expectedSeason)
     }
 
-    private fun parseTextContent(result: Mono<McpSchema.CallToolResult>): List<SeasonSummary> {
+    private fun parsePagedResult(result: Mono<McpSchema.CallToolResult>): McpPagedResult<SeasonSummary> {
         return objectMapper.readValue(
             (result.block()!!
                 .content()
@@ -129,4 +131,3 @@ class ListSeasonsServiceIT {
         )
     }
 }
-

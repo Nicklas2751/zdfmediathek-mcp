@@ -3,7 +3,8 @@ package eu.wiegandt.zdfmediathekmcp.mcp.tools
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import eu.wiegandt.zdfmediathekmcp.model.ZdfSearchResponse
+import eu.wiegandt.zdfmediathekmcp.model.McpPagedResult
+import eu.wiegandt.zdfmediathekmcp.model.ZdfSearchResult
 import io.modelcontextprotocol.client.McpAsyncClient
 import io.modelcontextprotocol.client.McpClient
 import io.modelcontextprotocol.client.transport.ServerParameters
@@ -141,12 +142,14 @@ class SearchContentServiceStdioIT {
         assertThat(result!!.content()).isNotEmpty
 
         val textContent = result.content().first() as McpSchema.TextContent
-        val response = objectMapper.readValue<ZdfSearchResponse>(textContent.text())
+        val response = objectMapper.readValue<McpPagedResult<ZdfSearchResult>>(textContent.text())
 
         assertThat(response).isNotNull
-        assertThat(response.totalResultsCount).isEqualTo(3104)
-        assertThat(response.results).hasSize(2)
-        assertThat(response.results[0].title).isEqualTo("tagesschau")
+        // The service now returns an MCP paged result: resources + nextCursor
+        assertThat(response.resources).hasSize(2)
+        assertThat(response.resources[0].title).isEqualTo("tagesschau")
+        // nextCursor should be provided when more pages are available
+        assertThat(response.nextCursor).isNotNull
 
         // Verify WireMock was called with correct parameters
         verify(
@@ -183,4 +186,3 @@ class SearchContentServiceStdioIT {
         return classpathElements.joinToString(File.pathSeparator)
     }
 }
-

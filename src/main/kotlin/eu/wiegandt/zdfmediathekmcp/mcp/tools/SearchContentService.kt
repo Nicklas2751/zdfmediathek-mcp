@@ -1,7 +1,10 @@
 package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
+import eu.wiegandt.zdfmediathekmcp.mcp.pagination.McpPaginationPayloadHandler
+import eu.wiegandt.zdfmediathekmcp.model.McpPagedResult
 import eu.wiegandt.zdfmediathekmcp.model.ZdfSearchResponse
+import eu.wiegandt.zdfmediathekmcp.model.ZdfSearchResult
 import org.slf4j.LoggerFactory
 import org.springaicommunity.mcp.annotation.McpTool
 import org.springframework.stereotype.Service
@@ -17,13 +20,16 @@ class SearchContentService(val zdfMediathekClient: ZdfMediathekClient) {
             Parameters: 
             - query: The search query string.
             - limit: Maximum number of broadcasts to return (default: 10). 
+            - cursor: Optional MCP pagination cursor (Base64-encoded JSON {"page":X,"limit":Y})
             The field 'webCanonical' in the response contains the URL to the content.
-            Returns a list of documents.
+            Returns a paged result containing search results.
         """,
     )
-    fun searchContent(query: String, limit: Int? = 5): ZdfSearchResponse {
+    fun searchContent(query: String, limit: Int? = 5, cursor: String? = null): McpPagedResult<ZdfSearchResult> {
         val actualLimit = limit ?: 5
-        logger.info("MCP Tool 'search_content' called with query='{}', limit={}", query, actualLimit)
+        var page = 1
+
+        logger.info("MCP Tool 'search_content' called with query='{}', limit={}, cursorPresent={}", query, actualLimit, !cursor.isNullOrBlank())
 
         try {
             // Validate parameters
@@ -31,19 +37,35 @@ class SearchContentService(val zdfMediathekClient: ZdfMediathekClient) {
                 "Parameter 'query' is required and must not be empty"
             }
 
-            logger.debug("Calling ZDF API to search documents")
-            val response = zdfMediathekClient.searchDocuments(query, actualLimit)
+            if (!cursor.isNullOrBlank()) {
+                try {
+                    val payload = McpPaginationPayloadHandler.decode(cursor)
+                    page = payload.page
+                    payload.limit?.let { l ->
+                        // override limit if encoded in cursor
+                        // keep actualLimit variable
+                    }
+                } catch (e: IllegalArgumentException) {
+                    logger.warn("Invalid pagination cursor provided for search_content: {}", e.message)
+                    throw e
+                }
+            }
+
+            logger.debug("Calling ZDF API to search documents (limit={}, page={})", actualLimit, page)
+            val response: ZdfSearchResponse = zdfMediathekClient.searchDocuments(query, actualLimit, page)
 
             logger.info(
                 "Successfully retrieved {} search results for query '{}'",
                 response.results.size, query
             )
-            logger.debug(
-                "Search response: totalResultsCount={}, results={}",
-                response.totalResultsCount, response.results.size
-            )
 
-            return response
+            val nextCursor = if (response.results.size >= actualLimit) {
+                McpPaginationPayloadHandler.encode(page + 1, actualLimit)
+            } else {
+                null
+            }
+
+            return McpPagedResult(resources = response.results.map { it }, nextCursor = nextCursor)
         } catch (e: IllegalArgumentException) {
             logger.error("Invalid parameter for search_content: {}", e.message)
             throw e

@@ -1,10 +1,8 @@
 package eu.wiegandt.zdfmediathekmcp.mcp.tools
 
 import eu.wiegandt.zdfmediathekmcp.ZdfMediathekClient
-import eu.wiegandt.zdfmediathekmcp.model.SeriesSummary
-import eu.wiegandt.zdfmediathekmcp.model.ZdfSeries
-import eu.wiegandt.zdfmediathekmcp.model.ZdfSeriesBrandReference
-import eu.wiegandt.zdfmediathekmcp.model.ZdfSeriesResponse
+import eu.wiegandt.zdfmediathekmcp.mcp.pagination.McpPaginationPayloadHandler
+import eu.wiegandt.zdfmediathekmcp.model.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -40,7 +38,7 @@ class ListSeriesServiceTest {
                 )
             )
         )
-        val expected = listOf(
+        val expectedResources = listOf(
             SeriesSummary(
                 seriesUuid = "uuid1",
                 title = "Series 1",
@@ -58,37 +56,55 @@ class ListSeriesServiceTest {
                 url = "https://www.zdf.de/page-2"
             )
         )
-        doReturn(apiResponse).`when`(zdfMediathekClient).listSeries(4)
+        doReturn(apiResponse).`when`(zdfMediathekClient).listSeries(4, 1)
 
         // when
-        val result = listSeriesService.listSeries()
+        val result: McpPagedResult<SeriesSummary> = listSeriesService.listSeries()
 
         // then
-        assertThat(result).usingRecursiveComparison().isEqualTo(expected)
+        assertThat(result.resources).usingRecursiveComparison().isEqualTo(expectedResources)
+        // Since apiResponse has 2 items and limit is 4, nextCursor should be null
+        assertThat(result.nextCursor).isNull()
+    }
+
+    @Test
+    fun `listSeries with full page returns nextCursor`() {
+        // given: response size == limit -> nextCursor expected
+        val apiResponse = ZdfSeriesResponse(List(4) { idx ->
+            ZdfSeries(seriesUuid = "id$idx", seriesTitle = "t$idx", seriesDescription = null, seriesImdbId = null, seriesIndexPageId = "p$idx", brand = null)
+        })
+        doReturn(apiResponse).`when`(zdfMediathekClient).listSeries(4, 1)
+
+        // when
+        val result: McpPagedResult<SeriesSummary> = listSeriesService.listSeries()
+
+        // then
+        assertThat(result.resources).hasSize(4)
+        assertThat(result.nextCursor).isNotNull
     }
 
     @Test
     fun `listSeries with empty result returns empty list`() {
         // given
-        doReturn(ZdfSeriesResponse()).`when`(zdfMediathekClient).listSeries(4)
+        doReturn(ZdfSeriesResponse()).`when`(zdfMediathekClient).listSeries(4, 1)
 
         // when
         val result = listSeriesService.listSeries()
 
         // then
-        assertThat(result).isEmpty()
+        assertThat(result.resources).isEmpty()
     }
 
     @Test
     fun `listSeries passes limit parameter`() {
         // given
-        doReturn(ZdfSeriesResponse()).`when`(zdfMediathekClient).listSeries(5)
+        doReturn(ZdfSeriesResponse()).`when`(zdfMediathekClient).listSeries(5, 1)
 
         // when
         listSeriesService.listSeries(5)
 
         // then
-        Mockito.verify(zdfMediathekClient).listSeries(5)
+        Mockito.verify(zdfMediathekClient).listSeries(5, 1)
     }
 
     @Test
@@ -102,11 +118,35 @@ class ListSeriesServiceTest {
                 null,
                 null
             )
-        ).`when`(zdfMediathekClient).listSeries(4)
+        ).`when`(zdfMediathekClient).listSeries(4, 1)
 
         // when/then
         assertThatThrownBy { listSeriesService.listSeries() }
             .isInstanceOf(RuntimeException::class.java)
     }
-}
 
+    @Test
+    fun `listSeries with cursor decodes and calls client with correct page`() {
+        // given: cursor encodes page=2 and limit=3
+        val cursor = McpPaginationPayloadHandler.encode(2, 3)
+        val apiResponse = ZdfSeriesResponse()
+        doReturn(apiResponse).`when`(zdfMediathekClient).listSeries(3, 2)
+
+        // when
+        listSeriesService.listSeries(null, cursor)
+
+        // then
+        Mockito.verify(zdfMediathekClient).listSeries(3, 2)
+    }
+
+    @Test
+    fun `listSeries with invalid cursor throws IllegalArgumentException`() {
+        // given
+        val invalidCursor = "not-base64"
+
+        // when/then
+        assertThatThrownBy { listSeriesService.listSeries(null, invalidCursor) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Invalid cursor")
+    }
+}

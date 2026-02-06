@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class EpisodeConnection(
-    val nodes: List<EpisodeNode>
+    val nodes: List<EpisodeNode>,
+    val pageInfo: PageInfo? = null
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -19,4 +20,10 @@ data class EpisodeNode(
 data class EpisodeInfo(
     val seasonNumber: Int?,
     val episodeNumber: Int?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class PageInfo(
+    val hasNextPage: Boolean,
+    val endCursor: String?
 )

@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version "2.3.0"
     kotlin("plugin.spring") version "2.3.0"
-    id("org.springframework.boot") version "4.0.2"
+    id("org.springframework.boot") version "3.5.10"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.sonarqube") version "7.2.2.6593"
     jacoco
@@ -89,6 +89,13 @@ tasks.jacocoTestReport {
     reports {
         xml.required = true
     }
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) {
+                exclude("**/ZdfMediathekClient*", "**/ZdfMediathekClient$*")
+            }
+        })
+    )
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootBuildImage>("bootBuildImage") {

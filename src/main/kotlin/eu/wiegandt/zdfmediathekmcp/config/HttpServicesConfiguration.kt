@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction
+import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.support.WebClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory
@@ -62,14 +63,20 @@ class HttpServicesConfiguration {
         oAuth2filter.setDefaultClientRegistrationId(OAUTH2_CLIENT_REGISTRATION_ID)
         oAuth2filter.setDefaultOAuth2AuthorizedClient(true)
 
+        // Increase max in-memory buffer size to handle larger JSON payloads (e.g., seasons lists)
+        val exchangeStrategies = ExchangeStrategies.builder()
+            .codecs { configurer -> configurer.defaultCodecs().maxInMemorySize(10 * 1024 * 1024) }
+            .build()
+
         val client = clientBuilder
             .baseUrl(baseUrl)
             .filter(oAuth2filter)
             .filter(logRequest())
             .filter(logResponse())
+            .exchangeStrategies(exchangeStrategies)
             .build()
 
-        logger.debug("WebClient configured with OAuth2 filter and logging")
+        logger.debug("WebClient configured with OAuth2 filter and logging and increased buffer size")
         return HttpServiceProxyFactory.builderFor(WebClientAdapter.create(client)).build()
     }
 

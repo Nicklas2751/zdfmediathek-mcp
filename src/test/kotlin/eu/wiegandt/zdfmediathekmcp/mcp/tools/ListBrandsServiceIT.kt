@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import eu.wiegandt.zdfmediathekmcp.model.BrandApiResponse
 import eu.wiegandt.zdfmediathekmcp.model.BrandSummary
+import eu.wiegandt.zdfmediathekmcp.model.McpPagedResult
 import io.modelcontextprotocol.client.McpAsyncClient
 import io.modelcontextprotocol.client.McpClient
 import io.modelcontextprotocol.client.transport.WebClientStreamableHttpTransport
@@ -156,7 +157,13 @@ class ListBrandsServiceIT {
         )
 
         // then: Ergebnis entspricht Erwartung, Request wurde korrekt abgesetzt
-        assertThat(result).usingRecursiveComparison().isEqualTo(expected)
+        assertThat(result.resources).usingRecursiveComparison().isEqualTo(expected.brands)
+        // If the API returned a full page (10 items), we expect a nextCursor to be provided
+        assertThat(result.nextCursor).isNotNull()
+        // Verify the cursor decodes to page=2 and limit=10
+        val decoded = eu.wiegandt.zdfmediathekmcp.mcp.pagination.McpPaginationPayloadHandler.decode(result.nextCursor!!)
+        assertThat(decoded.page).isEqualTo(2)
+        assertThat(decoded.limit).isEqualTo(10)
         verify(
             getRequestedFor(urlPathEqualTo("/cmdm/brands"))
                 .withQueryParam("limit", equalTo("10"))
@@ -200,7 +207,8 @@ class ListBrandsServiceIT {
         )
 
         // then
-        assertThat(result).usingRecursiveComparison().isEqualTo(expected)
+        assertThat(result.resources).usingRecursiveComparison().isEqualTo(expected.brands)
+        assertThat(result.nextCursor).isNull()
         verify(
             getRequestedFor(urlPathEqualTo("/cmdm/brands"))
                 .withQueryParam("limit", equalTo("5"))
@@ -271,8 +279,8 @@ class ListBrandsServiceIT {
         ).contains("500 Internal Server Error from GET")
     }
 
-    private fun parseTextContent(result: Mono<McpSchema.CallToolResult>): BrandApiResponse {
-        return objectMapper.readValue<BrandApiResponse>(
+    private fun parseTextContent(result: Mono<McpSchema.CallToolResult>): McpPagedResult<BrandSummary> {
+        return objectMapper.readValue(
             (result.block()!!
                 .content()
                 .first() as McpSchema.TextContent).text()

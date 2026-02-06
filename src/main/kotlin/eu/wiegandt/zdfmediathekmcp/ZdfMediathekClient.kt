@@ -9,14 +9,19 @@ import org.springframework.web.service.annotation.GetExchange
 interface ZdfMediathekClient {
 
     @GetExchange("/search/documents")
-    fun searchDocuments(@RequestParam("q") q: String, @RequestParam("limit") limit: Int = 5): ZdfSearchResponse
+    fun searchDocuments(
+        @RequestParam("q") q: String,
+        @RequestParam("limit") limit: Int = 5,
+        @RequestParam("page") page: Int = 1
+    ): ZdfSearchResponse
 
     @GetExchange("/cmdm/epg/broadcasts")
     fun getBroadcastSchedule(
         @RequestParam("from") from: String,
         @RequestParam("to") to: String,
         @RequestParam("tvService") tvService: String?,
-        @RequestParam("limit") limit: Int = 10
+        @RequestParam("limit") limit: Int = 10,
+        @RequestParam("page") page: Int = 1
     ): ZdfBroadcastScheduleResponse
 
     @GetExchange("/cmdm/epg/broadcasts/pf")
@@ -26,16 +31,19 @@ interface ZdfMediathekClient {
 
     @GetExchange("/cmdm/brands")
     fun listBrands(
-        @RequestParam("limit") limit: Int = 10
+        @RequestParam("limit") limit: Int = 10,
+        @RequestParam("page") page: Int = 1
     ): BrandApiResponse
 
     @GetExchange("/cmdm/series")
     fun listSeries(
-        @RequestParam("limit") limit: Int = 4
+        @RequestParam("limit") limit: Int = 4,
+        @RequestParam("page") page: Int = 1
     ): ZdfSeriesResponse
 
     @GetExchange("/cmdm/seasons")
     fun listSeasons(
-        @RequestParam("limit") limit: Int = 4
+        @RequestParam("limit") limit: Int = 4,
+        @RequestParam("page") page: Int = 1
     ): ZdfSeasonResponse
 }
